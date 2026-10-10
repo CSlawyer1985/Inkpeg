@@ -12,6 +12,12 @@ final class WorkflowRecoveryController: NSObject, NSWindowDelegate {
     var onResumeText: (EditSession) -> Void = { _ in }
     var onResumeNote: (NoteDraft) -> Void = { _ in }
     init(line: Line, actions: MaterialActions) { self.line = line; self.actions = actions }
+    func prepareMarkupRecovery(_ session: EditSession) async throws -> EditSession {
+        guard !line.snapshot.privacyHidden, session.kind == .markup else { throw StoreError.invalidEdit }
+        let recovered = try await line.store.resumeEditingSession(session)
+        guard !line.snapshot.privacyHidden else { throw StoreError.invalidEdit }
+        return recovered
+    }
     func refresh(showIfNeeded: Bool = false) async {
         do {
             let edits = try await line.store.pendingEditSessions(), notes = try await line.store.pendingNoteDrafts()
@@ -47,11 +53,16 @@ final class WorkflowRecoveryController: NSObject, NSWindowDelegate {
                 row.addArrangedSubview(ActionButton(title: L(.resumeDraft)) { [weak self] in
                     guard let self, !self.line.snapshot.privacyHidden else { return }
                     if session.kind == .textEdit { self.onResumeText(session); return }
-                    Markup.shared.edit(session, store: self.line.store) { [weak self] result in
-                        guard let self else { return }; Task {
-                            do { await self.line.render(try await self.line.store.finishEditing(session, result: result)); await self.show() }
-                            catch { self.onError(error) }
-                        }
+                    Task { [self] in
+                        do {
+                            let recovered = try await self.prepareMarkupRecovery(session)
+                            Markup.shared.edit(recovered, store: self.line.store) { [weak self] result in
+                                guard let self else { return }; Task {
+                                    do { await self.line.render(try await self.line.store.finishEditing(recovered, result: result)); await self.show() }
+                                    catch { self.onError(error) }
+                                }
+                            }
+                        } catch { self.onError(error) }
                     }
                 })
                 stack.addArrangedSubview(row)
