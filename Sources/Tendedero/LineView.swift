@@ -2,7 +2,8 @@ import SwiftUI
 
 enum Layout {
     static let panelHeight: CGFloat = 210
-    static let ropeTop: CGFloat = 10
+    // Preserve the rope/card layout and room for transient intake feedback.
+    static let ropeTop: CGFloat = LineInputLayout.controlHeight
     static let spacing: CGFloat = 174
     static let cardWidth: CGFloat = 150
     static let pinAbove: CGFloat = 9.5
@@ -30,9 +31,14 @@ struct LineView: View {
             let width = geo.size.width
             ZStack(alignment: .topLeading) {
                 Rope(width: width)
+                let region = LineInputLayout.region(width: width)
+                LineInputView(line: line)
+                    .frame(width: region.width, height: region.height)
+                    .position(x: region.midX, y: region.midY)
 
                 if line.items.isEmpty {
                     Hint()
+                        .allowsHitTesting(false)
                         .position(x: width / 2, y: Layout.ropeY(x: width / 2, width: width) + 34)
                         .transition(.opacity)
                 }
@@ -44,6 +50,12 @@ struct LineView: View {
                         .frame(width: Layout.cardWidth, height: Layout.panelHeight - ropeY, alignment: .top)
                         .position(x: x, y: ropeY - Layout.pinAbove + (Layout.panelHeight - ropeY) / 2)
                 }
+                // Keep the small settings cue visible as cards sway across
+                // the rope. This stroke adds no hit area over the cards.
+                let settings = LineInputLayout.settingsStroke(width: width)
+                LineRopeGeometry.path(width: width, from: settings.lowerBound, to: settings.upperBound)
+                    .stroke(Color(nsColor: .systemRed), style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
+                    .allowsHitTesting(false)
             }
             .animation(.spring(response: 0.55, dampingFraction: 0.78), value: line.items.map(\.id))
             .animation(.easeInOut(duration: 0.3), value: line.items.isEmpty)
@@ -61,7 +73,7 @@ struct LineView: View {
 
 private struct Hint: View {
     var body: some View {
-        Text(L("Take a screenshot and it will hang here", "Haz una captura y se quedará colgada aquí"))
+        Text(L(.emptyHint))
             .font(.system(size: 12, weight: .medium, design: .rounded))
             .foregroundStyle(.secondary)
             .padding(.horizontal, 12)
@@ -77,13 +89,7 @@ struct Rope: View {
     let width: CGFloat
 
     private var path: Path {
-        Path { p in
-            let top = Layout.ropeTop
-            p.move(to: CGPoint(x: -20, y: top))
-            p.addQuadCurve(
-                to: CGPoint(x: width + 20, y: top),
-                control: CGPoint(x: width / 2, y: top + 2 * Layout.sag(width: width)))
-        }
+        LineRopeGeometry.path(width: width, from: -20, to: width + 20)
     }
 
     var body: some View {
@@ -101,6 +107,25 @@ struct Rope: View {
             ], startPoint: .leading, endPoint: .trailing)
         )
         .allowsHitTesting(false)
+    }
+}
+
+/// The real rope extends 20 points past each edge. Both its neutral stroke and
+/// the red settings segment use this same quadratic, including during reveal.
+enum LineRopeGeometry {
+    static func y(x: CGFloat, width: CGFloat) -> CGFloat {
+        let f = (x + 20) / (max(0, width) + 40)
+        return Layout.ropeTop + 4 * Layout.sag(width: width) * f * (1 - f)
+    }
+    static func path(width: CGFloat, from start: CGFloat, to end: CGFloat) -> Path {
+        let first = CGPoint(x: start, y: y(x: start, width: width))
+        let last = CGPoint(x: end, y: y(x: end, width: width))
+        let middleX = (start + end) / 2
+        let controlY = 2 * y(x: middleX, width: width) - (first.y + last.y) / 2
+        return Path { p in
+            p.move(to: first)
+            p.addQuadCurve(to: last, control: CGPoint(x: middleX, y: controlY))
+        }
     }
 }
 

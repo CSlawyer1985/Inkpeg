@@ -9,7 +9,7 @@ func captureRect(of url: URL) -> CGRect? {
     let data: Data? = url.withUnsafeFileSystemRepresentation { path in
         guard let path else { return nil }
         let size = getxattr(path, name, nil, 0, 0, 0)
-        guard size > 0 else { return nil }
+        guard size > 0, size <= 16 * 1024 else { return nil }
         var buffer = Data(count: size)
         let read = buffer.withUnsafeMutableBytes { getxattr(path, name, $0.baseAddress, size, 0, 0) }
         return read == size ? buffer : nil
@@ -19,7 +19,7 @@ func captureRect(of url: URL) -> CGRect? {
           values.count == 4, let main = NSScreen.screens.first else { return nil }
     let x = CGFloat(truncating: values[0]), y = CGFloat(truncating: values[1])
     let w = CGFloat(truncating: values[2]), h = CGFloat(truncating: values[3])
-    guard w > 2, h > 2 else { return nil }
+    guard x.isFinite, y.isFinite, w.isFinite, h.isFinite, w > 2, h > 2 else { return nil }
     return CGRect(x: x, y: main.frame.maxY - y - h, width: w, height: h)
 }
 

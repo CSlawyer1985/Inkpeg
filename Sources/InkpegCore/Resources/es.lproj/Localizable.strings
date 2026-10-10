@@ -1,0 +1,197 @@
+"action.copy" = "Copiar";
+"action.open" = "Abrir copia";
+"action.markup" = "Marcar copia";
+"action.showInFinder" = "Mostrar copia en Finder";
+"action.takeDown" = "Descolgar";
+"action.moveToTrash" = "Mover material a papelera recuperable";
+"feedback.copied" = "Copiado";
+"shelf.hide" = "Ocultar tendedero";
+"shelf.show" = "Mostrar tendedero";
+"shelf.takeDownAll" = "Descolgar tarjetas no fijadas";
+"shelf.emptyHint" = "Clic en la cuerda roja para nota · Clic derecho para pegar o ajustes · Arrastra archivos";
+"settings.sounds" = "Sonidos";
+"app.quit" = "Salir de Inkpeg";
+"error.arguments" = "Argumentos de inicio inválidos";
+"error.resources" = "Faltan recursos necesarios";
+"recovery.title" = "El espacio necesita recuperación";
+"recovery.message" = "No se pudo leer el estado de forma segura. La recuperación conserva los datos dañados y valida la copia anterior. Los formatos posteriores no se sobrescriben.";
+"recovery.previous" = "Recuperar copia anterior";
+"recovery.revealWorkspace" = "Mostrar espacio en Finder";
+"error.materialAction" = "La acción falló; se conservan los originales y los datos de recuperación.";
+
+"capture.choose" = "Elegir carpeta de capturas…";
+
+"capture.pause" = "Pausar recepción de capturas";
+
+"capture.resume" = "Reanudar recepción de capturas";
+
+"capture.retry" = "Reintentar capturas pendientes";
+
+"markup.fallbackTitle" = "Editar borrador en Vista Previa";
+
+"markup.fallbackMessage" = "Guarda en Vista Previa y elige Guardar copia aquí. Cancelar conserva el borrador sin cambiar el material.";
+
+"edit.saveCopy" = "Guardar copia";
+
+"edit.cancel" = "Cancelar";
+
+"capture.active" = "Recibiendo capturas nuevas";
+
+"capture.paused" = "Recepción pausada";
+
+"capture.unavailable" = "Carpeta no disponible; selecciónala de nuevo";
+
+"capture.incomplete" = "Imagen incompleta; pendiente";
+
+"capture.full" = "Estante lleno de tarjetas fijadas; pendiente";
+
+"capture.storageLimit" = "Límite de almacenamiento; pendiente";
+
+"capture.importFailed" = "Importación fallida; originales conservados";
+
+"recovery.reviewTitle" = "Revisar materiales y borradores";
+
+"recovery.reviewMessage" = "Se conservan las operaciones interrumpidas. Revisa una copia antes de colgarla. Los originales no cambian.";
+
+"recovery.hangReviewed" = "Colgar copia revisada";
+
+"recovery.retainedDraft" = "Borrador conservado";
+
+"recovery.resumeDraft" = "Reanudar borrador";
+
+"markup.saveFailed" = "No se pudo guardar";
+
+"markup.saveRetained" = "La edición se conserva para reintentar. Material y original no cambian. Guarda o cancela antes de salir.";
+
+"markup.retry" = "Reintentar guardado";
+
+"markup.retryLater" = "Más tarde";
+"markup.inProgress" = "Finaliza o cancela la edición de la copia antes de salir.";
+
+"clipboard.pause" = "Pausar recepción automática del portapapeles";
+"clipboard.resume" = "Reanudar recepción automática del portapapeles";
+"clipboard.retry" = "Reintentar materiales del portapapeles";
+"clipboard.active" = "Recepción automática activada";
+"clipboard.paused" = "Recepción del portapapeles pausada";
+"clipboard.hidden" = "Contenido oculto: lectura del portapapeles suspendida";
+"clipboard.pending" = "Materiales sin guardar; recepción suspendida, reintenta";
+"clipboard.unavailable" = "Ajustes o espacio no disponible; recepción detenida";
+"clipboard.rejected" = "Portapapeles no importado: formato no admitido o límite excedido";
+"clipboard.pendingQuit" = "Hay materiales del portapapeles sin guardar";
+
+"clipboard.changedFile" = "Archivo pendiente modificado o no disponible; cancela y vuelve a copiar";
+"clipboard.discard" = "Cancelar entradas pendientes sin guardar…";
+"clipboard.discardTitle" = "¿Cancelar entradas sin guardar?";
+"clipboard.discardMessage" = "Se descartarán imágenes y textos pendientes y sus referencias de archivo. Los originales y materiales guardados se conservan.";
+"clipboard.keep" = "Conservar entradas pendientes";
+"clipboard.quitDiscarding" = "Descartar entradas sin guardar y salir";
+
+"input.paste" = "Pegar en la cuerda";
+"input.settings" = "Ajustes…";
+"input.dropHint" = "Arrastra materiales cerca de la cuerda";
+"input.dropReady" = "Suelta para colgar %d elementos";
+"input.receiving" = "Recibiendo…";
+"input.saved" = "Añadido al tendedero";
+"input.nothingNew" = "Sin material nuevo: contenido vacío, duplicado o no compatible";
+"input.manualTitle" = "Entrada manual";
+"input.manualHelp" = "Arrastra imágenes, texto o archivos a la cuerda, o elige Pegar en la cuerda en el menú contextual de la cuerda o en el menú del clip. Se conservan los originales.";
+"input.automaticTitle" = "Recepción automática del portapapeles";
+"input.automaticEnabled" = "Colgar automáticamente al copiar";
+"input.automaticHelp" = "El contenido seleccionado se guarda localmente. Puedes pausar cuando quieras.";
+"input.images" = "Recibir imágenes";
+"input.text" = "Recibir texto";
+"input.files" = "Recibir archivos";
+"input.existing" = "Recibir contenido actual al iniciar o reanudar";
+"input.settingsFailed" = "No se guardaron los ajustes; recepción automática detenida. Comprueba el espacio y reintenta.";
+"capture.noFolder" = "Ninguna carpeta seleccionada";
+"capture.settingsTitle" = "Carpeta de capturas";
+"capture.settingsEnabled" = "Recibir nuevas capturas de la carpeta elegida";
+"capture.settingsHelp" = "El Escritorio admite archivos nuevos marcados como capturas del sistema. Una carpeta dedicada admite imágenes nuevas de otras apps. No se importan imágenes existentes ni se cambian ajustes del sistema.";
+
+"source.missing" = "Fuente sin registrar";
+"source.manual" = "Registro manual";
+"source.pdfPage" = "Página PDF %d";
+"source.printedPage" = "Página impresa: %@";
+"source.label" = "Fuente:";
+"material.details" = "Detalles del material…";
+"material.title" = "Título";
+"source.title" = "Título de fuente";
+"source.url" = "URL (sin acceso automático)";
+"source.file" = "Archivo de origen";
+"source.location" = "Página / posición (vacía si desconocida)";
+"source.unknownPage" = "Desconocido";
+"source.physicalPage" = "Página física del PDF";
+"source.printedLabel" = "Página impresa manual";
+"source.save" = "Guardar fuente";
+"source.choose" = "Elegir / localizar archivo de origen…";
+"text.original" = "Extracto original";
+"text.edited" = "Copia editada";
+"text.edit" = "Editar copia de texto…";
+"text.editor" = "Editar copia de texto";
+"text.help" = "Guardar crea una copia y conserva el original. Cancelar o cerrar conserva un borrador recuperable.";
+"text.recoveryChanged" = "La versión del material ha cambiado. Se recupera un borrador pendiente; guardar añade una copia y conserva el original y las versiones existentes.";
+"text.inProgress" = "El texto se está editando. Guarda o cancela para conservar el borrador.";
+"source.unavailable" = "Origen no disponible; la copia se conserva.";
+"input.filesChoose" = "Colgar archivos…";
+"privacy.hidden" = "Vistas sensibles ocultas";
+"material.openCopy" = "Abrir copia externamente";
+"material.copySource" = "Copiar con fuente";
+"material.saveTitle" = "Guardar título";
+"material.metadata" = "%@ · %d bytes";
+
+"note.new" = "Nueva nota";
+"note.title" = "Nota";
+"note.continue" = "Continuar nota";
+"note.origin" = "Nota propia";
+"note.hint" = "Clic para nota · Clic derecho para menú";
+"note.help" = "El borrador se guarda localmente. ⌘Return cuelga la nota. Esc o perder foco conserva el borrador.";
+"note.hang" = "Colgar nota";
+"note.saving" = "Guardando borrador…";
+"note.saved" = "Borrador guardado localmente";
+"note.failed" = "Borrador sin guardar; texto conservado. Reintenta.";
+"note.blank" = "Escribe texto antes de colgar.";
+"note.quitPending" = "Un borrador no ha terminado de guardarse. Espera o reintenta antes de salir.";
+
+"edit.menu" = "Editar";
+"edit.undo" = "Deshacer";
+"edit.redo" = "Rehacer";
+"edit.cut" = "Cortar";
+"edit.copy" = "Copiar";
+"edit.paste" = "Pegar";
+"edit.selectAll" = "Seleccionar todo";
+"edit.close" = "Cerrar ventana";
+"note.dismiss" = "Ocultar";
+"note.placeholder" = "Escribe tus ideas…\nLa primera línea será el título de la tarjeta.";
+"note.retryHang" = "Reintentar y colgar";
+"settings.intake" = "Entrada";
+"settings.storage" = "Almacenamiento";
+"settings.saved" = "Ajustes guardados";
+"settings.saving" = "Guardando…";
+"settings.retry" = "Reintentar";
+"settings.idle" = "Los cambios se guardan automáticamente";
+"settings.types" = "Tipos de contenido";
+"settings.typeHelp" = "Puedes elegir tipos con la entrada automática desactivada.\n⌘V sigue perteneciendo a la aplicación activa.";
+"library.title" = "Biblioteca de materiales";
+"library.location" = "Ubicación de la biblioteca";
+"library.usage" = "Espacio utilizado";
+"library.materials" = "Materiales y versiones";
+"library.exports" = "Exportaciones temporales";
+"library.drafts" = "Borradores y registros de recuperación";
+"library.help" = "Los materiales se guardan como copias independientes. Retirar una tarjeta conserva sus copias y los archivos originales.";
+"library.loading" = "Calculando…";
+"library.unavailable" = "No se pudo leer el espacio utilizado. Reintenta.";
+"library.reveal" = "Mostrar en Finder";
+
+"cleanup.title" = "Limpiar copias";
+"cleanup.help" = "Limpia materiales retirados sin fijar y exportaciones de más de 24 horas. Conserva materiales colgados, fijados y borradores.";
+"cleanup.preview" = "Revisar limpieza…";
+"cleanup.previewTitle" = "Confirmar limpieza";
+"cleanup.summary" = "Materiales retirados: %d · Exportaciones: %d\nRetirar %@ de la biblioteca";
+"cleanup.trashHelp" = "Las copias van a la Papelera; se conservan los originales. Recupera los archivos de la Papelera y cuélgalos de nuevo.\nSolo se libera espacio al vaciar la Papelera manualmente. La app nunca la vacía.";
+"cleanup.confirm" = "Mover a la Papelera";
+"cleanup.working" = "Procesando…";
+"cleanup.empty" = "No hay nada que limpiar. Se conservan exportaciones recientes y materiales con borradores.";
+"cleanup.done" = "%d elementos (%@) movidos a la Papelera.";
+"cleanup.partial" = "%d elementos (%@) verificados en la Papelera; algunos fallaron o no se pudieron verificar. Reintenta.";
+"cleanup.changed" = "Los materiales cambiaron. Revisa de nuevo antes de confirmar.";
+"cleanup.unavailable" = "Limpieza no disponible. Resuelve registros de recuperación pendientes o revisa más tarde.";

@@ -51,12 +51,27 @@ struct PeggedView: View {
     /// Distance from the top of the hanging view (the clip) to the card.
     static let cardOffsetBelowTop: CGFloat = 26 - 12
 
-    private var photoSize: CGSize { Self.photoSize(for: item.thumb.size) }
+    private var photoSize: CGSize {
+        item.kind == .image ? Self.photoSize(for: item.thumb.size) : CGSize(width: Layout.cardWidth - 14, height: 104)
+    }
+
+    @ViewBuilder private var cardContent: some View {
+        if let text = item.previewText {
+            Text(text).font(.system(size: 11)).foregroundStyle(.primary)
+                .lineLimit(7).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(7).background(.regularMaterial)
+        } else if item.kind == .file || item.kind == .pdf {
+            VStack(spacing: 5) {
+                Image(nsImage: item.thumb).resizable().scaledToFit().frame(height: 55)
+                Text(item.displayTitle).font(.system(size: 10)).lineLimit(2)
+            }.padding(6).frame(maxWidth: .infinity, maxHeight: .infinity).background(.regularMaterial)
+        } else {
+            Image(nsImage: item.thumb).resizable().interpolation(.high)
+        }
+    }
 
     private var card: some View {
-        Image(nsImage: item.thumb)
-            .resizable()
-            .interpolation(.high)
+        cardContent
             .frame(width: photoSize.width, height: photoSize.height)
             // Concentric corners: the photo's radius is the frame's minus the
             // inset, the way macOS rounds nested shapes.
@@ -88,7 +103,7 @@ struct PeggedView: View {
             .overlay(GrabArea(item: item, line: line))
             .overlay(alignment: .bottom) {
                 if copied {
-                    Label(L("Copied", "Copiado"), systemImage: "checkmark")
+                    Label(L(.copied), systemImage: "checkmark")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(.primary)
                         .padding(.horizontal, 10)
@@ -110,6 +125,7 @@ struct PeggedView: View {
     }
 
     private func arrive() {
+        if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion { arrived = true; swing = 0; return }
         // A capture that flew in is already in place; the flight did the arriving.
         if item.flying {
             arrived = true
@@ -133,6 +149,7 @@ struct PeggedView: View {
     }
 
     private func nudge(_ degrees: Double) {
+        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion, !line.snapshot.privacyHidden else { swing = 0; return }
         withAnimation(.easeOut(duration: 0.3)) { swing = degrees }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation(.interpolatingSpring(stiffness: 38, damping: 2.4)) { swing = 0 }

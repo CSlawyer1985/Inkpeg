@@ -4,6 +4,7 @@ import AppKit
 /// app and every Space except full screen ones, never takes focus, and lets clicks pass through
 /// everywhere except over the photos.
 final class LinePanel: NSPanel {
+    var onAccessibilityReveal: () -> Void = {}
     init(content: NSView) {
         super.init(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel],
                    backing: .buffered, defer: false)
@@ -23,6 +24,13 @@ final class LinePanel: NSPanel {
 
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
+
+    // Raising the transparent, tucked-away window must expose its contents to
+    // accessibility clients. It keeps the same nonactivating focus behavior.
+    override func accessibilityPerformRaise() -> Bool {
+        onAccessibilityReveal()
+        return true
+    }
 
     /// The line hangs on the screen you are using, which is the one with the
     /// pointer: that is where you just took the screenshot.

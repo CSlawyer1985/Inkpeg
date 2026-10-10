@@ -1,0 +1,197 @@
+"action.copy" = "Copy";
+"action.open" = "Open copy";
+"action.markup" = "Markup copy";
+"action.showInFinder" = "Show copy in Finder";
+"action.takeDown" = "Take down";
+"action.moveToTrash" = "Move material to recoverable trash";
+"feedback.copied" = "Copied";
+"shelf.hide" = "Hide line";
+"shelf.show" = "Show line";
+"shelf.takeDownAll" = "Take down unpinned cards";
+"shelf.emptyHint" = "Click the red rope for a note · Right-click for paste or settings · Drop files";
+"settings.sounds" = "Sounds";
+"app.quit" = "Quit Inkpeg";
+"error.arguments" = "Invalid startup arguments";
+"error.resources" = "Required resources are missing";
+"recovery.title" = "Workspace needs recovery";
+"recovery.message" = "The state could not be read safely. Recovery preserves damaged evidence and validates the previous snapshot. Unknown newer formats cannot be overwritten.";
+"recovery.previous" = "Recover previous snapshot";
+"recovery.revealWorkspace" = "Show workspace in Finder";
+"error.materialAction" = "The material action failed; original files and recovery evidence are retained.";
+
+"capture.choose" = "Choose Screenshot Folder…";
+
+"capture.pause" = "Pause Screenshot Intake";
+
+"capture.resume" = "Resume Screenshot Intake";
+
+"capture.retry" = "Retry Pending Screenshots";
+
+"markup.fallbackTitle" = "Edit the draft in Preview";
+
+"markup.fallbackMessage" = "Save your changes in Preview, then choose Save Copy here. Cancel keeps the draft and leaves the material unchanged.";
+
+"edit.saveCopy" = "Save Copy";
+
+"edit.cancel" = "Cancel";
+
+"capture.active" = "Receiving new screenshots";
+
+"capture.paused" = "Screenshot intake paused";
+
+"capture.unavailable" = "Selected folder unavailable; choose it again";
+
+"capture.incomplete" = "Image incomplete; pending retry";
+
+"capture.full" = "Shelf full of pinned cards; screenshots pending";
+
+"capture.storageLimit" = "Storage limit reached; screenshots pending";
+
+"capture.importFailed" = "Import failed; originals retained, retry available";
+
+"recovery.reviewTitle" = "Review Recovered Materials and Drafts";
+
+"recovery.reviewMessage" = "Interrupted imports and edits are retained. Review a copy before hanging it again. Original files are unchanged.";
+
+"recovery.hangReviewed" = "Hang Reviewed Copy";
+
+"recovery.retainedDraft" = "Retained unsaved draft";
+
+"recovery.resumeDraft" = "Resume Draft";
+
+"markup.saveFailed" = "Markup could not be saved";
+
+"markup.saveRetained" = "The returned edit remains open for retry. The material and original are unchanged. Save or cancel the editor before quitting.";
+
+"markup.retry" = "Retry Saving Markup";
+
+"markup.retryLater" = "Retry Later";
+"markup.inProgress" = "Finish or cancel the current copy edit before quitting.";
+
+"clipboard.pause" = "Pause Automatic Clipboard Intake";
+"clipboard.resume" = "Resume Automatic Clipboard Intake";
+"clipboard.retry" = "Retry Pending Clipboard Materials";
+"clipboard.active" = "Automatic clipboard intake enabled";
+"clipboard.paused" = "Clipboard intake paused";
+"clipboard.hidden" = "Privacy hidden: clipboard reads suspended";
+"clipboard.pending" = "Unsaved clipboard materials; intake held, please retry";
+"clipboard.unavailable" = "Clipboard settings or workspace unavailable; intake stopped";
+"clipboard.rejected" = "Clipboard not imported: unsupported or over limit";
+"clipboard.pendingQuit" = "Some clipboard materials have not been saved";
+
+"clipboard.changedFile" = "Pending file changed or unavailable; cancel pending inputs and copy again";
+"clipboard.discard" = "Cancel Unsaved Pending Inputs…";
+"clipboard.discardTitle" = "Cancel clipboard inputs that have not been saved?";
+"clipboard.discardMessage" = "Pending images and text will be discarded. Pending file references will be canceled. Source files and saved materials are preserved.";
+"clipboard.keep" = "Keep Pending Inputs";
+"clipboard.quitDiscarding" = "Discard Unsaved Inputs and Quit";
+
+"input.paste" = "Paste onto Line";
+"input.settings" = "Settings…";
+"input.dropHint" = "Drop materials near the line";
+"input.dropReady" = "Release to hang %d items";
+"input.receiving" = "Receiving…";
+"input.saved" = "Added to the line";
+"input.nothingNew" = "No new material: empty, duplicate, or unsupported content";
+"input.manualTitle" = "Manual intake";
+"input.manualHelp" = "Drag images, text or regular files onto the line, or choose Paste onto Line from the line's context menu or paperclip menu. Originals are preserved.";
+"input.automaticTitle" = "Automatic clipboard intake";
+"input.automaticEnabled" = "Automatically hang copied content";
+"input.automaticHelp" = "Selected clipboard content is saved locally while enabled. You can pause at any time.";
+"input.images" = "Receive images";
+"input.text" = "Receive text";
+"input.files" = "Receive files";
+"input.existing" = "Receive current clipboard on startup or resume";
+"input.settingsFailed" = "Settings could not be saved; automatic intake stopped. Check the workspace and retry.";
+"capture.noFolder" = "No capture folder selected";
+"capture.settingsTitle" = "Capture folder watcher";
+"capture.settingsEnabled" = "Receive new captures from the selected folder";
+"capture.settingsHelp" = "Desktop accepts new files tagged as system screenshots. A dedicated folder accepts new images saved by other apps. Existing images are not imported; system capture settings stay unchanged.";
+
+"source.missing" = "Source not registered";
+"source.manual" = "Manually registered";
+"source.pdfPage" = "PDF page %d";
+"source.printedPage" = "Printed page: %@";
+"source.label" = "Source:";
+"material.details" = "Material details…";
+"material.title" = "Title";
+"source.title" = "Source title";
+"source.url" = "URL (not fetched)";
+"source.file" = "Source file";
+"source.location" = "Page / location (leave unknown blank)";
+"source.unknownPage" = "Unknown";
+"source.physicalPage" = "PDF physical page";
+"source.printedLabel" = "Manual printed page";
+"source.save" = "Save source";
+"source.choose" = "Choose / relocate source file…";
+"text.original" = "Original excerpt";
+"text.edited" = "Edited copy";
+"text.edit" = "Edit text copy…";
+"text.editor" = "Edit text copy";
+"text.help" = "Saving creates an edited copy and retains the original. Cancel or close keeps a recoverable draft.";
+"text.recoveryChanged" = "The material version has changed. This restores an unfinished draft; saving adds a copy and retains the original and existing versions.";
+"text.inProgress" = "Text is being edited. Save or cancel to retain the draft first.";
+"source.unavailable" = "Source unavailable; the saved copy is retained.";
+"input.filesChoose" = "Hang files…";
+"privacy.hidden" = "Sensitive previews hidden";
+"material.openCopy" = "Open copy externally";
+"material.copySource" = "Copy with source";
+"material.saveTitle" = "Save title";
+"material.metadata" = "%@ · %d bytes";
+
+"note.new" = "New note";
+"note.title" = "Note";
+"note.continue" = "Continue note";
+"note.origin" = "Authored note";
+"note.hint" = "Click for a note · Right-click for menu";
+"note.help" = "Drafts save locally while typing. ⌘Return hangs the note. Esc or focus loss keeps the draft.";
+"note.hang" = "Hang note";
+"note.saving" = "Saving draft…";
+"note.saved" = "Draft saved locally";
+"note.failed" = "Draft not saved; text retained. Please retry.";
+"note.blank" = "Write some text before hanging.";
+"note.quitPending" = "A note draft has not finished saving. Wait or retry before quitting.";
+
+"edit.menu" = "Edit";
+"edit.undo" = "Undo";
+"edit.redo" = "Redo";
+"edit.cut" = "Cut";
+"edit.copy" = "Copy";
+"edit.paste" = "Paste";
+"edit.selectAll" = "Select All";
+"edit.close" = "Close Window";
+"note.dismiss" = "Dismiss";
+"note.placeholder" = "Write down your thoughts…\nThe first line becomes the card title.";
+"note.retryHang" = "Retry and Hang";
+"settings.intake" = "Intake";
+"settings.storage" = "Storage";
+"settings.saved" = "Settings saved";
+"settings.saving" = "Saving…";
+"settings.retry" = "Retry";
+"settings.idle" = "Changes save automatically";
+"settings.types" = "Receive types";
+"settings.typeHelp" = "You can preset types while automatic intake is off.\nNormal ⌘V stays with the active app.";
+"library.title" = "Material Library";
+"library.location" = "Library location";
+"library.usage" = "Storage used";
+"library.materials" = "Materials and versions";
+"library.exports" = "Temporary exports";
+"library.drafts" = "Drafts and recovery records";
+"library.help" = "Materials are stored as independent copies. Taking a card down keeps its copies; the original files remain intact.";
+"library.loading" = "Calculating…";
+"library.unavailable" = "Storage could not be read. Try again.";
+"library.reveal" = "Show in Finder";
+
+"cleanup.title" = "Clean up copies";
+"cleanup.help" = "Remove unpinned materials taken down from the line and temporary exports older than 24 hours. Hanging materials, pinned items and editing drafts are kept.";
+"cleanup.preview" = "Preview cleanup…";
+"cleanup.previewTitle" = "Confirm cleanup";
+"cleanup.summary" = "Taken-down materials: %d · Temporary exports: %d\nMove %@ out of the library";
+"cleanup.trashHelp" = "Copies move to Trash; originals remain intact. Recover files from Trash and hang them again.\nDisk space is freed only when you empty Trash yourself. The app never empties Trash.";
+"cleanup.confirm" = "Move to Trash";
+"cleanup.working" = "Working…";
+"cleanup.empty" = "Nothing to clean up. Recent exports and materials with editing drafts are kept.";
+"cleanup.done" = "Moved %d items (%@) to Trash.";
+"cleanup.partial" = "Verified %d items (%@) in Trash; some items failed or could not be verified. Try again.";
+"cleanup.changed" = "Materials changed. Preview cleanup again before confirming.";
+"cleanup.unavailable" = "Cleanup is unavailable. Resolve pending recovery records or preview again later.";

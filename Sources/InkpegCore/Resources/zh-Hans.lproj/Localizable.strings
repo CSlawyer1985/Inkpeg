@@ -1,0 +1,197 @@
+"action.copy" = "复制";
+"action.open" = "打开副本";
+"action.markup" = "标注副本";
+"action.showInFinder" = "在 Finder 中显示副本";
+"action.takeDown" = "取下";
+"action.moveToTrash" = "移入可恢复废纸篓";
+"feedback.copied" = "已复制";
+"shelf.hide" = "隐藏材料架";
+"shelf.show" = "显示材料架";
+"shelf.takeDownAll" = "取下未固定材料";
+"shelf.emptyHint" = "点红绳记事 · 右键粘贴或设置 · 拖入文件";
+"settings.sounds" = "声音";
+"app.quit" = "退出文夹";
+"error.arguments" = "启动参数无效";
+"error.resources" = "缺少必要资源";
+"recovery.title" = "工作区需要恢复";
+"recovery.message" = "状态记录无法安全读取。恢复会保留损坏记录并核验上一份快照；未知的较新格式不会被覆盖。";
+"recovery.previous" = "恢复上一份快照";
+"recovery.revealWorkspace" = "在 Finder 查看工作区";
+"error.materialAction" = "材料操作失败；原件和恢复记录仍保留。";
+
+"capture.choose" = "选择截图目录…";
+
+"capture.pause" = "暂停接收截图";
+
+"capture.resume" = "恢复接收截图";
+
+"capture.retry" = "重试待接收截图";
+
+"markup.fallbackTitle" = "在预览中编辑草稿";
+
+"markup.fallbackMessage" = "请在预览中保存修改，再点击这里的“保存副本”。取消会保留草稿，材料版本不变。";
+
+"edit.saveCopy" = "保存副本";
+
+"edit.cancel" = "取消";
+
+"capture.active" = "正在接收新截图";
+
+"capture.paused" = "截图接收已暂停";
+
+"capture.unavailable" = "已暂停：选定目录不可访问，请重新选择";
+
+"capture.incomplete" = "图片尚未写完，已保留待重试";
+
+"capture.full" = "固定卡已占满材料架，新截图待接收";
+
+"capture.storageLimit" = "存储预算不足，新截图待接收";
+
+"capture.importFailed" = "导入失败，原件保留，可重试";
+
+"recovery.reviewTitle" = "核对恢复材料与草稿";
+
+"recovery.reviewMessage" = "中断的导入和编辑内容已保留。请先查看副本，核对后再挂上；原件没有改动。";
+
+"recovery.hangReviewed" = "核对后挂上";
+
+"recovery.retainedDraft" = "保留的未保存草稿";
+
+"recovery.resumeDraft" = "继续编辑草稿";
+
+"markup.saveFailed" = "标注保存失败";
+
+"markup.saveRetained" = "本次返回的编辑结果仍保留，可重试保存；材料和原件未变。请先保存或取消编辑，再退出。";
+
+"markup.retry" = "重试保存标注";
+
+"markup.retryLater" = "稍后重试";
+"markup.inProgress" = "请先完成或取消正在编辑的副本。";
+
+"clipboard.pause" = "暂停剪贴板自动挂入";
+"clipboard.resume" = "恢复剪贴板自动挂入";
+"clipboard.retry" = "重试待处理剪贴板材料";
+"clipboard.active" = "剪贴板自动接收已开启";
+"clipboard.paused" = "剪贴板自动接收已暂停";
+"clipboard.hidden" = "敏感隐藏中：暂不读取剪贴板";
+"clipboard.pending" = "有未保存的剪贴板材料；接收暂缓，请重试";
+"clipboard.unavailable" = "剪贴板设置或工作区不可用；接收已停止";
+"clipboard.rejected" = "当前剪贴板未接收：内容不支持或超出限额";
+"clipboard.pendingQuit" = "仍有尚未保存的剪贴板材料";
+
+"clipboard.changedFile" = "待处理文件已改变或不可访问；取消待处理后重新复制";
+"clipboard.discard" = "取消未保存的待处理输入…";
+"clipboard.discardTitle" = "取消尚未保存的剪贴板输入？";
+"clipboard.discardMessage" = "待处理图片和文字尚未保存，取消后将丢弃；待处理文件引用也会取消。源文件和已保存材料保持不变。";
+"clipboard.keep" = "保留待处理";
+"clipboard.quitDiscarding" = "放弃未保存输入并退出";
+
+"input.paste" = "粘贴挂入";
+"input.settings" = "设置…";
+"input.dropHint" = "把材料拖到绳子附近，松开挂入";
+"input.dropReady" = "松开挂入 %d 项材料";
+"input.receiving" = "正在接收…";
+"input.saved" = "已挂入";
+"input.nothingNew" = "没有新增材料：内容为空、重复或不支持";
+"input.manualTitle" = "手动挂入";
+"input.manualHelp" = "把图片、文字或普通文件拖到绳子上，也可从绳子右键菜单或回形针菜单选择“粘贴挂入”。保存副本，原件保留。";
+"input.automaticTitle" = "剪贴板自动接收";
+"input.automaticEnabled" = "复制后自动挂入";
+"input.automaticHelp" = "开启后会将选定类型的剪贴板内容保存到本地；可以随时暂停。";
+"input.images" = "接收图片";
+"input.text" = "接收文字";
+"input.files" = "接收文件";
+"input.existing" = "启动或恢复时接收剪贴板当前已有内容";
+"input.settingsFailed" = "设置未能保存，自动接收已停止。请检查工作区后重试。";
+"capture.noFolder" = "尚未选择截图目录";
+"capture.settingsTitle" = "截图目录监听";
+"capture.settingsEnabled" = "自动接收选定目录中的新截图";
+"capture.settingsHelp" = "桌面仅接收带系统截图标记的新文件；专用截图目录接收其他软件保存的新图片。已有图片不补挂，不改变系统截图设置。";
+
+"source.missing" = "未登记来源";
+"source.manual" = "手工登记";
+"source.pdfPage" = "PDF 第 %d 页";
+"source.printedPage" = "印刷页：%@";
+"source.label" = "来源：";
+"material.details" = "材料详情…";
+"material.title" = "标题";
+"source.title" = "来源名称";
+"source.url" = "网址（不自动访问）";
+"source.file" = "来源文件";
+"source.location" = "页码／位置（未知留空）";
+"source.unknownPage" = "未知";
+"source.physicalPage" = "PDF 物理页";
+"source.printedLabel" = "手工印刷页";
+"source.save" = "保存来源";
+"source.choose" = "选择／重新定位来源文件…";
+"text.original" = "原始摘录";
+"text.edited" = "编辑副本";
+"text.edit" = "编辑文字副本…";
+"text.editor" = "编辑文字副本";
+"text.help" = "保存会新增编辑副本，原始摘录保留。取消或关闭会保留草稿，可从“待核对与草稿”恢复。";
+"text.recoveryChanged" = "当前材料版本已更新。这里恢复的是未完成草稿；保存会新增副本并保留原文与已有版本。";
+"text.inProgress" = "文字副本尚在编辑，请先保存或取消（保留草稿）。";
+"source.unavailable" = "原文件不可访问；已保存的副本仍保留。";
+"input.filesChoose" = "挂入文件…";
+"privacy.hidden" = "敏感预览已隐藏";
+"material.openCopy" = "用外部应用打开副本";
+"material.copySource" = "复制并附来源";
+"material.saveTitle" = "保存标题";
+"material.metadata" = "%@ · %d 字节";
+
+"note.new" = "新建记事";
+"note.title" = "记事";
+"note.continue" = "继续记事";
+"note.origin" = "自己写的记事";
+"note.hint" = "点击记事 · 右键菜单";
+"note.help" = "边写边存本地草稿；⌘Return 挂上去。Esc 或失焦收起并保留。";
+"note.hang" = "挂上去";
+"note.saving" = "正在保存草稿…";
+"note.saved" = "草稿已保存到本机";
+"note.failed" = "草稿未保存，正文仍保留；请重试。";
+"note.blank" = "记事为空，请先写正文。";
+"note.quitPending" = "记事草稿尚未保存，请等待或重试保存后退出。";
+
+"edit.menu" = "编辑";
+"edit.undo" = "撤销";
+"edit.redo" = "重做";
+"edit.cut" = "剪切";
+"edit.copy" = "复制";
+"edit.paste" = "粘贴";
+"edit.selectAll" = "全选";
+"edit.close" = "关闭窗口";
+"note.dismiss" = "收起";
+"note.placeholder" = "记下此刻的想法…\n第一行会成为卡片标题。";
+"note.retryHang" = "重试并挂上去";
+"settings.intake" = "挂入";
+"settings.storage" = "存储";
+"settings.saved" = "设置已保存";
+"settings.saving" = "正在保存…";
+"settings.retry" = "重试";
+"settings.idle" = "更改会自动保存";
+"settings.types" = "接收类型";
+"settings.typeHelp" = "关闭自动接收后，仍可预设类型。\n普通 ⌘V 继续由当前应用处理。";
+"library.title" = "材料资料库";
+"library.location" = "资料库位置";
+"library.usage" = "存储占用";
+"library.materials" = "托管材料与版本";
+"library.exports" = "导出临时副本";
+"library.drafts" = "草稿与恢复记录";
+"library.help" = "材料保存为独立副本，原始文件保留。取下卡片后，资料库中的副本仍会保留。";
+"library.loading" = "正在计算…";
+"library.unavailable" = "暂时无法读取存储占用，请重试。";
+"library.reveal" = "在 Finder 中显示";
+
+"cleanup.title" = "清理副本";
+"cleanup.help" = "清理已取下且未固定的资料，以及超过 24 小时的临时导出。绳上资料、固定资料和编辑草稿会保留。";
+"cleanup.preview" = "预览清理…";
+"cleanup.previewTitle" = "确认清理副本";
+"cleanup.summary" = "已取下资料 %d 项 · 临时导出 %d 项\n将从资料库移出 %@";
+"cleanup.trashHelp" = "这些副本将移入废纸篓，原始文件保留。可以从废纸篓找回文件后重新挂入。\n真正释放磁盘空间需要自行清空废纸篓；应用不会自动清空。";
+"cleanup.confirm" = "移到废纸篓";
+"cleanup.working" = "正在处理…";
+"cleanup.empty" = "暂无可清理内容。最近 24 小时的导出和含编辑草稿的资料会保留。";
+"cleanup.done" = "已将 %d 项（%@）移入废纸篓。";
+"cleanup.partial" = "已确认 %d 项（%@）移入废纸篓；部分项目未完成或无法核验，请重试。";
+"cleanup.changed" = "资料已发生变化，请重新预览后再清理。";
+"cleanup.unavailable" = "暂时无法清理。请先处理待恢复记录，或稍后重新预览。";

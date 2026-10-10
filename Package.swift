@@ -2,9 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "Tendedero",
+    name: "Inkpeg",
+    defaultLocalization: "en",
     platforms: [.macOS(.v14)],
+    products: [.executable(name: "Inkpeg", targets: ["Inkpeg"])],
     targets: [
-        .executableTarget(name: "Tendedero", path: "Sources/Tendedero")
+        .target(name: "InkpegCore", resources: [.process("Resources")]),
+        .executableTarget(name: "Inkpeg", dependencies: ["InkpegCore"], path: "Sources/Tendedero"),
+        .testTarget(name: "InkpegCoreTests", dependencies: ["InkpegCore"]),
+        .testTarget(name: "InkpegAppTests", dependencies: ["Inkpeg", "InkpegCore"])
     ]
 )
