@@ -6,7 +6,7 @@ final class StartupTests: XCTestCase {
         XCTAssertEqual(try StartupOptions.parse(["--check-resources"]), StartupOptions(checkResources: true, developmentRoot: nil))
     }
     func testRejectsUnknownMissingRepeatedOrUnsafeArguments() {
-        for args in [["--oops"], ["--data-root"], ["--data-root", "/Users/CS"], ["--data-root", "/tmp/inkpeg-dev/../other"], ["--check-resources", "--check-resources"]] {
+        for args in [["--oops"], ["--data-root"], ["--data-root", "/Users/synthetic"], ["--data-root", "/tmp/inkpeg-dev/../other"], ["--check-resources", "--check-resources"]] {
             XCTAssertThrowsError(try StartupOptions.parse(args))
         }
     }

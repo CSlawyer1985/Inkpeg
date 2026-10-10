@@ -1,0 +1,13 @@
+Inkpeg · 文夹
+
+基于 Alejandro Buján 开源的 Tendedero 源码改造。
+上游：https://github.com/alejandrobujan/tendedero
+固定提交：3c866d94d25ee9d1e008aecd9a78a4e9b2bf06a4
+
+保留原作者 Copyright (c) 2026 Alejandro Buján，代码继续使用 MIT 许可证。
+请阅读随包 LICENSE，包含完整许可及名称／图标排除条款。
+改版使用独立名称；不使用上游图标或 docs 演示图作为本包分发资产；本版图标为系统通用应用图标，不表示原作者背书。
+
+新增：中文资源、托管材料副本与版本、剪贴板／目录接收、来源详情、文字副本编辑、记事草稿、新版原生面板及存储清理。
+当前内部测试版的限制在“本版限制.md”中说明。
+作者主页：https://chenshi.ai
