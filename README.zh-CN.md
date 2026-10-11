@@ -2,9 +2,9 @@
 
 **0.2.0 预览版 · build 2 · 最低 macOS 14.0 · Apple Silicon＋Intel 通用包。** 未经 Developer ID 签名或 Apple 公证；Intel、macOS 14 实机与首次下载 Gatekeeper 尚未验收。
 
-[下载候选安装包](site/downloads/Inkpeg-0.2.0-build2-universal.dmg) · [SHA-256](site/downloads/SHA256SUMS.txt) · [安装与升级](docs/inkpeg/INSTALL.md) · [当前验证摘要](docs/inkpeg/VERIFICATION.md) · [已知限制](docs/inkpeg/KNOWN-ISSUES.md)
+[下载预览版安装包](site/downloads/Inkpeg-0.2.0-build2-universal.dmg) · [SHA-256](site/downloads/SHA256SUMS.txt) · [安装与升级](docs/inkpeg/INSTALL.md) · [当前验证摘要](docs/inkpeg/VERIFICATION.md) · [已知限制](docs/inkpeg/KNOWN-ISSUES.md)
 
-网站为 [inkpeg.chenshi.ai](https://inkpeg.chenshi.ai/)，按 GitHub main → Cloudflare Pages 的 site 目录准备自动发布；是否上线须以最终部署验证为准。仓库仍私有，源码访问需要权限。旧 GitHub 0.1.0 Release 为历史版本。
+[inkpeg.chenshi.ai](https://inkpeg.chenshi.ai/) 网站与预览版安装包下载已上线；GitHub `main` 通过已连接的 Cloudflare Pages 项目发布 `site/`，生产环境自动部署已启用。仓库仍私有，源码访问需要权限。旧 GitHub 0.1.0 Release 为历史版本。
 
 ## 最终网站实图
 

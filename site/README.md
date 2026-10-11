@@ -21,7 +21,7 @@ python3 scripts/check-site.py --url http://127.0.0.1:8768 --out /tmp/inkpeg-site
 
 ## GitHub → Cloudflare Pages
 
-最终发布源为 GitHub `main`，静态输出目录 `site`，无需构建命令。目标自定义域名为 `https://inkpeg.chenshi.ai/`；canonical、Open Graph URL 和 sitemap 已按此设置。候选文件准备不等于已上线；由发布记录确认具体提交、Pages 部署及 HTTPS 下载结果。
+发布源为 GitHub `main`，静态输出目录 `site`，无需构建命令；已连接 Cloudflare Pages，生产环境自动部署已启用。`dc5139ad2b499a006768eb5e0165cd4ddb1b3dc9` 已部署，`https://inkpeg.chenshi.ai/` 网站及预览版 DMG 下载可通过 HTTPS 访问。canonical、Open Graph URL 和 sitemap 均指向该域名。
 
 仅本次 `downloads/Inkpeg-0.2.0-build2-universal.dmg` 解除忽略并纳入明确提交清单；旧 DMG 不批量提交。仓库保持私有，GitHub 源码链接需要权限；Pages 公开静态文件使用独立可读的验证摘要。
 

@@ -8,7 +8,7 @@ Keep screenshots, text, images, PDFs and files on a rope at the top of your Mac.
 
 ## Website and download
 
-The release website is prepared for [inkpeg.chenshi.ai](https://inkpeg.chenshi.ai/), using GitHub `main` → Cloudflare Pages with `site/` as the publishing directory. Deployment is a separate final gate; this candidate's preparation does not assert that the site is already live. The source repository remains private and requires access.
+The release website and preview DMG download are live at [inkpeg.chenshi.ai](https://inkpeg.chenshi.ai/). GitHub `main` publishes `site/` through the connected Cloudflare Pages project, with automatic production deployments enabled. The source repository remains private and requires access.
 
 The [versioned Universal DMG](site/downloads/Inkpeg-0.2.0-build2-universal.dmg), [SHA-256 checksum](site/downloads/SHA256SUMS.txt), [release metadata](site/downloads/release.json) and [portable verification summary](site/downloads/verification.json) travel together. The previous GitHub 0.1.0 release is historical and does not contain these changes.
 
