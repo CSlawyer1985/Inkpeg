@@ -24,7 +24,7 @@ import InkpegCore
         }
         return true
     }
-    /// Called only from the service's successful new-material callback.
+    /// Called when explicit intake saves a new material or hangs a retained one.
     func imported() { if awaitingCompletion { savedInput = true } }
     func refresh() {
         line.canReceiveInput = service.canReceiveManual
@@ -42,7 +42,10 @@ import InkpegCore
         }
     }
     private func begin() -> Bool {
-        guard !awaitingCompletion, service.canReceiveManual else { return false }
+        guard !awaitingCompletion, service.canReceiveManual else {
+            line.inputFeedback = L(line.snapshot.privacyHidden ? .contentHidden : service.pendingCount > 0 ? service.state.messageKey : .feedbackBusy)
+            return false
+        }
         awaitingCompletion = true; savedInput = false
         line.inputFeedback = L(.inputReceiving)
         return true

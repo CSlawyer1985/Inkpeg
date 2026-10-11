@@ -81,3 +81,38 @@ final class NativePromiseTests: XCTestCase {
         }
     }
 }
+
+extension NativePromiseTests {
+    @MainActor
+    func testTextFilePromisePreservesSourceNameTypeAndSelectedEditedBytes() async throws {
+        for suffix in ["md", "csv", "json", "log"] {
+            let root = URL(fileURLWithPath: "/tmp/inkpeg-text-promise-" + UUID().uuidString)
+            try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+            let source = root.appendingPathComponent("资料 report." + suffix), original = Data("original\n  spacing\n".utf8)
+            try original.write(to: source)
+            let store = MaterialStore(root: root.appendingPathComponent("owned"))
+            let imported = try await store.importMaterial(.file(source, .drop), into: MatterGroup.ungroupedID, visibleCapacity: 8)
+            let record = try XCTUnwrap(imported.snapshot.materials.first)
+            let edit = try await store.createDerivedVersion(of: record.id, kind: .textEdit), bytes = Data("edited\n  exact spacing\n".utf8)
+            try await store.writeEditingResult(edit, data: bytes)
+            let edited = try await store.finishEditing(edit, result: .save(edit.workingURL))
+            let selected = try XCTUnwrap(edited.materials.first), payload = try await store.payloadURL(of: selected.id)
+            let adapter = CopyOutProvider(store: store, id: selected.id, versionID: selected.activeVersionID, suffix: payload.pathExtension, canExport: { true })
+            let provider = try await adapter.prepareProvider(exportRoot: root.appendingPathComponent("owned"))
+            XCTAssertEqual(provider.fileType, UTType(filenameExtension: suffix)?.identifier)
+            let delegate = try XCTUnwrap(provider.delegate), name = delegate.filePromiseProvider(provider, fileNameForType: provider.fileType)
+            XCTAssertEqual(name, source.lastPathComponent)
+            let later = try await store.createDerivedVersion(of: selected.id, kind: .textEdit)
+            try await store.writeEditingResult(later, data: Data("later revision".utf8))
+            let latest = try await store.finishEditing(later, result: .save(later.workingURL))
+            let destination = root.appendingPathComponent("delivered").appendingPathComponent(name)
+            try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+            let failure = await deliver(provider, to: destination)
+            XCTAssertNil(failure)
+            XCTAssertEqual(destination.pathExtension, suffix)
+            XCTAssertEqual(try Data(contentsOf: destination), bytes)
+            XCTAssertEqual(try Data(contentsOf: source), original)
+            let unchanged = try await store.load(); XCTAssertEqual(unchanged, latest)
+        }
+    }
+}

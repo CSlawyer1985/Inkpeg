@@ -1,0 +1,5 @@
+downloads/*.dmg
+downloads/*.zip
+
+# Verified 0.2.0 preview is part of the GitHub-connected Pages source.
+!downloads/Inkpeg-0.2.0-build2-universal.dmg

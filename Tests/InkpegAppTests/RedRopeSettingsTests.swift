@@ -70,7 +70,11 @@ final class RedRopeSettingsTests: XCTestCase {
             }
             for grab in descendants(host).compactMap({ $0 as? GrabView }) {
                 let top = grab.convert(NSPoint(x: grab.bounds.midX, y: grab.isFlipped ? 10 : grab.bounds.height - 10), to: host)
-                XCTAssertTrue(hit(host, top) === grab, "The settings hit target must not steal a card drag")
+                if host.bounds.contains(top) {
+                    XCTAssertTrue(hit(host, top) === grab, "The settings hit target must not steal a visible card drag")
+                } else {
+                    XCTAssertNil(hit(host, top), "Cards outside the scrolling viewport must not receive a click")
+                }
             }
             XCTAssertTrue(settings.registeredDraggedTypes.isEmpty, "External drops must resolve to the existing receiver ancestor")
             XCTAssertTrue(target.registeredDraggedTypes.contains(.fileURL))

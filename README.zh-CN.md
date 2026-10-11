@@ -1,6 +1,18 @@
 # Inkpeg · 文夹使用说明
 
-当前为 0.1.0 内部测试版。安装与版本状态见 [README](README.md) 和 [安装教程](docs/inkpeg/INSTALL.md)；正式发布所需的剩余工作见 [已知限制](docs/inkpeg/KNOWN-ISSUES.md)。
+**0.2.0 预览版 · build 2 · 最低 macOS 14.0 · Apple Silicon＋Intel 通用包。** 未经 Developer ID 签名或 Apple 公证；Intel、macOS 14 实机与首次下载 Gatekeeper 尚未验收。
+
+[下载候选安装包](site/downloads/Inkpeg-0.2.0-build2-universal.dmg) · [SHA-256](site/downloads/SHA256SUMS.txt) · [安装与升级](docs/inkpeg/INSTALL.md) · [当前验证摘要](docs/inkpeg/VERIFICATION.md) · [已知限制](docs/inkpeg/KNOWN-ISSUES.md)
+
+网站为 [inkpeg.chenshi.ai](https://inkpeg.chenshi.ai/)，按 GitHub main → Cloudflare Pages 的 site 目录准备自动发布；是否上线须以最终部署验证为准。仓库仍私有，源码访问需要权限。旧 GitHub 0.1.0 Release 为历史版本。
+
+## 最终网站实图
+
+以下为最终候选网站版本元数据更新后的真实 Chromium 渲染，展示网页交互桌面；不是原生 App 截图。手机图为浏览器触摸模拟，不代表实体手机验收。
+
+![文夹网站桌面视口](docs/assets/inkpeg-site-desktop.png)
+
+<img src="docs/assets/inkpeg-site-mobile.png" width="390" alt="文夹网站手机浏览器视口">
 
 ## 先挂一份材料
 
@@ -15,9 +27,9 @@
 - 普通材料单击复制；记事卡单击继续记事。
 - 右键卡片可查看来源和详情、复制或打开副本、编辑／标注支持的副本、取下卡片。来源可补录，不会凭空生成原始出处。
 - 拖到文件夹时提供导出副本；原件与托管材料不因拖出被移动。
-- 微信和 Codex 输入框的直接拖入仍需完善。当前先在卡片菜单选择“复制”，再到目标输入框按 `⌘V`；图片和文件的最终接收方式取决于目标应用。
+- 本版支持直接拖出：文字提供纯文字，图片提供 PNG／TIFF 和导出副本，PDF／普通文件提供可读取副本；Finder 文件拖放保留。微信和 Codex 的实际接收待人工验收，可继续在菜单“复制”后到目标输入框按 `⌘V`。
 
-“取下”会从绳上隐藏卡片，副本继续保留。当前超出显示容量时会取下较早的未固定卡；还没有触控板横向滚动或完整历史列表。它们可能进入后续清理范围，清理前核对名称。
+“取下”会从绳上隐藏卡片，副本继续保留。本版超出屏幕宽度时保留卡片，支持触控板左右滚动、Shift＋滚轮和底部左右箭头；不会因屏幕缩窄或继续挂入而自动取下。旧版本已取下的卡仍保持原状态，可在“最近取下”中主动挂回，完整历史管理尚待完成；清理前核对名称。
 
 ## 新建和继续记事
 
@@ -26,6 +38,10 @@
 按 `⌘Return` 或“挂上去”后才成为绳上卡片。空白正文与尚在输入法候选组合中的文字不会挂入。普通 Return 换行。Esc、关闭或失焦会收起窗口并保留草稿；再次点小红段恢复未挂出的记事。已有记事卡继续编辑同一张。
 
 保存失败时保留窗口内容并提示，等待重试成功后再退出。崩溃或强制退出不能保证最后一次尚在写入的输入已经落盘。
+
+## 一键隐私
+
+隐私状态会持久保留，遮盖材料窗口并阻止旧异步回调重新展示内容。框架测试已覆盖；真实桌面合成、首帧与 VoiceOver 尚待人工验收。
 
 ## 设置
 
@@ -57,6 +73,8 @@
 
 ## 工程与验证
 
-- [本版验证摘要](docs/inkpeg/VERIFICATION.md)：232 项自动测试、资源、镜像和隔离启动，以及未验证边界。
-- [内部测试安装包](https://github.com/CSlawyer1985/Inkpeg/releases/tag/v0.1.0-internal.20261010)：DMG、校验值和教程，需仓库访问权限。
-- [来源与致谢](packaging/来源与致谢.txt)、[MIT 许可证](LICENSE)。历史设计和原生验收记录继续保留在开发者本地，未将含本机路径的记录整体上传。
+- [本版验证摘要](docs/inkpeg/VERIFICATION.md)：完整自动测试、实际包检查和明确未验证边界。
+- [可公开读取的验证记录](site/downloads/verification.json)、[实际构建输入清单](site/downloads/build-source.json)、[发行元数据](site/downloads/release.json)：与实际 DMG 一起交付。
+- 版本来源为 `packaging/release-version.json`；运行 `scripts/verify-inkpeg.sh /tmp/inkpeg-new-verification`，目录必须新建。脚本保留命令、结果和日志；不安装或更改系统安全。构建环境和后续网页门禁见 [英文 README](README.md)。
+- 追溯同时记录构建前 HEAD 与 dirty 输入内容 SHA，覆盖新增未跟踪源码、构建脚本和包内说明，排除生成产物。最终提交后核对同一输入指纹，不为包含自身提交 ID 循环重包。
+- [来源与致谢](packaging/来源与致谢.txt)、[MIT 许可证](LICENSE)。本版图标由自有弯绳、暖纸、红夹标识生成；不使用上游图标或演示图片作分发资产。历史记录只代表当时状态，不整体上传原始日志。

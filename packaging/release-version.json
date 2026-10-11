@@ -1,0 +1,5 @@
+{
+  "version": "0.2.0",
+  "build": "2",
+  "minimumMacOS": "14.0"
+}

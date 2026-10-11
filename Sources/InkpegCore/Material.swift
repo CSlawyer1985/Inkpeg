@@ -67,6 +67,7 @@ public struct CaptureFolderSetting: Codable, Equatable, Sendable {
 }
 public enum ImportRequest: Sendable { case file(URL, ImportOrigin), imageData(Data, SourceRecord), text(String, SourceRecord) }
 public enum ImportDisposition: Equatable, Sendable { case hanging(UUID), duplicate(UUID), shelfFull }
+public enum DuplicateImportPolicy: Sendable { case keepExisting, rehangTakenDown }
 public struct ImportResult: Equatable, Sendable {
     public let disposition: ImportDisposition
     public let snapshot: WorkspaceSnapshot

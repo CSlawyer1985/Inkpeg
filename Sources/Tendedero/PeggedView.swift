@@ -3,6 +3,9 @@ import SwiftUI
 /// One photo with its clothespin. All the charm lives here: it drops onto
 /// the line, swings, sways with the breeze and falls when you pull it off.
 struct PeggedView: View {
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.shelfReduceMotionOverride) private var reduceMotionOverride
+    private var reduceMotion: Bool { reduceMotionOverride ?? systemReduceMotion }
     let item: Pegged
     @ObservedObject var line: Line
 
@@ -25,9 +28,10 @@ struct PeggedView: View {
         // The fall itself is drawn over the whole screen by CaptureFlight, so
         // the card here just steps aside at once.
         .opacity(item.falling || item.flying ? 0 : (arrived ? 1 : 0))
-        .transaction { t in if item.falling { t.animation = nil } }
-        .animation(.easeOut(duration: 0.16), value: item.flying)
+        .transaction { t in if item.falling || reduceMotion { t.animation = nil; t.disablesAnimations = true } }
+        .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: .easeOut(duration: 0.16)), value: item.flying)
         .onAppear(perform: arrive)
+        .onChange(of: reduceMotion) { _, reduced in if reduced { arrived = true; swing = 0 } }
         .onChange(of: item.flying) { was, now in if was && !now { land() } }
         .onChange(of: line.gust) { _, _ in breeze() }
         .onChange(of: copied) { _, isCopied in if isCopied { nudge(3) } }
@@ -55,19 +59,26 @@ struct PeggedView: View {
         item.kind == .image ? Self.photoSize(for: item.thumb.size) : CGSize(width: Layout.cardWidth - 14, height: 104)
     }
 
+    private var typeSymbol: String {
+        switch item.kind { case .text: return "text.alignleft"; case .image: return "photo"; case .pdf: return "doc.richtext"; case .file: return "doc" }
+    }
     @ViewBuilder private var cardContent: some View {
-        if let text = item.previewText {
-            Text(text).font(.system(size: 11)).foregroundStyle(.primary)
-                .lineLimit(7).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding(7).background(.regularMaterial)
-        } else if item.kind == .file || item.kind == .pdf {
-            VStack(spacing: 5) {
-                Image(nsImage: item.thumb).resizable().scaledToFit().frame(height: 55)
-                Text(item.displayTitle).font(.system(size: 10)).lineLimit(2)
-            }.padding(6).frame(maxWidth: .infinity, maxHeight: .infinity).background(.regularMaterial)
-        } else {
-            Image(nsImage: item.thumb).resizable().interpolation(.high)
-        }
+        VStack(alignment: .leading, spacing: 4) {
+            if let text = item.previewText {
+                Text(text).font(.system(size: 12)).foregroundStyle(.primary)
+                    .lineLimit(4).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .padding(.horizontal, 7).padding(.top, 7)
+            } else {
+                Image(nsImage: item.thumb).resizable().scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            HStack(spacing: 4) {
+                Image(systemName: typeSymbol).foregroundStyle(Color(nsColor: PanelAppearance.forest))
+                Text(item.displayTitle.split(whereSeparator: { $0.isNewline }).first.map(String.init) ?? item.displayTitle)
+                    .lineLimit(1).truncationMode(.tail)
+            }.font(.system(size: 11, weight: .medium))
+                .padding(.horizontal, 7).padding(.bottom, 6)
+        }.background(Color(nsColor: PanelAppearance.paper))
     }
 
     private var card: some View {
@@ -81,12 +92,14 @@ struct PeggedView: View {
                     .strokeBorder(Color.white.opacity(0.18), lineWidth: 0.5)
             )
             .padding(Frame.inset)
-            .glassFrame(cornerRadius: Frame.radius)
-            .shadow(color: .black.opacity(hovering ? 0.26 : 0.18), radius: hovering ? 14 : 10, y: hovering ? 8 : 5)
+            .background(Color(nsColor: PanelAppearance.paper), in: RoundedRectangle(cornerRadius: Frame.radius))
+            .overlay(RoundedRectangle(cornerRadius: Frame.radius).strokeBorder(Color(nsColor: PanelAppearance.rope).opacity(0.35), lineWidth: 0.75))
+            .help(item.displayTitle + "\n" + L(.materialDetails))
+            .shadow(color: .black.opacity(hovering ? 0.26 : 0.18), radius: hovering ? 6 : 4, y: hovering ? 4 : 2)
             // Holding presses the photo in slowly, so a long press feels like
             // it is building up to something.
             .scaleEffect(pressed ? 0.95 : (hovering ? 1.035 : 1), anchor: .top)
-            .animation(pressed ? .easeInOut(duration: 0.45) : .spring(response: 0.3, dampingFraction: 0.6), value: pressed)
+            .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: pressed ? .easeInOut(duration: 0.45) : .spring(response: 0.3, dampingFraction: 0.6)), value: pressed)
             .opacity(dragging ? 0.45 : 1)
             .overlay(alignment: .topLeading) {
                 // Drawn here, clicked through GrabView, which sits on top.
@@ -101,6 +114,14 @@ struct PeggedView: View {
                     .allowsHitTesting(false)
             }
             .overlay(GrabArea(item: item, line: line))
+            .overlay {
+                if line.keyboardID == item.id {
+                    RoundedRectangle(cornerRadius: Frame.radius)
+                        .stroke(Color(nsColor: .keyboardFocusIndicatorColor), lineWidth: 3)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+            }
             .overlay(alignment: .bottom) {
                 if copied {
                     Label(L(.copied), systemImage: "checkmark")
@@ -113,8 +134,8 @@ struct PeggedView: View {
                         .transition(.opacity.combined(with: .offset(y: -4)))
                 }
             }
-            .animation(.easeOut(duration: 0.18), value: hovering)
-            .animation(.easeOut(duration: 0.2), value: copied)
+            .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: .easeOut(duration: 0.18)), value: hovering)
+            .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: .easeOut(duration: 0.2)), value: copied)
             .onHover { hovering = $0 }
             .background(
                 GeometryReader { g in
@@ -125,7 +146,9 @@ struct PeggedView: View {
     }
 
     private func arrive() {
-        if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion { arrived = true; swing = 0; return }
+        // Virtualized cards rejoin at rest; scrolling back must not replay entry.
+        guard line.claimArrival(item.id) else { arrived = true; swing = 0; return }
+        if reduceMotion { arrived = true; swing = 0; return }
         // A capture that flew in is already in place; the flight did the arriving.
         if item.flying {
             arrived = true
@@ -149,16 +172,16 @@ struct PeggedView: View {
     }
 
     private func nudge(_ degrees: Double) {
-        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion, !line.snapshot.privacyHidden else { swing = 0; return }
+        guard !reduceMotion, !line.snapshot.privacyHidden else { swing = 0; return }
         withAnimation(.easeOut(duration: 0.3)) { swing = degrees }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            withAnimation(.interpolatingSpring(stiffness: 38, damping: 2.4)) { swing = 0 }
+            withAnimation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: .interpolatingSpring(stiffness: 38, damping: 2.4))) { swing = 0 }
         }
     }
 }
 
 enum Frame {
-    static let radius: CGFloat = 16
+    static let radius: CGFloat = 6
     static let inset: CGFloat = 4
 }
 
@@ -194,11 +217,11 @@ struct Clothespin: View {
         startPoint: .leading, endPoint: .trailing)
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 3.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 1.5, style: .continuous)
             .fill(metal)
             .frame(width: 9, height: 26)
             .overlay(
-                RoundedRectangle(cornerRadius: 3.5, style: .continuous)
+                RoundedRectangle(cornerRadius: 1.5, style: .continuous)
                     .stroke(LinearGradient(colors: [Color.white.opacity(0.9), Color.black.opacity(0.18)],
                                            startPoint: .top, endPoint: .bottom),
                             lineWidth: 0.6)

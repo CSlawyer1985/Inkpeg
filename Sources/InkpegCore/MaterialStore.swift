@@ -27,14 +27,15 @@ public actor MaterialStore {
         guard !busy else { throw StoreError.operationInProgress }
         busy = true; defer { busy = false }
         let fresh = try buildCleanupPlan(exportCutoff: plan.exportCutoff)
-        guard plan.root == paths.root, fresh.generation == plan.generation, fresh.targets == plan.targets else { throw StoreError.sourceChanged }
+        let freshSelection = fresh.targets.filter { target in plan.targets.contains(where: { $0.relativePath == target.relativePath }) }
+        guard plan.root == paths.root, fresh.generation == plan.generation, freshSelection == plan.targets else { throw StoreError.sourceChanged }
         let before = try ensureLoaded()
         let receiptURL = try paths.url("CleanupRecords/" + UUID().uuidString + ".json")
         var receipt = CleanupReceipt(id: plan.id, createdAt: Date(), authorization: "Confirmed storage-cleanup preview in Settings; move copies to system Trash", snapshotBefore: before, targets: plan.targets, outcomes: [])
         try files.createDirectory(paths.url("CleanupRecords"))
         try files.writeAtomic(JSONEncoder().encode(receipt), to: receiptURL)
         var next = before
-        let selected = Set(plan.targets.compactMap(\.materialID))
+        let selected = Set(plan.targets.filter { $0.kind == .material }.compactMap(\.materialID))
         if !selected.isEmpty {
             for index in next.materials.indices where selected.contains(next.materials[index].id) { next.materials[index].status = .trashed }
             next = try persist(next)
@@ -58,7 +59,7 @@ public actor MaterialStore {
                 let remains = (try? exists(original)) == true
                 if remains {
                     failed += 1
-                    if let id = target.materialID, let index = next.materials.firstIndex(where: { $0.id == id }),
+                    if target.kind == .material, let id = target.materialID, let index = next.materials.firstIndex(where: { $0.id == id }),
                        let previous = before.materials.first(where: { $0.id == id }) { next.materials[index].status = previous.status }
                 } else {
                     // A failed Trash call can have moved the source already.
@@ -78,19 +79,20 @@ public actor MaterialStore {
         let current = try ensureLoaded()
         guard !current.privacyHidden else { throw StoreError.invalidSource }
         var protected = Set(try noteDrafts().filter(\.isPending).map(\.materialID)).union(activeNoteMaterials)
+        var completedEdits = [CleanupTarget]()
         for directory in try files.list(paths.url("Drafts")) {
             guard let id = UUID(uuidString: directory.lastPathComponent) else { throw StoreError.recoveryRequired }
             let folder = "Drafts/" + id.uuidString
             let children = try files.list(paths.url(folder))
             let sessionURL = try paths.url(folder + "/session.json")
             if try exists(sessionURL) {
-                guard let session = try? JSONDecoder().decode(EditSession.self, from: files.read(sessionURL)), session.id == id else { throw StoreError.recoveryRequired }
-                let expected = try paths.url(folder + "/" + session.workingURL.lastPathComponent)
-                guard expected == session.workingURL.standardizedFileURL, session.kind != .original else { throw StoreError.recoveryRequired }
-                let info = try files.inspect(expected)
-                guard info.isRegularFile, !info.isSymbolicLink, Set(children.map(\.lastPathComponent)) == ["session.json", expected.lastPathComponent] else { throw StoreError.recoveryRequired }
-                // Even a saved working copy is an explicit recovery asset.
-                protected.insert(session.materialID)
+                let (session, disposition) = try editSessionDisposition(id, in: current)
+                switch disposition {
+                case .pending: protected.insert(session.materialID)
+                case .completed:
+                    completedEdits.append(try cleanupTarget(folder, kind: .completedEdit,
+                        record: current.materials.first { $0.id == session.materialID }))
+                }
             } else if !children.isEmpty && Set(children.map(\.lastPathComponent)) != ["note.json"] {
                 throw StoreError.recoveryRequired
             }
@@ -101,7 +103,8 @@ public actor MaterialStore {
             let existing = current.materials.first { $0.id == journal.record.id }
             if existing == nil || !journal.record.versions.allSatisfy({ version in existing?.versions.contains(version) == true }) { protected.insert(journal.record.id) }
         }
-        var targets = [CleanupTarget]()
+        let staging = try stagingRecoveryInventory(in: current)
+        var targets = staging.targets
         for record in current.materials.sorted(by: { $0.id.uuidString < $1.id.uuidString }) where
             [.takenDown, .trashed].contains(record.status) && !record.pinned && !protected.contains(record.id) {
             let relative = "Materials/" + record.id.uuidString
@@ -112,6 +115,7 @@ public actor MaterialStore {
             }
             targets.append(try cleanupTarget(relative, kind: .material, record: record))
         }
+        targets += completedEdits.sorted { $0.relativePath < $1.relativePath }
         for entry in try files.list(paths.url("Exports")).sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
             let relative = "Exports/" + entry.lastPathComponent
             let target = try cleanupTarget(relative, kind: .temporaryExport)
@@ -122,7 +126,116 @@ public actor MaterialStore {
             guard total <= Int64.max - target.byteCount else { throw StoreError.budgetExceeded }
             total += target.byteCount
         }
-        return StorageCleanupPlan(id: UUID(), targets: targets, root: paths.root, generation: current.generation, exportCutoff: exportCutoff)
+        return StorageCleanupPlan(id: UUID(), targets: targets, stagingInventory: staging.items, root: paths.root, generation: current.generation, exportCutoff: exportCutoff)
+    }
+
+    /// Inventory only: orphan evidence is never removed during load or import.
+    public func stagingRecoveryInventory() throws -> [StagingRecoveryItem] {
+        guard !busy else { throw StoreError.operationInProgress }
+        let current = try ensureLoaded()
+        guard !current.privacyHidden else { throw StoreError.invalidSource }
+        return try stagingRecoveryInventory(in: current).items
+    }
+
+    private func stagingRecoveryInventory(in current: WorkspaceSnapshot) throws -> (items: [StagingRecoveryItem], targets: [CleanupTarget]) {
+        let entries = try files.list(paths.url("Transactions")).sorted { $0.lastPathComponent < $1.lastPathComponent }
+        var items = [StagingRecoveryItem](), candidates = [CleanupTarget]()
+        for entry in entries where entry.pathExtension != "json" {
+            let relative = "Transactions/" + entry.lastPathComponent
+            guard let owned = try? paths.url(relative), let info = try? files.inspect(owned),
+                  info.isRegularFile, !info.isSymbolicLink, info.byteCount >= 0,
+                  info.byteCount <= budget.maxFileBytes, ContentStore.isStagingFilename(entry.lastPathComponent) else {
+                items.append(.init(relativePath: relative, byteCount: nil, disposition: .needsInspection)); continue
+            }
+            candidates.append(try cleanupTarget(relative, kind: .unownedStaging))
+        }
+        guard !candidates.isEmpty else { return (items, []) }
+        let stagingKeys = Set(candidates.map { ($0.fingerprints.first?.sha256 ?? "") + ":" + String($0.byteCount) })
+        var versions = current.materials.flatMap(\.versions)
+        for filename in ["state.json", "state.previous.json"] {
+            let url = try paths.url(filename)
+            if try exists(url) {
+                let info = try files.inspect(url)
+                guard info.isRegularFile, !info.isSymbolicLink,
+                      let snapshot = try? JSONDecoder().decode(WorkspaceSnapshot.self, from: files.read(url)) else { throw StoreError.recoveryRequired }
+                try validate(snapshot)
+                guard info == (try files.inspect(url)) else { throw StoreError.sourceChanged }
+                versions += snapshot.materials.flatMap(\.versions)
+            }
+        }
+        for entry in entries where entry.pathExtension == "json" {
+            let owned = try paths.url("Transactions/" + entry.lastPathComponent)
+            let info = try files.inspect(owned)
+            guard info.isRegularFile, !info.isSymbolicLink,
+                  let journal = try? JSONDecoder().decode(StoreJournal.self, from: files.read(owned)),
+                  entry.lastPathComponent == journal.id.uuidString + ".json" else { throw StoreError.recoveryRequired }
+            try validateRecord(journal.record)
+            versions += journal.record.versions
+        }
+        // Legacy journals do not name their staging path. An unresolved payload
+        // protects matching evidence; a fully verified retained payload does not
+        // make a redundant stage permanently uncleanable.
+        var unresolved = Set<String>()
+        var checked = Set<String>()
+        for version in versions {
+            let key = version.sha256 + ":" + String(version.byteCount)
+            // Only payloads matching an actual stage need disk verification.
+            guard stagingKeys.contains(key), checked.insert(version.relativePath + ":" + key).inserted else { continue }
+            let verified: Bool
+            do {
+                let url = try paths.url(version.relativePath), before = try files.inspect(url)
+                verified = try before.isRegularFile && !before.isSymbolicLink && before.byteCount == version.byteCount &&
+                    ContentStore.digest(try files.read(url)) == version.sha256 && before == (try files.inspect(url))
+            } catch { verified = false }
+            if !verified { unresolved.insert(key) }
+        }
+        for draft in try noteDrafts() where draft.isPending {
+            let bytes = Data(draft.text.utf8)
+            unresolved.insert(ContentStore.digest(bytes) + ":" + String(bytes.count))
+        }
+        for directory in try files.list(paths.url("Drafts")) {
+            guard let id = UUID(uuidString: directory.lastPathComponent) else { throw StoreError.recoveryRequired }
+            if try exists(paths.url("Drafts/" + id.uuidString + "/session.json")) {
+                let (session, disposition) = try editSessionDisposition(id, in: current)
+                if disposition == .pending {
+                    let fingerprints = try cleanupFingerprints(session.workingURL)
+                    guard let working = fingerprints.first, let hash = working.sha256 else { throw StoreError.recoveryRequired }
+                    unresolved.insert(hash + ":" + String(working.bytes))
+                }
+            }
+        }
+        var targets = [CleanupTarget]()
+        for target in candidates {
+            let key = (target.fingerprints.first?.sha256 ?? "") + ":" + String(target.byteCount)
+            let referenced = unresolved.contains(key)
+            items.append(.init(relativePath: target.relativePath, byteCount: target.byteCount, disposition: referenced ? .referenced : .unowned))
+            if !referenced { targets.append(target) }
+        }
+        return (items.sorted { $0.relativePath < $1.relativePath }, targets)
+    }
+
+    /// Export a retained copy outside the library; never overwrite an existing file.
+    public func exportStagingCopy(_ target: CleanupTarget, from plan: StorageCleanupPlan, to destination: URL) throws -> URL {
+        guard !busy else { throw StoreError.operationInProgress }
+        busy = true; defer { busy = false }
+        let fresh = try buildCleanupPlan(exportCutoff: plan.exportCutoff)
+        guard plan.root == paths.root, plan.generation == fresh.generation, target.kind == .unownedStaging,
+              plan.targets.contains(target), fresh.targets.contains(target) else { throw StoreError.sourceChanged }
+        let output = destination.standardizedFileURL
+        let current = try ensureLoaded()
+        guard !current.materials.contains(where: { record in record.source.filePath.map { URL(fileURLWithPath: $0).standardizedFileURL == output } ?? false }) else { throw StoreError.invalidPath }
+        let parent = output.deletingLastPathComponent()
+        guard destination.isFileURL, output.path != paths.root.path, !output.path.hasPrefix(paths.root.path + "/"),
+              parent.resolvingSymlinksInPath().standardizedFileURL == parent,
+              try !files.inspect(parent).isSymbolicLink,
+              output.resolvingSymlinksInPath() == output, !(try exists(output)) else { throw StoreError.invalidPath }
+        let original = try paths.url(target.relativePath)
+        guard try cleanupFingerprints(original) == target.fingerprints else { throw StoreError.sourceChanged }
+        try files.copy(original, to: output)
+        guard try cleanupFingerprints(original) == target.fingerprints,
+              try files.inspect(output).isRegularFile,
+              ContentStore.digest(try files.read(output)) == target.fingerprints.first?.sha256 else { throw StoreError.sourceChanged }
+        return output
     }
 
     private func cleanupTarget(_ relative: String, kind: CleanupTarget.Kind, record: MaterialRecord? = nil) throws -> CleanupTarget {
@@ -325,6 +438,8 @@ public actor MaterialStore {
         guard !busy else { throw StoreError.operationInProgress }
         var next = try ensureLoaded()
         switch command {
+        case .setPrivacyHidden(let hidden):
+            next.privacyHidden = hidden
         case .renameMaterial(let id, let title):
             let title = title.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !title.isEmpty, title.count <= 1024,
@@ -349,9 +464,7 @@ public actor MaterialStore {
         case .hang(let id):
             guard let index = next.materials.firstIndex(where: { $0.id == id }), next.materials[index].status != .trashed else { throw StoreError.notFound }
             if next.materials[index].status == .hanging { return next }
-            _ = try payloadURL(of: id)
-            let record = next.materials.remove(at: index)
-            let result = ShelfPolicy.admit(record, snapshot: next, capacity: visibleCapacity)
+            let result = try rehang(next.materials[index], in: next, visibleCapacity: visibleCapacity)
             guard case .hanging = result.disposition else { throw StoreError.budgetExceeded }
             next = result.snapshot
         default: throw StoreError.invalidSource
@@ -480,21 +593,53 @@ public actor MaterialStore {
             let relative = "Drafts/" + id.uuidString
             let metadata = try paths.url(relative + "/session.json")
             if !(try exists(metadata)) { continue } // Incomplete copy remains accounted for, never deleted.
-            guard let session = try? JSONDecoder().decode(EditSession.self, from: files.read(metadata)), session.id == id,
-                  session.kind != .original else { throw StoreError.recoveryRequired }
-            let expected = try paths.url(relative + "/" + session.workingURL.lastPathComponent)
-            guard expected.standardizedFileURL == session.workingURL.standardizedFileURL else { throw StoreError.invalidPath }
-            let info = try files.inspect(expected)
-            guard info.isRegularFile, !info.isSymbolicLink else { throw StoreError.invalidPath }
-            if let record = current.materials.first(where: { $0.id == session.materialID && $0.status != .trashed }),
-               record.versions.contains(where: { $0.id == session.baseVersionID }),
-               (session.kind == .textEdit && record.kind == .text) || (session.kind == .markup && record.kind == .image) {
-                guard info.byteCount >= 0, info.byteCount <= budget.maxFileBytes else { throw StoreError.invalidPath }
-                let differs = ContentStore.digest(try files.read(expected)) != record.activeVersion?.sha256
-                if record.activeVersionID == session.baseVersionID || differs { sessions.append(session) }
-            }
+            let (session, disposition) = try editSessionDisposition(id, in: current)
+            if case .pending = disposition { sessions.append(session) }
         }
         return sessions.sorted { $0.id.uuidString < $1.id.uuidString }
+    }
+    private enum EditSessionDisposition { case pending, completed }
+
+    /// Completion needs this session's committed lineage, not only equal bytes.
+    /// Unchanged active sessions and unreviewed crash recovery remain pending.
+    private func editSessionDisposition(_ id: UUID, in current: WorkspaceSnapshot) throws -> (EditSession, EditSessionDisposition) {
+        let folder = "Drafts/" + id.uuidString
+        let metadata = try paths.url(folder + "/session.json")
+        guard let session = try? JSONDecoder().decode(EditSession.self, from: files.read(metadata)),
+              session.id == id, session.kind != .original,
+              let record = current.materials.first(where: { $0.id == session.materialID }),
+              let baseIndex = record.versions.firstIndex(where: { $0.id == session.baseVersionID }),
+              (session.kind == .textEdit && record.kind == .text) || (session.kind == .markup && record.kind == .image) else { throw StoreError.recoveryRequired }
+        let working = try paths.url(folder + "/" + session.workingURL.lastPathComponent)
+        guard working == session.workingURL.standardizedFileURL,
+              Set(try files.list(paths.url(folder)).map(\.lastPathComponent)) == ["session.json", working.lastPathComponent] else { throw StoreError.recoveryRequired }
+        let info = try files.inspect(working)
+        guard info.isRegularFile, !info.isSymbolicLink, info.byteCount >= 0, info.byteCount <= budget.maxFileBytes else { throw StoreError.invalidPath }
+        if record.activeVersionID == session.baseVersionID || record.status == .needsReview { return (session, .pending) }
+        let journalURL = try paths.url("Transactions/" + id.uuidString + ".json")
+        guard try exists(journalURL) else { return (session, .pending) }
+        guard let journal = try? JSONDecoder().decode(StoreJournal.self, from: files.read(journalURL)), journal.id == id else { throw StoreError.recoveryRequired }
+        guard journal.record.id == record.id, journal.baseVersionID == session.baseVersionID,
+              journal.record.originalVersionID == record.originalVersionID,
+              let committed = journal.record.activeVersion,
+              committed.kind == session.kind, baseIndex + 1 < record.versions.count,
+              record.versions[baseIndex + 1] == committed else { return (session, .pending) }
+        let workingDigest = ContentStore.digest(try files.read(working))
+        guard info == (try files.inspect(working)) else { throw StoreError.sourceChanged }
+        guard info.byteCount == committed.byteCount, workingDigest == committed.sha256 else { return (session, .pending) }
+        let committedURL = try paths.url(committed.relativePath)
+        if try exists(committedURL) {
+            let committedInfo = try files.inspect(committedURL)
+            guard committedInfo.isRegularFile, !committedInfo.isSymbolicLink,
+                  committedInfo.byteCount == committed.byteCount,
+                  ContentStore.digest(try files.read(committedURL)) == committed.sha256,
+                  committedInfo == (try files.inspect(committedURL)) else { throw StoreError.recoveryRequired }
+        } else {
+            // A confirmed material cleanup may have already moved the versions;
+            // its durable tombstone permits retrying the completed draft move.
+            guard record.status == .trashed else { throw StoreError.recoveryRequired }
+        }
+        return (session, .completed)
     }
     /// Called only after an explicit recovery choice; damaged evidence is retained.
     public func restorePreviousSnapshot() async throws -> WorkspaceSnapshot {
@@ -524,6 +669,16 @@ public actor MaterialStore {
         }
         try files.copy(previousURL, to: current)
         return try ensureLoaded()
+    }
+    /// Batch the existing integrity checks on this actor. Each record retains its
+    /// own result so one damaged payload does not hide unrelated valid cards.
+    /// This is presentation-only; export boundaries still validate independently.
+    public func presentationPayloads(for records: [MaterialRecord]) -> [UUID: Result<URL, Error>] {
+        var results: [UUID: Result<URL, Error>] = [:]
+        for record in records {
+            results[record.id] = Result { try payloadURL(of: record.id, versionID: record.activeVersionID) }
+        }
+        return results
     }
     /// Read-only presentation URL. External actions must obtain an export or draft.
     public func payloadURL(of id: UUID, versionID: UUID? = nil) throws -> URL {
@@ -684,7 +839,16 @@ public actor MaterialStore {
             return (Int64(data.count), ContentStore.digest(data), source)
         }
     }
-    public func importMaterial(_ request: ImportRequest, into matterID: UUID, visibleCapacity: Int, deduplicateClipboardContent: Bool = false, expectedClipboardFile: ClipboardFileFingerprint? = nil) async throws -> ImportResult {
+    private func rehang(_ record: MaterialRecord, in current: WorkspaceSnapshot, visibleCapacity: Int) throws -> ImportResult {
+        _ = try payloadURL(of: record.id)
+        var next = current
+        next.materials.removeAll { $0.id == record.id }
+        let result = ShelfPolicy.admit(record, snapshot: next, capacity: visibleCapacity)
+        // Failed admission must leave the retained record in history.
+        guard case .hanging = result.disposition else { return ImportResult(disposition: .shelfFull, snapshot: current) }
+        return result
+    }
+    public func importMaterial(_ request: ImportRequest, into matterID: UUID, visibleCapacity: Int, deduplicateClipboardContent: Bool = false, expectedClipboardFile: ClipboardFileFingerprint? = nil, duplicatePolicy: DuplicateImportPolicy = .keepExisting) async throws -> ImportResult {
         guard !busy else { throw StoreError.operationInProgress }
         busy = true
         defer { busy = false }
@@ -694,11 +858,19 @@ public actor MaterialStore {
             guard case .file(let url, let origin) = request, [.clipboard, .drop, .fileSelection].contains(origin), bytes == expected.info.byteCount,
                   hash == expected.sha256, try files.inspect(url) == expected.info else { throw StoreError.sourceChanged }
         }
+        let manualDuplicate: Bool
+        if case .rehangTakenDown = duplicatePolicy { manualDuplicate = [.clipboard, .drop, .fileSelection].contains(source.origin) }
+        else { manualDuplicate = false }
         if let duplicate = current.materials.first(where: { record in
-            let sameSource = record.source == source || (record.source.origin != .note && deduplicateClipboardContent && source.origin == .clipboard &&
+            let sameSource = record.source == source || (record.source.origin != .note && (manualDuplicate || (deduplicateClipboardContent && source.origin == .clipboard)) &&
                 (source.filePath.map { $0 == record.source.filePath } ?? (record.kind == .image || record.kind == .text)))
             return record.matterID == matterID && sameSource && record.status != .trashed && record.versions.first(where: { $0.kind == .original })?.sha256 == hash
         }) {
+            if case .rehangTakenDown = duplicatePolicy, duplicate.status == .takenDown {
+                let result = try rehang(duplicate, in: current, visibleCapacity: visibleCapacity)
+                guard case .hanging = result.disposition else { return result }
+                return ImportResult(disposition: result.disposition, snapshot: try persist(result.snapshot))
+            }
             return ImportResult(disposition: .duplicate(duplicate.id), snapshot: current)
         }
         guard ShelfPolicy.canAdmit(snapshot: current, matterID: matterID, capacity: visibleCapacity) else { return ImportResult(disposition: .shelfFull, snapshot: current) }

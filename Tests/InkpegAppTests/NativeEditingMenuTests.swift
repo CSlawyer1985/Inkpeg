@@ -4,6 +4,59 @@ import XCTest
 @testable import Inkpeg
 
 final class NativeEditingMenuTests: XCTestCase {
+    @MainActor func testActualTextEditorInputPasteAndReplacementSupportNativeUndoRedo() async throws {
+        _ = NSApplication.shared
+        let board = NSPasteboard(name: .init("inkpeg-text-undo-" + UUID().uuidString))
+        defer { board.releaseGlobally() }
+        board.setString("粘贴中文\n第二行", forType: .string)
+        for (operation, savesRedone) in [("input", false), ("input", true), ("paste", false), ("paste", true), ("replace", false), ("replace", true)] {
+            let store = MaterialStore(root: URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("inkpeg-text-undo-" + UUID().uuidString))
+            let line = Line(store: store)
+            let imported = try await store.importMaterial(.text("原文｜保留", SourceRecord(origin: .clipboard)), into: MatterGroup.ungroupedID, visibleCapacity: 3)
+            await line.render(imported.snapshot)
+            let editor = TextEditorController(line: line)
+            let id = try XCTUnwrap(imported.snapshot.materials.first?.id)
+            try await editor.open(id, present: false)
+            defer { editor.window?.close() }
+            XCTAssertTrue(try XCTUnwrap(editor.window).makeFirstResponder(editor.textView))
+            let initial = editor.textView.string
+            let expected: String
+            editor.textView.breakUndoCoalescing()
+            switch operation {
+            case "paste":
+                editor.textView.setSelectedRange(NSRange(location: 3, length: 2))
+                XCTAssertTrue(editor.textView.readSelection(from: board, type: .string))
+                expected = "原文｜粘贴中文\n第二行"
+            case "replace":
+                editor.textView.insertText("替换中文", replacementRange: NSRange(location: 0, length: 2))
+                expected = "替换中文｜保留"
+            default:
+                editor.textView.insertText("输入中文", replacementRange: NSRange(location: (initial as NSString).length, length: 0))
+                expected = "原文｜保留输入中文"
+            }
+            XCTAssertEqual(editor.textView.string, expected, operation)
+            XCTAssertEqual(editor.text, expected, "The production delegate must track native editing")
+            let undo = try XCTUnwrap(editor.textView.undoManager)
+            XCTAssertTrue(undo.canUndo, operation)
+            performNativeTextUndo(undo)
+            XCTAssertEqual(editor.textView.string, initial, operation)
+            XCTAssertEqual(editor.text, initial, operation)
+            XCTAssertTrue(undo.canRedo, operation)
+            performNativeTextUndo(undo, redo: true)
+            XCTAssertEqual(editor.textView.string, expected, operation)
+            XCTAssertEqual(editor.text, expected, operation)
+            if !savesRedone {
+                performNativeTextUndo(undo)
+                XCTAssertEqual(editor.textView.string, initial, operation)
+                XCTAssertEqual(editor.text, initial, operation)
+            }
+            let savedText = savesRedone ? expected : initial
+            try await editor.save()
+            let payload = try await store.payloadURL(of: id)
+            XCTAssertEqual(try String(contentsOf: payload), savedText, "Saving must persist the native undo/redo result")
+        }
+    }
+
     @MainActor func testBlankAndComposingNotesCannotEnablePublish() async throws {
         _ = NSApplication.shared
         let store = MaterialStore(root: URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("inkpeg-note-button-" + UUID().uuidString))
@@ -124,4 +177,12 @@ private final class NamedPasteTextView: NSTextView {
         if item.action == #selector(NSText.paste(_:)) { return isEditable && board.availableType(from: [.string]) != nil }
         return super.validateUserInterfaceItem(item)
     }
+}
+
+// XCTest has no running application key window. Exercise AppKit's real native
+// undo manager and drain one notification cycle, retaining exact model/save
+// assertions. Actual nil-target menu shortcuts require Task 16 GUI acceptance.
+@MainActor func performNativeTextUndo(_ undo: UndoManager, redo: Bool = false) {
+    if redo { undo.redo() } else { undo.undo() }
+    RunLoop.current.run(until: Date().addingTimeInterval(0.01))
 }

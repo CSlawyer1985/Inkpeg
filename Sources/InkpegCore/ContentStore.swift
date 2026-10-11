@@ -57,8 +57,9 @@ public struct ContentStore: Sendable {
             source = SourceRecord(origin: origin, filePath: url.standardizedFileURL.path)
             title = url.lastPathComponent
             let payload = try files.read(stagingURL)
-            (kind, ext) = Self.classify(payload, extension: url.pathExtension)
+            (kind, ext) = try Self.classify(payload, extension: url.pathExtension)
         case let .imageData(data, origin):
+            try ImageAdmission.validate(data)
             guard let image = CGImageSourceCreateWithData(data as CFData, nil),
                   CGImageSourceCreateImageAtIndex(image, 0, nil) != nil,
                   let type = CGImageSourceGetType(image), let detected = UTType(type as String),
@@ -74,6 +75,11 @@ public struct ContentStore: Sendable {
         guard info.isRegularFile, !info.isSymbolicLink else { throw StoreError.invalidPath }
         return StagedContent(stagingURL: stagingURL, source: source, kind: kind, byteCount: info.byteCount, sha256: Self.digest(try files.read(stagingURL)), fileExtension: ext, title: title)
     }
+    static func isStagingFilename(_ name: String) -> Bool {
+        let url = URL(fileURLWithPath: name)
+        guard url.pathExtension == "stage", let id = UUID(uuidString: url.deletingPathExtension().lastPathComponent) else { return false }
+        return name == id.uuidString + ".stage"
+    }
     public func commit(_ staged: StagedContent, materialID: UUID, versionID: UUID) throws -> MaterialVersion {
         let folder = "Materials/" + materialID.uuidString
         let relative = folder + "/" + versionID.uuidString + "." + staged.fileExtension
@@ -86,14 +92,36 @@ public struct ContentStore: Sendable {
         try files.move(staged.stagingURL, to: paths.url(relative))
         return MaterialVersion(id: versionID, relativePath: relative, sha256: staged.sha256, byteCount: staged.byteCount, kind: .original)
     }
-    static func classify(_ data: Data, extension suffix: String) -> (MaterialKind, String) {
-        if let image = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceCreateImageAtIndex(image, 0, nil) != nil,
-           let type = CGImageSourceGetType(image), let ext = UTType(type as String)?.preferredFilenameExtension { return (.image, ext) }
+    static func classify(_ data: Data, extension suffix: String) throws -> (MaterialKind, String) {
+        if let image = CGImageSourceCreateWithData(data as CFData, [kCGImageSourceShouldCache: false] as CFDictionary),
+           let type = CGImageSourceGetType(image), let detected = UTType(type as String), detected.conforms(to: .image),
+           let ext = detected.preferredFilenameExtension {
+            try ImageAdmission.validate(data)
+            guard CGImageSourceCreateImageAtIndex(image, 0, nil) != nil else { throw ImageAdmissionError.invalidImage }
+            return (.image, ext)
+        }
+        if UTType(filenameExtension: suffix)?.conforms(to: .image) == true { throw ImageAdmissionError.invalidImage }
         if data.starts(with: Data("%PDF-".utf8)) { return (.pdf, "pdf") }
         let textExtensions: Set<String> = ["txt", "md", "csv", "json", "log"]
-        if textExtensions.contains(suffix.lowercased()), String(data: data, encoding: .utf8) != nil { return (.text, "txt") }
+        if textExtensions.contains(suffix.lowercased()), String(data: data, encoding: .utf8) != nil { return (.text, suffix) }
         let safe = suffix.lowercased().filter { $0.isASCII && ($0.isLetter || $0.isNumber) }
         return (.file, safe.isEmpty ? "bin" : String(safe.prefix(12)))
+    }
+    /// Keep a source basename, but derive the suffix from the selected payload.
+    /// Titles can contain entire clipboard text and must never become paths.
+    public static func suggestedExportFilename(for record: MaterialRecord, fileExtension suffix: String) -> String {
+        let safeSuffix = String(suffix.filter { $0.isASCII && ($0.isLetter || $0.isNumber) }.prefix(12))
+        let ext = safeSuffix.isEmpty ? "bin" : safeSuffix
+        let fallback = "Inkpeg-" + record.id.uuidString.prefix(8)
+        guard let source = record.source.filePath, !source.isEmpty else { return fallback + "." + ext }
+        let basename = URL(fileURLWithPath: source).lastPathComponent
+        guard !basename.isEmpty, basename != ".", basename != ".." else { return fallback + "." + ext }
+        let stem = (basename as NSString).deletingPathExtension
+        let safeStem = stem.unicodeScalars.map { scalar in
+            CharacterSet.controlCharacters.contains(scalar) || "/\\:".unicodeScalars.contains(scalar) ? "_" : String(scalar)
+        }.joined()
+        guard !safeStem.isEmpty, safeStem != ".", safeStem != ".." else { return fallback + "." + ext }
+        return safeStem + "." + ext
     }
     static func digest(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
 }

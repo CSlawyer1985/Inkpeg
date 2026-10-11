@@ -1,7 +1,21 @@
 import Foundation
 
 public enum MessageKey: String, CaseIterable, Sendable {
+    case privacyHide, privacyShow, privacySaveFailed, privacyRetry, privacyExternalBoundary
+    case shortcutActive = "shortcut.active", shortcutConflict = "shortcut.conflict", shortcutFailed = "shortcut.failed"
+    case shortcutRetry = "shortcut.retry", shortcutTitle = "shortcut.title"
+    case feedbackCapacity = "feedback.capacity", feedbackSourceChanged = "feedback.sourceChanged", feedbackPermission = "feedback.permission"
+    case feedbackPath = "feedback.path", feedbackBusy = "feedback.busy", feedbackRecovery = "feedback.recovery"
+    case imagePixelLimit = "image.pixelLimit", imageInvalid = "image.invalid"
+    case takenDownMaterials = "history.takenDown", takenDownHelp = "history.help", takenDownEmpty = "history.empty"
+    case rehangMaterial = "history.rehang", undoTakeDown = "history.undo", takeDownUndoFeedback = "history.undoFeedback", materialPDF = "material.pdf"
+    case shelfKeyboardBrowse = "shelf.keyboardBrowse", shelfKeyboardHelp = "shelf.keyboardHelp", shelfPosition = "shelf.position"
+    case shelfPrevious = "shelf.previous", shelfNext = "shelf.next"
     case cleanupTitle = "cleanup.title", cleanupHelp = "cleanup.help", cleanupPreview = "cleanup.preview"
+    case stagingTitle = "staging.title", stagingSummary = "staging.summary", stagingHelp = "staging.help"
+    case stagingReferenced = "staging.referenced", stagingInspect = "staging.inspect", stagingExport = "staging.export"
+    case stagingExportDone = "staging.exportDone", stagingExportFailed = "staging.exportFailed"
+    case cleanupCompletedEdits = "cleanup.completedEdits"
     case cleanupPreviewTitle = "cleanup.previewTitle", cleanupSummary = "cleanup.summary", cleanupTrashHelp = "cleanup.trashHelp"
     case cleanupConfirm = "cleanup.confirm", cleanupWorking = "cleanup.working", cleanupEmpty = "cleanup.empty"
     case cleanupDone = "cleanup.done", cleanupPartial = "cleanup.partial", cleanupChanged = "cleanup.changed", cleanupUnavailable = "cleanup.unavailable"
@@ -19,6 +33,7 @@ public enum MessageKey: String, CaseIterable, Sendable {
     case noteContinue = "note.continue"
     case noteOrigin = "note.origin"
     case noteHint = "note.hint"
+    case redRopeEntryHint = "note.redRopeEntryHint"
     case noteHelp = "note.help"
     case noteHang = "note.hang"
     case noteSaving = "note.saving"
@@ -54,6 +69,9 @@ public enum MessageKey: String, CaseIterable, Sendable {
     case contentHidden = "privacy.hidden"
     case openCopy = "material.openCopy"
     case copyWithSource = "material.copySource"
+    case detailQuitPending = "material.quitPending"
+    case saveDetails = "material.saveDetails", detailUnsavedTitle = "material.unsavedTitle", detailUnsavedMessage = "material.unsavedMessage"
+    case detailDiscard = "material.discard", detailContinue = "material.continue"
     case saveTitle = "material.saveTitle"
     case materialMetadata = "material.metadata"
 

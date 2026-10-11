@@ -23,7 +23,23 @@ enum Layout {
     }
 }
 
+/// Production follows the system preference; tests/previews may inject only
+/// this view value, without writing UserDefaults or changing macOS settings.
+private struct ShelfReduceMotionOverride: EnvironmentKey { static let defaultValue: Bool? = nil }
+extension EnvironmentValues {
+    var shelfReduceMotionOverride: Bool? {
+        get { self[ShelfReduceMotionOverride.self] }
+        set { self[ShelfReduceMotionOverride.self] = newValue }
+    }
+}
+enum ShelfMotion {
+    static func animation(reduceMotion: Bool, normal: Animation) -> Animation? { reduceMotion ? nil : normal }
+}
+
 struct LineView: View {
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.shelfReduceMotionOverride) private var reduceMotionOverride
+    private var reduceMotion: Bool { reduceMotionOverride ?? systemReduceMotion }
     @ObservedObject var line: Line
 
     var body: some View {
@@ -36,19 +52,43 @@ struct LineView: View {
                     .frame(width: region.width, height: region.height)
                     .position(x: region.midX, y: region.midY)
 
-                if line.items.isEmpty {
+                if line.showsEntryHint {
+                    Text(L(.redRopeEntryHint))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(Color(nsColor: PanelAppearance.forest))
+                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .background(Color(nsColor: PanelAppearance.paper), in: RoundedRectangle(cornerRadius: 6))
+                        .allowsHitTesting(false)
+                        .position(x: min(width - 140, max(140, LineInputLayout.settingsRegion(width: width).midX)), y: 12)
+                }
+                if line.items.isEmpty && !line.snapshot.privacyHidden {
                     Hint()
                         .allowsHitTesting(false)
                         .position(x: width / 2, y: Layout.ropeY(x: width / 2, width: width) + 34)
                         .transition(.opacity)
                 }
 
-                ForEach(Array(line.items.enumerated()), id: \.element.id) { index, item in
-                    let x = Layout.x(index: index, count: line.items.count, width: width)
-                    let ropeY = Layout.ropeY(x: x, width: width)
-                    PeggedView(item: item, line: line)
-                        .frame(width: Layout.cardWidth, height: Layout.panelHeight - ropeY, alignment: .top)
-                        .position(x: x, y: ropeY - Layout.pinAbove + (Layout.panelHeight - ropeY) / 2)
+                if !line.snapshot.privacyHidden {
+                    ForEach(line.presentedIndices(width: width).map { (index: $0, item: line.items[$0]) }, id: \.item.id) { index, item in
+                        let x = line.cardX(index: index, width: width)
+                        let ropeY = Layout.ropeY(x: min(width, max(0, x)), width: width)
+                        PeggedView(item: item, line: line)
+                            .frame(width: Layout.cardWidth, height: Layout.panelHeight - ropeY, alignment: .top)
+                            .position(x: x, y: ropeY - Layout.pinAbove + (Layout.panelHeight - ropeY) / 2)
+                            .accessibilityHidden(x < 0 || x > width)
+                    }
+                }
+                if line.maximumScrollOffset > 0 {
+                    HStack(spacing: 14) {
+                        Button { line.scrollPage(forward: false) } label: { Image(systemName: "chevron.left") }
+                            .disabled(line.scrollOffset <= 0).accessibilityLabel(L(.shelfPrevious))
+                        Text("\(line.items.count)").font(.system(size: 11).monospacedDigit())
+                        Button { line.scrollPage(forward: true) } label: { Image(systemName: "chevron.right") }
+                            .disabled(line.scrollOffset >= line.maximumScrollOffset).accessibilityLabel(L(.shelfNext))
+                    }
+                    .buttonStyle(.borderless).padding(.horizontal, 12).padding(.vertical, 5)
+                    .background(.regularMaterial, in: Capsule())
+                    .position(x: width / 2, y: Layout.panelHeight - 15)
                 }
                 // Keep the small settings cue visible as cards sway across
                 // the rope. This stroke adds no hit area over the cards.
@@ -57,16 +97,25 @@ struct LineView: View {
                     .stroke(Color(nsColor: .systemRed), style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
                     .allowsHitTesting(false)
             }
-            .animation(.spring(response: 0.55, dampingFraction: 0.78), value: line.items.map(\.id))
-            .animation(.easeInOut(duration: 0.3), value: line.items.isEmpty)
+            .clipped()
+            .transaction { if line.snapshot.privacyHidden { $0.disablesAnimations = true; $0.animation = nil } }
+            .onAppear { line.resizeViewport(width) }
+            .onChange(of: width) { _, newWidth in line.resizeViewport(newWidth) }
+            .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: .spring(response: 0.55, dampingFraction: 0.78)), value: line.items.map(\.id))
+            .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: .easeInOut(duration: 0.3)), value: line.items.isEmpty)
             // Tucked away, the whole line waits above the top edge and slides
             // out from under the menu bar, the way an auto-hiding Dock does.
             .offset(y: line.revealed ? 0 : -(Layout.panelHeight + 12))
-            .animation(line.revealed ? .spring(response: 0.42, dampingFraction: 0.82)
-                                     : .easeIn(duration: 0.22), value: line.revealed)
+            .animation(ShelfMotion.animation(reduceMotion: reduceMotion, normal: line.revealed ? .spring(response: 0.42, dampingFraction: 0.82)
+                                     : .easeIn(duration: 0.22)), value: line.revealed)
+            .transaction { if reduceMotion { $0.animation = nil; $0.disablesAnimations = true } }
         }
         .onPreferenceChange(HitRectsKey.self) { rects in
-            line.hitRects = rects
+            let viewport = CGRect(x: 0, y: 0, width: line.viewportWidth, height: Layout.panelHeight)
+            line.hitRects = rects.reduce(into: [:]) { result, entry in
+                let clipped = entry.value.intersection(viewport)
+                if !clipped.isNull && !clipped.isEmpty { result[entry.key] = clipped }
+            }
         }
     }
 }
@@ -95,7 +144,7 @@ struct Rope: View {
     var body: some View {
         ZStack {
             path.stroke(Color.black.opacity(0.22), lineWidth: 1.4).offset(y: 1.2).blur(radius: 1.2)
-            path.stroke(Color(white: 0.55), lineWidth: 1.2)
+            path.stroke(Color(nsColor: PanelAppearance.rope), lineWidth: 1.4)
             path.stroke(Color.white.opacity(0.45), lineWidth: 0.4).offset(y: -0.35)
         }
         .mask(

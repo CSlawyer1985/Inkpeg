@@ -1,7 +1,8 @@
 import AppKit
 import SwiftUI
+import InkpegCore
 
-/// Click copies; long press edits a draft; drag promises a copy and leaves the card.
+/// Click copies; long press edits a draft; drag shares a copy and leaves the card.
 struct GrabArea: NSViewRepresentable {
     let item: Pegged
     let line: Line
@@ -16,14 +17,26 @@ struct GrabArea: NSViewRepresentable {
         configure(view)
     }
 
+    static func dismantleNSView(_ view: GrabView, coordinator: ()) {
+        view.cancelDragPreparation()
+    }
+
     private func configure(_ view: GrabView) {
         let id = item.id
         let line = line
         let note = line.snapshot.materials.first(where: { $0.id == id })?.source.origin == .note
-        view.setAccessibilityLabel(L(note ? .noteContinue : .copy))
-        view.setAccessibilityHelp(L(.open) + " · " + L(.markup))
-        view.promise = line.snapshot.privacyHidden ? nil : CopyOutProvider(store: line.store, id: id, versionID: item.versionID, suffix: item.url.pathExtension) { [weak line] in line?.snapshot.privacyHidden == false }.provider()
-        view.dragImage = item.thumb
+        view.materialID = id
+        view.isContentAvailable = { !line.snapshot.privacyHidden && line.revealed && line.items.contains { $0.id == id && !$0.falling } }
+        view.setAccessibilityElement(view.isContentAvailable())
+        view.setAccessibilityLabel(view.isContentAvailable() ? line.cardAccessibilityLabel(item) : nil)
+        view.isKeyboardSelected = { line.keyboardID == id && !line.snapshot.privacyHidden }
+        view.setAccessibilityHelp(view.isContentAvailable() ? L(note ? .noteContinue : .copy) + " · " + L(.shelfKeyboardHelp) : nil)
+        view.prepareDrag = { try await line.onPrepareDrag(item) }
+        // Privacy revokes the press reservation even if the shelf is restored
+        // before a suspended provider returns.
+        view.canDrag = { !line.snapshot.privacyHidden && line.pressedID == id }
+        view.onDragError = { line.onError($0) }
+        view.dragImage = view.isContentAvailable() ? item.thumb : nil
         view.singleClickImmediately = note
         view.onClick = { if note { line.onOpenNote(id) } else { line.copy(id) } }
         view.onDoubleClick = { if note { line.onOpenNote(id) } else { line.open(id) } }
@@ -35,7 +48,15 @@ struct GrabArea: NSViewRepresentable {
         view.onTrash = { line.trash(id) }
         view.onDiscard = { line.discard(id) }
         view.onLongPress = { if note { line.onOpenNote(id) } else if item.kind == .image || item.kind == .text { line.markup(id) } }
-        view.onPressChange = { pressed in line.pressedID = pressed ? id : nil }
+        view.onPressChange = { [weak view] pressed in
+            if pressed {
+                line.pressedID = id
+                line.cancelPress = { [weak view] in view?.cancelDragPreparation() }
+            } else if line.pressedID == id {
+                line.pressedID = nil
+                line.cancelPress = nil
+            }
+        }
         view.menuProvider = {
             let menu = NSMenu()
             menu.addItem(ClosureMenuItem(L(.copy)) { line.copy(id) })
@@ -64,14 +85,25 @@ final class GrabView: NSView, NSDraggingSource {
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
     }
-    override func accessibilityPerformPress() -> Bool { onClick(); return true }
+    override func isAccessibilityFocused() -> Bool { isContentAvailable() && isKeyboardSelected() }
+    var isKeyboardSelected: () -> Bool = { false }
+    var materialID: UUID?
+    var isContentAvailable: () -> Bool = { true }
+    func clearAccessibilityContent() {
+        setAccessibilityElement(false); setAccessibilityLabel(nil); setAccessibilityHelp(nil)
+        dragImage = nil
+    }
+    override func isAccessibilityElement() -> Bool { isContentAvailable() && super.isAccessibilityElement() }
+    override func accessibilityPerformPress() -> Bool { guard isContentAvailable() else { return false }; onClick(); return true }
     override func accessibilityPerformShowMenu() -> Bool {
-        guard window != nil else { return false }
+        guard window != nil, isContentAvailable() else { return false }
         menuProvider().popUp(positioning: nil, at: NSPoint(x: bounds.midX, y: bounds.midY), in: self)
         return true
     }
 
-    var promise: NSFilePromiseProvider?
+    var prepareDrag: () async throws -> NSFilePromiseProvider = { throw StoreError.invalidSource }
+    var canDrag: () -> Bool = { true }
+    var onDragError: (Error) -> Void = { _ in }
     var dragImage: NSImage?
     var onClick: () -> Void = {}
     var singleClickImmediately = false
@@ -83,12 +115,22 @@ final class GrabView: NSView, NSDraggingSource {
     var onLongPress: () -> Void = {}
     var onPressChange: (Bool) -> Void = { _ in }
     var menuProvider: () -> NSMenu = { NSMenu() }
+    // The only system side-effect boundary; tests keep the real gesture and
+    // provider lifecycle without starting a system-wide dragging session.
+    var beginSession: (GrabView, [NSDraggingItem], NSEvent) -> Void = { view, items, event in
+        let session = view.beginDraggingSession(with: items, event: event, source: view)
+        session.animatesToStartingPositionsOnCancelOrFail = true
+    }
 
     private var downPoint: NSPoint?
     private var startedDrag = false
     private var holdTimer: Timer?
     private var clickWork: DispatchWorkItem?
     private var didLongPress = false
+    private var dragPreparation: Task<Void, Never>?
+    private var pendingDragEvent: NSEvent?
+    private var preparedProvider: NSFilePromiseProvider?
+    private var gestureGeneration = 0
 
     /// How long you hold before Markup opens. Long enough not to fire on a
     /// slow click, short enough to feel deliberate.
@@ -108,6 +150,7 @@ final class GrabView: NSView, NSDraggingSource {
     }
 
     override func mouseDown(with event: NSEvent) {
+        cancelDragPreparation()
         if isInCross(event) {
             downPoint = nil
             onDiscard()
@@ -122,6 +165,7 @@ final class GrabView: NSView, NSDraggingSource {
         downPoint = event.locationInWindow
         startedDrag = false
         didLongPress = false
+        pendingDragEvent = nil; preparedProvider = nil
         onPressChange(true)
         holdTimer?.invalidate()
         holdTimer = Timer.scheduledTimer(withTimeInterval: Self.holdDuration, repeats: false) { [weak self] _ in
@@ -140,25 +184,59 @@ final class GrabView: NSView, NSDraggingSource {
         onPressChange(false)
     }
 
+    func cancelDragPreparation() {
+        gestureGeneration &+= 1
+        dragPreparation?.cancel(); dragPreparation = nil
+        downPoint = nil
+        pendingDragEvent = nil; preparedProvider = nil
+        endPress()
+    }
+
+    override func cancelOperation(_ sender: Any?) { cancelDragPreparation() }
+
     override func mouseDragged(with event: NSEvent) {
-        guard let start = downPoint, !startedDrag, let promise else { return }
+        guard let start = downPoint, !startedDrag, canDrag() else { return }
         let p = event.locationInWindow
         guard hypot(p.x - start.x, p.y - start.y) > 4, !didLongPress else { return }
-        startedDrag = true
-        clickWork?.cancel(); endPress()
+        clickWork?.cancel()
+        // Stop long-press actions, but retain the native host across await.
+        holdTimer?.invalidate(); holdTimer = nil
+        pendingDragEvent = event
+        guard dragPreparation == nil else { return }
+        let generation = gestureGeneration
+        let prepare = prepareDrag
+        dragPreparation = Task { [weak self] in
+            guard let self else { return }
+            defer {
+                if generation == gestureGeneration {
+                    dragPreparation = nil
+                    endPress()
+                }
+            }
+            do {
+                let provider = try await prepare()
+                try Task.checkCancellation()
+                guard generation == gestureGeneration, downPoint != nil, !startedDrag,
+                      window != nil, canDrag(), let latest = pendingDragEvent else { return }
+                preparedProvider = provider
+                startDrag(with: latest, provider: provider)
+            } catch is CancellationError { }
+            catch { if generation == gestureGeneration && downPoint != nil && canDrag() { onDragError(error) } }
+        }
+    }
 
-        let item = NSDraggingItem(pasteboardWriter: promise)
+    private func startDrag(with event: NSEvent, provider: NSFilePromiseProvider) {
+        startedDrag = true
+        let item = NSDraggingItem(pasteboardWriter: provider)
         item.setDraggingFrame(imageFrame(), contents: dragImage)
-        let session = beginDraggingSession(with: [item], event: event, source: self)
         // Released where nothing accepts it: it flies back to the line.
-        session.animatesToStartingPositionsOnCancelOrFail = true
+        beginSession(self, [item], event)
         GrabView.isDragging = true
         onDragStart()
     }
 
     override func mouseUp(with event: NSEvent) {
-        endPress()
-        if downPoint != nil && !startedDrag && !didLongPress && event.clickCount == 1 {
+        if downPoint != nil && !startedDrag && pendingDragEvent == nil && !didLongPress && event.clickCount == 1 {
             if singleClickImmediately { onClick() }
             else {
                 let work = DispatchWorkItem { [weak self] in self?.onClick() }
@@ -166,7 +244,7 @@ final class GrabView: NSView, NSDraggingSource {
                 DispatchQueue.main.asyncAfter(deadline: .now() + NSEvent.doubleClickInterval, execute: work)
             }
         }
-        downPoint = nil
+        cancelDragPreparation()
         didLongPress = false
     }
 
@@ -182,7 +260,12 @@ final class GrabView: NSView, NSDraggingSource {
     }
 
     func draggingSession(_ session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
+        finishDrag()
+    }
+
+    func finishDrag() {
         GrabView.isDragging = false; startedDrag = false; downPoint = nil
+        pendingDragEvent = nil; preparedProvider = nil
         onDragEnd()
     }
 

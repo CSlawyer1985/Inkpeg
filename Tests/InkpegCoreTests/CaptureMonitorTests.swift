@@ -2,6 +2,19 @@ import XCTest
 @testable import InkpegCore
 
 final class CaptureMonitorTests: XCTestCase {
+    @MainActor
+    func testOversizeCaptureFailsWithoutReadyCallbackOrSourceMutation() async throws {
+        let root = try folder(), incoming = root.appendingPathComponent("oversize.png")
+        let data = try ImageAdmissionTests.fixture()
+        let monitor = CaptureMonitor(), failure = expectation(description: "Over-budget capture rejected")
+        var ready = 0
+        try monitor.start(in: root, onReady: { _ in ready += 1 }, onFailed: { _ in failure.fulfill() })
+        try data.write(to: incoming)
+        await fulfillment(of: [failure], timeout: 7)
+        monitor.stop()
+        XCTAssertEqual(ready, 0)
+        XCTAssertEqual(try Data(contentsOf: incoming), data)
+    }
     private let png = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAKklEQVR4nGOQL11KU8QwasGoBaMWjFowasGoBaMWjFowasGoBaMWDBULAPDL5D2WoNdOAAAAAElFTkSuQmCC")!
     private func folder() throws -> URL {
         let root = URL(fileURLWithPath: "/private/tmp", isDirectory: true).appendingPathComponent("inkpeg-tests-monitor-" + UUID().uuidString, isDirectory: true)

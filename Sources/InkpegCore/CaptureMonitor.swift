@@ -12,7 +12,8 @@ private actor CaptureProbe {
         if taggedOnly && !marked { return nil }
         var decoded = false
         if before.byteCount > 0, let data = try? Data(contentsOf: url), Int64(data.count) == before.byteCount,
-           let source = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetStatus(source) == .statusComplete {
+           (try? ImageAdmission.validate(data)) != nil,
+           let source = CGImageSourceCreateWithData(data as CFData, [kCGImageSourceShouldCache: false] as CFDictionary) {
             let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: 64]
             decoded = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) != nil
         }

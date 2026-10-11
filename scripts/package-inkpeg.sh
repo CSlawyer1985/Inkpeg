@@ -32,12 +32,17 @@ binary="$app_source/Contents/MacOS/Inkpeg"
 }
 version="$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$plist")"
 [[ "$version" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] || exit 2
-[[ "$(lipo -archs "$binary")" == 'arm64' ]] || {
-  printf '%s\n' 'This internal package is validated for arm64 only.' >&2; exit 2;
-}
+arch_list="$(lipo -archs "$binary" | tr ' ' '\n' | sort | tr '\n' ' ')"
+case "$arch_list" in
+  'arm64 x86_64 ') architecture=universal; architecture_label='Apple Silicon（M 系列）＋Intel（x86_64）通用架构' ;;
+  'arm64 ') architecture=arm64; architecture_label='Apple Silicon（M 系列），仅 arm64' ;;
+  'x86_64 ') architecture=x86_64; architecture_label='Intel（x86_64），仅 x86_64' ;;
+  *) printf '%s\n' 'Expected arm64, x86_64, or both; unexpected architecture set.' >&2; exit 2 ;;
+esac
+python3 "$project_root/scripts/release-tools.py" inspect --app "$app_source" --out "$work/bundle-inspection.json"
 "$binary" --check-resources
 stamp="$(TZ=Asia/Shanghai date +%Y%m%d-%H%M%S)"
-[[ -n "$output" ]] || output="$project_root/.build/InkpegReleases/$version-internal-$stamp"
+[[ -n "$output" ]] || output="$project_root/.build/InkpegReleases/$version-preview-$stamp"
 mkdir -p "$(dirname "$output")"
 # Exclusive mkdir: a concurrent run cannot overwrite a completed release.
 mkdir "$output"
@@ -47,7 +52,7 @@ mkdir "$stage"
 ditto --norsrc --noextattr "$app_source" "$stage/Inkpeg.app"
 cp "$project_root/LICENSE" "$stage/LICENSE"
 cp "$project_root/packaging/来源与致谢.txt" "$stage/来源与致谢.txt"
-cp "$project_root/packaging/先读我-安装与使用.txt" "$stage/先读我-安装与使用.txt"
+awk -v label="$architecture_label" '/^通用架构：/ { print "本包架构：" label " · 最低 macOS 14"; next } { print }' "$project_root/packaging/先读我-安装与使用.txt" > "$stage/先读我-安装与使用.txt"
 cp "$project_root/docs/inkpeg/INSTALL.md" "$stage/安装教程.md"
 cp "$project_root/docs/inkpeg/KNOWN-ISSUES.md" "$stage/本版限制.md"
 # Keep attribution with the app even when it is copied out of the disk image.
@@ -55,22 +60,24 @@ cp "$project_root/LICENSE" "$stage/Inkpeg.app/Contents/Resources/LICENSE"
 cp "$project_root/packaging/来源与致谢.txt" "$stage/Inkpeg.app/Contents/Resources/来源与致谢.txt"
 ln -s /Applications "$stage/应用程序"
 cat > "$stage/BUILD-INFO.txt" <<INFO
-Inkpeg $version internal
+Inkpeg $version preview
 Packaged at: $stamp (Asia/Shanghai)
-Architecture: arm64
+Architecture: $architecture ($arch_list)
 Minimum deployment target: macOS 14
 No Developer ID signature or Apple notarization supplied by this packaging step.
 Linker ad hoc signature is not developer identity verification.
-This is an internal test build, not a public 1.0 release.
+This is an preview build, not a public 1.0 release.
 INFO
 "$stage/Inkpeg.app/Contents/MacOS/Inkpeg" --check-resources
-dmg="$output/文夹-Inkpeg-$version-internal-$stamp-arm64.dmg"
-hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version 内部测试" -format UDZO -imagekey zlib-level=9 "$dmg"
+dmg="$output/文夹-Inkpeg-$version-preview-$stamp-$architecture.dmg"
+hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version 预览版" -format UDZO -imagekey zlib-level=9 "$dmg"
 hdiutil verify "$dmg"
 cp "$stage/先读我-安装与使用.txt" "$output/先读我-安装与使用.txt"
 cp "$stage/安装教程.md" "$output/安装教程.md"
 cp "$stage/本版限制.md" "$output/本版限制.md"
 cp "$stage/BUILD-INFO.txt" "$output/BUILD-INFO.txt"
+cp "$work/bundle-inspection.json" "$output/bundle-inspection.json"
+cp "$app_source/Contents/Resources/build-source.json" "$output/build-source.json"
 (cd "$output" && shasum -a 256 "$(basename "$dmg")" > SHA256SUMS.txt)
 printf '%s\n' "Created $dmg" "Checksums: $output/SHA256SUMS.txt"
 # Work files remain in the task's /tmp folder for inspection. No permanent

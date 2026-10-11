@@ -6,6 +6,7 @@ import UniformTypeIdentifiers
 @MainActor
 final class Markup: NSObject, NSSharingServiceDelegate {
     static let shared = Markup()
+    weak var privacyLine: Line?
     private var editing: URL?
     private let resultBuffer = EditResultBuffer()
     private var session: EditSession?
@@ -36,7 +37,14 @@ final class Markup: NSObject, NSSharingServiceDelegate {
         openEditor()
     }
     private func openEditor() {
+        guard privacyLine?.snapshot.privacyHidden != true else { return }
         guard let draft = editing, !editorActive, loadingResults == 0, !saving else { return }
+        do { try ImageAdmission.validate(contentsOf: draft) }
+        catch {
+            failed = true
+            showSaveError(error)
+            return
+        }
         editorActive = true; failed = false
         if let launchEditor { launchEditor(draft); return }
         if let service = NSSharingService(named: NSSharingService.Name("com.apple.MarkupUI.Markup")), service.canPerform(withItems: [draft]) {
@@ -47,8 +55,10 @@ final class Markup: NSObject, NSSharingServiceDelegate {
             let alert = NSAlert()
             alert.messageText = L(.markupFallbackTitle); alert.informativeText = L(.markupFallbackMessage)
             alert.addButton(withTitle: L(.saveCopy)); alert.addButton(withTitle: L(.cancel))
-            let response = alert.runModal()
+            let epoch = privacyLine?.privacyEpoch
+            let response = privacyLine.map { $0.runAlert(alert) } ?? alert.runModal()
             editorActive = false
+            guard privacyLine?.snapshot.privacyHidden != true, privacyLine?.privacyEpoch == epoch else { failed = true; return }
             if response == .alertFirstButtonReturn { Task { await self.receive([draft]) } }
             else { finish(.cancel) }
         }
@@ -81,7 +91,7 @@ final class Markup: NSObject, NSSharingServiceDelegate {
         catch {
             loadingResults -= 1
             guard session?.id == sessionID else { return }
-            failed = true; showSaveError(); return
+            failed = true; showSaveError(error); return
         }
         loadingResults -= 1
         guard editing == target, session?.id == sessionID else { return }
@@ -96,9 +106,28 @@ final class Markup: NSObject, NSSharingServiceDelegate {
         switch item {
             case let url as URL:
                 guard url.isFileURL else { throw StoreError.invalidEdit }
+                let info = try url.resourceValues(forKeys: [.fileSizeKey])
+                guard let size = info.fileSize, size <= 256 * 1024 * 1024 else { throw StoreError.invalidEdit }
+                try ImageAdmission.validate(contentsOf: url)
                 data = try Data(contentsOf: url)
             case let image as NSImage:
-                guard let tiff = image.tiffRepresentation, let rep = NSBitmapImageRep(data: tiff), let png = rep.representation(using: .png, properties: [:]) else { throw StoreError.invalidEdit }
+                // NSImage.size is measured in points and is not a pixel budget.
+                guard !image.representations.isEmpty else { throw ImageAdmissionError.invalidImage }
+                for representation in image.representations {
+                    try ImageAdmission.validate(width: representation.pixelsWide, height: representation.pixelsHigh)
+                }
+                let animated = image.representations.compactMap { $0 as? NSBitmapImageRep }.first {
+                    ($0.value(forProperty: .frameCount) as? NSNumber)?.intValue ?? 1 > 1
+                }
+                let previousFrame = animated?.value(forProperty: .currentFrame)
+                animated?.setProperty(.currentFrame, withValue: 0)
+                defer { if let previousFrame { animated?.setProperty(.currentFrame, withValue: previousFrame) } }
+                let cg: CGImage?
+                if let animated { cg = animated.cgImage }
+                else { cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) }
+                guard let cg,
+                      let png = NSBitmapImageRep(cgImage: cg).representation(using: .png, properties: [:]) else { throw StoreError.invalidEdit }
+                try ImageAdmission.validate(png)
                 data = png
             case let provider as NSItemProvider:
                 guard let type = provider.registeredTypeIdentifiers.first(where: { UTType($0)?.conforms(to: .image) == true }) else { throw StoreError.invalidEdit }
@@ -109,6 +138,7 @@ final class Markup: NSObject, NSSharingServiceDelegate {
                         else { continuation.resume(throwing: StoreError.invalidEdit) }
                     }
                 }
+                try ImageAdmission.validate(data)
             default: throw StoreError.invalidEdit
         }
         guard data.count <= 256 * 1024 * 1024 else { throw StoreError.invalidEdit }
@@ -128,11 +158,13 @@ final class Markup: NSObject, NSSharingServiceDelegate {
             finish(.save(session.workingURL))
         } catch { failed = true; showSaveError() } // Keep the exact returned result and callback for retry.
     }
-    private func showSaveError() {
+    private func showSaveError(_ error: Error? = nil) {
+        guard privacyLine?.snapshot.privacyHidden != true else { return }
         if let reportFailure { reportFailure(); return }
         let alert = NSAlert(); alert.messageText = L(.markupSaveFailed); alert.informativeText = L(.markupSaveRetained)
+        if let imageError = error as? ImageAdmissionError { alert.informativeText += "\n\n" + imageError.localizedDescription }
         alert.addButton(withTitle: L(.retryMarkup)); alert.addButton(withTitle: L(.retryLater))
-        if alert.runModal() == .alertFirstButtonReturn { Task { await retrySaving() } }
+        if (privacyLine.map { $0.runAlert(alert) } ?? alert.runModal()) == .alertFirstButtonReturn { Task { await retrySaving() } }
     }
     private func finish(_ result: EditResult) {
         let callback = completion

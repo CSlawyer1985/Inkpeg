@@ -44,7 +44,7 @@ final class FinalUIPrivacyRaceAuditTests: XCTestCase {
         XCTAssertTrue(line.snapshot.privacyHidden, "A completed text save must not undo a newer hide request")
         let saved = try await store.load(); XCTAssertEqual(saved.materials.first?.versions.count, 2)
     }
-    @MainActor func testSourceSaveCannotUndoHideReceivedDuringStateWrite() async throws {
+    @MainActor func testUnifiedDetailSaveCannotUndoHideReceivedDuringSourceStateWrite() async throws {
         let (root, _, line, id, files) = try await fixture()
         let board = NSPasteboard(name: .init("InkpegFinalUIPrivacy-" + UUID().uuidString))
         let detail = MaterialDetailController(line: line, actions: MaterialActions(line: line, root: root, pasteboard: board), editor: TextEditorController(line: line))
@@ -53,12 +53,15 @@ final class FinalUIPrivacyRaceAuditTests: XCTestCase {
         fields[1].stringValue = "合成来源"
         hideWhileStoreIsSuspended(files, line: line, trigger: "state")
         defer { files.handler = nil; detail.window?.close() }
-        try await detail.saveSource()
+        try await detail.save()
         XCTAssertGreaterThan(files.hits, 0)
         XCTAssertTrue(files.hideObserved, "The later hide request must actually precede save completion")
         XCTAssertTrue(line.snapshot.privacyHidden, "A completed source save must not undo a newer hide request")
         XCTAssertTrue(detail.window?.contentView?.subviews.first?.isHidden == true, "The detail form must remain concealed")
         XCTAssertEqual(detail.window?.title, L(.contentHidden))
+        XCTAssertTrue(fields.allSatisfy { !$0.isEditable && !$0.isSelectable })
+        XCTAssertEqual(fields[1].stringValue, "合成来源")
+        XCTAssertFalse(detail.hasUnsavedChanges)
     }
 }
 

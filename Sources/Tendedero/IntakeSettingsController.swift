@@ -12,6 +12,8 @@ import Combine
     @Published private(set) var captureStatus = ""
     private let service: ClipboardImportService
     private let capture: CaptureFolderCoordinator
+    weak var privacyLine: Line?
+    private(set) var exportPanel: NSSavePanel?
     private var saveRevision = 0
     private var retryPreferences: ClipboardPreference?
     let libraryURL: URL
@@ -22,7 +24,10 @@ import Combine
     @Published private(set) var cleanupBusy = false
     @Published private(set) var cleanupMessage: String?
     @Published private(set) var cleanupFailed = false
+    @Published var page = 0
     @Published var showCleanup = false
+    @Published var selectedCleanupPaths = Set<String>()
+    var selectedCleanupPlan: StorageCleanupPlan? { cleanupPlan?.selecting(selectedCleanupPaths) }
     private let cleanupStore: MaterialStore?
     private let onCleanup: (WorkspaceSnapshot) async -> Void
     private let canClean: () -> Bool
@@ -33,20 +38,22 @@ import Combine
         refresh()
     }
     func previewCleanup() async {
+        let epoch = privacyLine?.privacyEpoch
         guard let cleanupStore, !cleanupBusy else { return }
         cleanupBusy = true; cleanupMessage = nil; cleanupFailed = false
         defer { cleanupBusy = false }
         do {
             guard canClean() else { throw StoreError.invalidSource }
             let plan = try await cleanupStore.previewStorageCleanup()
-            guard canClean() else { throw StoreError.invalidSource }
+            guard privacyLine?.privacyEpoch == epoch, canClean() else { throw StoreError.invalidSource }
             cleanupPlan = plan
-            if plan.targets.isEmpty { cleanupMessage = L(.cleanupEmpty) }
+            selectedCleanupPaths = Set(plan.targets.map(\.relativePath))
+            if plan.targets.isEmpty && plan.stagingInventory.isEmpty { cleanupMessage = L(.cleanupEmpty) }
             else { showCleanup = true }
         } catch { cleanupFailed = true; cleanupMessage = L(.cleanupUnavailable) }
     }
     func confirmCleanup() async {
-        guard let cleanupStore, let plan = cleanupPlan, showCleanup, !cleanupBusy else { return }
+        guard let cleanupStore, let plan = selectedCleanupPlan, !plan.targets.isEmpty, showCleanup, !cleanupBusy else { return }
         cleanupBusy = true; cleanupMessage = nil; cleanupFailed = false
         defer { cleanupBusy = false; showCleanup = false; cleanupPlan = nil }
         do {
@@ -62,8 +69,30 @@ import Combine
         }
         await refreshUsage()
     }
+    func chooseStagingExport(_ target: CleanupTarget) {
+        guard !cleanupBusy, canClean() else { return }
+        let epoch = privacyLine?.privacyEpoch
+        let panel = NSSavePanel(); exportPanel = panel
+        defer { exportPanel = nil }
+        panel.nameFieldStringValue = target.title
+        let response = privacyLine.map { line in line.runModal(panel) { panel.runModal() } } ?? panel.runModal()
+        guard response == .OK, let destination = panel.url, canClean(), privacyLine?.privacyEpoch == epoch else { return }
+        Task { [self] in
+            guard canClean(), privacyLine?.privacyEpoch == epoch else { return }
+            await exportStaging(target, to: destination)
+        }
+    }
+    func exportStaging(_ target: CleanupTarget, to destination: URL) async {
+        guard let cleanupStore, let plan = cleanupPlan, !cleanupBusy, canClean() else { return }
+        cleanupBusy = true; defer { cleanupBusy = false }
+        do {
+            _ = try await cleanupStore.exportStagingCopy(target, from: plan, to: destination)
+            guard canClean() else { return }
+            cleanupFailed = false; cleanupMessage = L(.stagingExportDone)
+        } catch { cleanupFailed = true; cleanupMessage = L(.stagingExportFailed) }
+    }
     func cancelCleanup() { guard !cleanupBusy else { return }; showCleanup = false; cleanupPlan = nil }
-    func hideCleanup() { showCleanup = false; cleanupPlan = nil }
+    func hideCleanup() { exportPanel?.cancel(nil); capture.cancelPrivacyPanel(); showCleanup = false; cleanupPlan = nil }
     static func size(_ bytes: Int64) -> String {
         let formatter = ByteCountFormatter(); formatter.countStyle = .file; formatter.allowsNonnumericFormatting = false
         return formatter.string(fromByteCount: bytes)
@@ -126,7 +155,8 @@ import Combine
 @MainActor final class IntakeSettingsController: NSWindowController {
     let model: IntakeSettingsModel
     private var privacySubscription: AnyCancellable?
-    init(service: ClipboardImportService, capture: CaptureFolderCoordinator, libraryURL: URL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("Inkpeg", isDirectory: true), store: MaterialStore? = nil, line: Line? = nil) {
+    private var settingsContent: NSView?
+    init(service: ClipboardImportService, capture: CaptureFolderCoordinator, libraryURL: URL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("Inkpeg", isDirectory: true), store: MaterialStore? = nil, line: Line? = nil, hotKey: HotKey? = nil) {
         model = IntakeSettingsModel(service: service, capture: capture, libraryURL: libraryURL, store: store,
             canClean: { [weak line] in line?.snapshot.privacyHidden != true }, onCleanup: { [weak line] snapshot in
                 guard let line else { return }
@@ -136,19 +166,37 @@ import Combine
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 576, height: 730), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
         window.title = L(.intakeSettings); window.isReleasedWhenClosed = false
         window.titlebarAppearsTransparent = true
-        window.backgroundColor = .windowBackgroundColor
-        window.minSize = NSSize(width: 500, height: 480)
-        window.contentView = NSHostingView(rootView: IntakeSettingsView(model: model))
+        PanelAppearance.configure(window)
+        // Express the usable minimum in hosted content, so native layout keeps
+        // it across privacy replacement instead of overwriting a window setter.
+        window.contentView = NSHostingView(rootView: IntakeSettingsView(model: model, hotKey: hotKey).frame(minWidth: 500, minHeight: 480))
+        let privacyContent = NSHostingView(rootView: Text(L(.contentHidden))
+            .font(.system(size: 13)).foregroundStyle(.secondary)
+            .frame(minWidth: 500, maxWidth: .infinity, minHeight: 480, maxHeight: .infinity)
+            .background(Color(nsColor: PanelAppearance.paper)))
         super.init(window: window)
+        settingsContent = window.contentView
+        model.privacyLine = line
         if let line {
-            privacySubscription = line.$snapshot.map(\.privacyHidden).removeDuplicates().sink { [weak model] hidden in
-                if hidden { model?.hideCleanup() }
+            privacySubscription = line.$snapshot.map(\.privacyHidden).removeDuplicates().sink { [weak self] hidden in
+                guard let self else { return }
+                if hidden {
+                    self.model.hideCleanup(); window.makeFirstResponder(nil)
+                    if let sheet = window.attachedSheet {
+                        window.endSheet(sheet, returnCode: .cancel)
+                        sheet.orderOut(nil)
+                    }
+                }
+                window.title = L(hidden ? .contentHidden : .intakeSettings)
+                window.representedURL = nil
+                window.contentView = hidden ? privacyContent : self.settingsContent
             }
         }
         window.center()
     }
     required init?(coder: NSCoder) { fatalError("Unavailable") }
-    func present() {
+    func present(page: Int = 0) {
+        model.page = page
         model.refresh(); showWindow(nil); NSApp.activate(ignoringOtherApps: true); window?.makeKeyAndOrderFront(nil)
         Task { await model.refreshUsage() }
     }
@@ -156,16 +204,16 @@ import Combine
 
 private struct IntakeSettingsView: View {
     @ObservedObject var model: IntakeSettingsModel
-    @State private var page = 0
+    var hotKey: HotKey?
     private let spacing: CGFloat = 22
     var body: some View {
         VStack(spacing: 0) {
-            Picker(L(.intakeSettings), selection: $page) {
+            Picker(L(.intakeSettings), selection: $model.page) {
                 Text(L(.settingsIntake)).tag(0); Text(L(.settingsStorage)).tag(1)
             }.pickerStyle(.segmented).labelsHidden().frame(width: 184).padding(.top, 16).padding(.bottom, 8)
             ScrollView {
                 VStack(alignment: .leading, spacing: spacing) {
-                    if page == 0 { intake } else { storage }
+                    if model.page == 0 { intake } else { storage }
                 }.padding(28).frame(maxWidth: .infinity, alignment: .leading)
             }
             Divider()
@@ -180,15 +228,16 @@ private struct IntakeSettingsView: View {
                     Text(L(model.saving ? .settingsSaving : .settingsSaved)).foregroundStyle(.secondary)
                 }
             }.font(.system(size: 12)).padding(.horizontal, 24).padding(.vertical, 14)
-        }.background(Color(nsColor: .windowBackgroundColor))
+        }.background(Color(nsColor: PanelAppearance.paper)).tint(Color(nsColor: PanelAppearance.forest))
             .sheet(isPresented: $model.showCleanup) {
                 if let plan = model.cleanupPlan { CleanupPreviewView(model: model, plan: plan) }
             }
     }
     @ViewBuilder private var intake: some View {
+        if let hotKey { ShortcutSettingsView(hotKey: hotKey) }
         HStack(alignment: .top, spacing: 16) {
-            Image(systemName: "square.on.square").font(.system(size: 19)).foregroundStyle(Color.accentColor)
-                .frame(width: 42, height: 42).background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+            Image(systemName: "square.on.square").font(.system(size: 19)).foregroundStyle(Color(nsColor: PanelAppearance.forest))
+                .frame(width: 42, height: 42).background(Color(nsColor: PanelAppearance.forest).opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
             VStack(alignment: .leading, spacing: 7) {
                 Text(L(.manualInputTitle)).font(.system(size: 14, weight: .semibold))
                 Text(L(.manualInputHelp)).font(.system(size: 13)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
@@ -222,7 +271,7 @@ private struct IntakeSettingsView: View {
                 switchRow(.captureSettingsEnabled, value: Binding(get: { model.captureEnabled }, set: { _ in model.toggleCapture() }))
                 Divider()
                 HStack(spacing: 12) {
-                    Image(systemName: "folder").font(.system(size: 22)).foregroundStyle(Color.accentColor)
+                    Image(systemName: "folder").font(.system(size: 22)).foregroundStyle(Color(nsColor: PanelAppearance.forest))
                     VStack(alignment: .leading, spacing: 5) {
                         Text(model.capturePath == L(.captureNoFolder) ? model.capturePath : URL(fileURLWithPath: model.capturePath).lastPathComponent)
                             .font(.system(size: 13, weight: .medium))
@@ -240,8 +289,8 @@ private struct IntakeSettingsView: View {
     }
     @ViewBuilder private var storage: some View {
         HStack(spacing: 16) {
-            Image(systemName: "archivebox").font(.system(size: 22)).foregroundStyle(Color.accentColor)
-                .frame(width: 48, height: 48).background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+            Image(systemName: "archivebox").font(.system(size: 22)).foregroundStyle(Color(nsColor: PanelAppearance.forest))
+                .frame(width: 48, height: 48).background(Color(nsColor: PanelAppearance.forest).opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
             VStack(alignment: .leading, spacing: 5) {
                 Text(L(.libraryTitle)).font(.system(size: 14, weight: .semibold))
                 Text(model.usage.map { size($0.values.reduce(0, +)) } ?? L(.libraryLoading)).font(.system(size: 25, weight: .medium, design: .rounded))
@@ -306,29 +355,61 @@ private struct CleanupPreviewView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             Label(L(.cleanupPreviewTitle), systemImage: "trash").font(.system(size: 18, weight: .semibold))
-            Text(String(format: L(.cleanupSummary), plan.materialCount, plan.exportCount, IntakeSettingsModel.size(plan.byteCount)))
+            let selected = model.selectedCleanupPlan ?? plan
+            Text(String(format: L(.cleanupSummary), selected.materialCount, selected.exportCount, selected.completedEditCount, IntakeSettingsModel.size(selected.byteCount)))
                 .font(.system(size: 13)).foregroundStyle(.secondary)
+            Text(String(format: L(.stagingSummary), selected.stagingCount)).font(.system(size: 13)).foregroundStyle(.secondary)
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(plan.targets, id: \.relativePath) { target in
                         HStack(spacing: 12) {
+                            Toggle(L(.cleanupConfirm), isOn: Binding(get: { model.selectedCleanupPaths.contains(target.relativePath) }, set: { selected in
+                                if selected { model.selectedCleanupPaths.insert(target.relativePath) } else { model.selectedCleanupPaths.remove(target.relativePath) }
+                            })).labelsHidden().toggleStyle(.checkbox).disabled(model.cleanupBusy)
                             Image(systemName: target.kind == .material ? "doc" : "doc.on.doc").foregroundStyle(.secondary)
-                            Text(target.kind == .material ? target.title : L(.libraryExports)).lineLimit(2)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(target.kind == .material ? target.title : L(target.kind == .completedEdit ? .cleanupCompletedEdits : target.kind == .unownedStaging ? .stagingTitle : .libraryExports)).lineLimit(2)
+                                if target.kind == .unownedStaging { Text(target.title).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle) }
+                            }
                             Spacer(minLength: 16)
                             Text(IntakeSettingsModel.size(target.byteCount)).foregroundStyle(.secondary)
+                            if target.kind == .unownedStaging {
+                                Button(L(.stagingExport)) { model.chooseStagingExport(target) }.disabled(model.cleanupBusy)
+                            }
                         }.font(.system(size: 13)).padding(.vertical, 12)
+                        Divider()
+                    }
+                    ForEach(plan.stagingInventory.filter { $0.disposition != .unowned }, id: \.relativePath) { item in
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(L(item.disposition == .referenced ? .stagingReferenced : .stagingInspect)).font(.system(size: 13))
+                            Text(item.relativePath).font(.system(size: 12)).foregroundStyle(.secondary).textSelection(.enabled)
+                        }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
                         Divider()
                     }
                 }
             }.frame(maxHeight: 240)
+            if let message = model.cleanupMessage { Text(message).font(.system(size: 12)).foregroundStyle(model.cleanupFailed ? Color.red : Color.secondary) }
+            Text(L(.stagingHelp)).font(.system(size: 12)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             Text(L(.cleanupTrashHelp)).font(.system(size: 12)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true).lineSpacing(4)
             HStack {
                 if model.cleanupBusy { ProgressView().controlSize(.small) }
                 Spacer()
                 Button(L(.cancel), action: model.cancelCleanup).keyboardShortcut(.cancelAction).disabled(model.cleanupBusy)
                 Button(L(model.cleanupBusy ? .cleanupWorking : .cleanupConfirm), role: .destructive) { Task { await model.confirmCleanup() } }
-                    .buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction).disabled(model.cleanupBusy)
+                    .buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction).disabled(model.cleanupBusy || selected.targets.isEmpty)
             }
         }.padding(28).frame(width: 500)
+    }
+}
+
+struct ShortcutSettingsView: View {
+    @ObservedObject var hotKey: HotKey
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(L(.shortcutTitle), systemImage: "keyboard").font(.system(size: 14, weight: .semibold))
+            Text(L(hotKey.status.message)).font(.system(size: 12)).foregroundStyle(hotKey.status == .registered ? .secondary : .primary)
+                .fixedSize(horizontal: false, vertical: true)
+            if hotKey.status != .registered { Button(L(.shortcutRetry)) { hotKey.retry() } }
+        }
     }
 }

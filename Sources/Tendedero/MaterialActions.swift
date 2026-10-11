@@ -11,16 +11,23 @@ final class MaterialActions {
     init(line: Line, root: URL, pasteboard: NSPasteboard = .general, write: @escaping (NSPasteboard, NSPasteboardItem) -> Bool = { board, item in
         board.clearContents(); return board.writeObjects([item])
     }) { self.line = line; self.root = root; self.pasteboard = pasteboard; self.write = write }
+    static func copyLabel(for kind: MaterialKind) -> MessageKey { kind == .text ? .copyWithSource : .copy }
+    func dragProvider(_ item: Pegged) async throws -> NSFilePromiseProvider {
+        let epoch = line.privacyEpoch
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
+        let adapter = CopyOutProvider(store: line.store, id: item.id, versionID: item.versionID, suffix: item.url.pathExtension) { [weak line] in line?.permitsPresentation(epoch) == true }
+        return try await adapter.prepareProvider(exportRoot: root)
+    }
     func copy(_ id: UUID, includeSource: Bool = false) async throws {
-        guard !line.snapshot.privacyHidden, let record = line.snapshot.materials.first(where: { $0.id == id }) else { throw StoreError.invalidSource }
+        let epoch = line.privacyEpoch
+        guard line.permitsPresentation(epoch), let record = line.snapshot.materials.first(where: { $0.id == id }) else { throw StoreError.invalidSource }
         let url = try await line.store.payloadURL(of: id, versionID: record.activeVersionID)
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         let board = pasteboard, item = NSPasteboardItem()
         switch record.kind {
         case .image:
-            guard let image = NSImage(contentsOf: url), let tiff = image.tiffRepresentation,
-                  let bitmap = NSBitmapImageRep(data: tiff), let png = bitmap.representation(using: .png, properties: [:]) else { throw StoreError.invalidSource }
-            item.setData(png, forType: .png)
+            let converted = try firstFrameRepresentations(contentsOf: url)
+            item.setData(converted.png, forType: .png)
         case .text:
             var text = try String(contentsOf: url, encoding: .utf8)
             if includeSource {
@@ -29,34 +36,43 @@ final class MaterialActions {
             }
             item.setString(text, forType: .string)
         case .pdf, .file:
-            let export = try await export(id, versionID: record.activeVersionID, suffix: url.pathExtension)
-            guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+            let export = try await export(record, versionID: record.activeVersionID, suffix: url.pathExtension)
+            guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
             item.setString(export.absoluteString, forType: .fileURL)
         }
         item.setString("1", forType: SystemClipboardGateway.ownType)
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         guard write(board, item) else { throw StoreError.unavailableSpace }
         line.copiedID = id
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) { [weak line] in if line?.copiedID == id { line?.copiedID = nil } }
     }
     func open(_ id: UUID) async throws {
-        guard !line.snapshot.privacyHidden, let record = line.snapshot.materials.first(where: { $0.id == id }) else { throw StoreError.invalidSource }
+        let epoch = line.privacyEpoch
+        guard line.permitsPresentation(epoch), let record = line.snapshot.materials.first(where: { $0.id == id }) else { throw StoreError.invalidSource }
         let payload = try await line.store.payloadURL(of: id, versionID: record.activeVersionID)
-        let url = try await export(id, versionID: record.activeVersionID, suffix: payload.pathExtension)
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
+        let url = try await export(record, versionID: record.activeVersionID, suffix: payload.pathExtension)
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         if record.kind == .file { NSWorkspace.shared.activateFileViewerSelecting([url]) }
         else if !NSWorkspace.shared.open(url) { throw StoreError.invalidSource }
     }
     func reveal(_ id: UUID) async throws {
-        guard !line.snapshot.privacyHidden, let record = line.snapshot.materials.first(where: { $0.id == id }) else { throw StoreError.invalidSource }
+        let epoch = line.privacyEpoch
+        guard line.permitsPresentation(epoch), let record = line.snapshot.materials.first(where: { $0.id == id }) else { throw StoreError.invalidSource }
         let payload = try await line.store.payloadURL(of: id, versionID: record.activeVersionID)
-        let url = try await export(id, versionID: record.activeVersionID, suffix: payload.pathExtension)
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
+        let url = try await export(record, versionID: record.activeVersionID, suffix: payload.pathExtension)
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
     func markup(_ id: UUID) async throws {
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+        let epoch = line.privacyEpoch
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
+        if let record = line.snapshot.materials.first(where: { $0.id == id }), record.kind == .image {
+            try ImageAdmission.validate(contentsOf: await line.store.payloadURL(of: id))
+        }
         let session = try await line.store.createDerivedVersion(of: id, kind: .markup)
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         Markup.shared.edit(session, store: self.line.store) { [weak self] result in
             guard let self else { return }
             Task {
@@ -65,8 +81,9 @@ final class MaterialActions {
             }
         }
     }
-    private func export(_ id: UUID, versionID: UUID, suffix: String) async throws -> URL {
-        let destination = root.appendingPathComponent("Exports/" + UUID().uuidString + "/Inkpeg." + suffix)
-        return try await line.store.exportCopy(of: id, versionID: versionID, to: destination)
+    private func export(_ record: MaterialRecord, versionID: UUID, suffix: String) async throws -> URL {
+        let name = ContentStore.suggestedExportFilename(for: record, fileExtension: suffix)
+        let destination = root.appendingPathComponent("Exports/" + UUID().uuidString).appendingPathComponent(name)
+        return try await line.store.exportCopy(of: record.id, versionID: versionID, to: destination)
     }
 }

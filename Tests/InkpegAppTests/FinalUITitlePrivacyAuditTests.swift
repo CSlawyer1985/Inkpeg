@@ -5,7 +5,7 @@ import XCTest
 
 final class FinalUITitlePrivacyAuditTests: XCTestCase {
     @MainActor private func descendants(_ view: NSView) -> [NSView] { [view] + view.subviews.flatMap { descendants($0) } }
-    @MainActor func testActualSaveTitleButtonKeepsLaterHideAndUnsavedSourceInput() async throws {
+    @MainActor func testActualUnifiedSaveKeepsLaterHideAndIncompleteSourceInput() async throws {
         _ = NSApplication.shared
         let root = URL(fileURLWithPath: "/tmp/inkpeg-final-title-synthetic-" + UUID().uuidString)
         let files = FinalUITitleAuditFiles(), store = MaterialStore(root: root, files: files), line = Line(store: store)
@@ -19,7 +19,7 @@ final class FinalUITitlePrivacyAuditTests: XCTestCase {
         let fields = views.compactMap { $0 as? NSTextField }.filter { $0.isEditable }
         let title = "通过真实按钮保存的合成标题"
         fields[0].stringValue = title; fields[1].stringValue = "必须保留的未保存来源"
-        let button = try XCTUnwrap(views.compactMap { $0 as? NSButton }.first { $0.title == L(.saveTitle) })
+        let button = try XCTUnwrap(views.compactMap { $0 as? NSButton }.first { $0.title == L(.saveDetails) })
         var errors = [Error](); detail.onError = { errors.append($0) }
         files.stateWriteHandler = {
             let signal = DispatchSemaphore(value: 0)
@@ -45,7 +45,10 @@ final class FinalUITitlePrivacyAuditTests: XCTestCase {
             try await Task.sleep(nanoseconds: 1_000_000)
         }
         XCTAssertTrue(saved, "The native button must actually commit the requested title")
-        XCTAssertTrue(errors.isEmpty)
+        for _ in 0..<100 where errors.isEmpty { await Task.yield() }
+        XCTAssertEqual(errors.count, 1)
+        XCTAssertEqual(errors.first as? StoreError, .invalidSource)
+        XCTAssertTrue(detail.hasUnsavedChanges)
         XCTAssertGreaterThan(files.hits, 0); XCTAssertTrue(files.hideObserved)
         XCTAssertTrue(line.snapshot.privacyHidden, "A later hide must survive the asynchronous title-save callback")
         XCTAssertTrue(detail.window?.contentView?.subviews.first?.isHidden == true)

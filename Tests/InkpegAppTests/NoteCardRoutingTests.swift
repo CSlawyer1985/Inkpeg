@@ -22,8 +22,12 @@ final class NoteCardRoutingTests: XCTestCase {
         func descendants(_ view: NSView) -> [NSView] { [view] + view.subviews.flatMap(descendants) }
         let cards = descendants(host).compactMap { $0 as? GrabView }
         XCTAssertEqual(cards.count, 2)
-        let note = try XCTUnwrap(cards.first { $0.accessibilityLabel() == L(.noteContinue) })
-        let copy = try XCTUnwrap(cards.first { $0.accessibilityLabel() == L(.copy) })
+        let note = try XCTUnwrap(cards.first { $0.materialID == draft.materialID })
+        let copy = try XCTUnwrap(cards.first { $0.materialID == excerpt.id })
+        XCTAssertEqual(note.accessibilityLabel(), L(.inputText) + " · 合成原创便笺 · " + String(format: L(.shelfPosition), 1, 2))
+        XCTAssertEqual(copy.accessibilityLabel(), L(.inputText) + " · 合成导入摘录 · " + String(format: L(.shelfPosition), 2, 2))
+        XCTAssertEqual(note.accessibilityHelp(), L(.noteContinue) + " · " + L(.shelfKeyboardHelp))
+        XCTAssertEqual(copy.accessibilityHelp(), L(.copy) + " · " + L(.shelfKeyboardHelp))
         var edited = [UUID](), copied = [UUID]()
         line.onOpenNote = { edited.append($0) }; line.onCopy = { copied.append($0) }
         let point = note.convert(NSPoint(x: note.bounds.midX, y: note.bounds.midY), to: nil)

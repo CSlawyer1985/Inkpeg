@@ -1,5 +1,5 @@
-文夹 Inkpeg 0.1.0 内部测试版
-Apple Silicon（M 系列）· 工程最低 macOS 14
+文夹 Inkpeg 0.2.0 预览版（build 2）
+通用架构：Apple Silicon（M 系列）＋Intel（x86_64）· 最低 macOS 14
 未经过 Developer ID 签名和 Apple 公证
 
 安装
@@ -14,8 +14,8 @@ Apple Silicon（M 系列）· 工程最低 macOS 14
 · 小红段：单击记事；右键菜单可粘贴挂入、挂入文件、打开设置。
 · 记事支持 Command＋V；Command＋Return 挂上去，普通 Return 换行。
 · 普通卡片单击复制，记事卡单击继续编辑；右键看来源与副本操作。
-· 微信／Codex 直接拖入粘贴仍待完善，先用复制后 Command＋V。
-· 满绳旧未固定卡目前会取下并保留副本，横向滚动尚未实现；清理前核对清单。
+· 文字拖出提供纯文字，图片提供 PNG／TIFF 和独立副本，普通文件提供副本；Finder 拖放保留。微信／Codex实际接收待验收，可继续用复制后 Command＋V。
+· 满绳后卡片保留，使用触控板左右滚动、Shift＋滚轮或底部左右箭头翻页。旧版本已取下的卡不会自动重挂；清理前核对清单。
 
 存储与清理
 资料库：~/Library/Application Support/Inkpeg/
@@ -30,5 +30,5 @@ Apple Silicon（M 系列）· 工程最低 macOS 14
 卸载只把 app 移到废纸篓，会保留资料。需要移除资料库时先备份，再单独移到废纸篓。
 
 更详细步骤见“安装教程.md”；本版尚未实现与未验收项目见“本版限制.md”。
-无自动更新、无 Intel 包。本机验收 macOS 26.6.2；较旧系统和首次下载新机待测。
+无自动更新。Intel 架构已编译，Intel 实机仍待验收。本机 Apple Silicon／macOS 26.6.2；较旧系统和首次下载新机待测。
 主页：https://chenshi.ai

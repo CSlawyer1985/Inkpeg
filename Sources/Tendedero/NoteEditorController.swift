@@ -43,6 +43,7 @@ import Combine
         subscription = line.$snapshot.map(\.privacyHidden).removeDuplicates().sink { [weak self] in self?.setHidden($0) }
     }
     func openNew(present: Bool = true) async throws {
+        let epoch = line.privacyEpoch
         guard !opening, !hanging, !dismissing, !line.snapshot.privacyHidden else { throw StoreError.operationInProgress }
         if let draft, draft.baseVersionID == nil, !line.snapshot.materials.contains(where: { $0.id == draft.materialID }) { show(present); return }
         try beginOpening(); defer { opening = false; refreshEditability() }
@@ -51,27 +52,29 @@ import Combine
         let recovering = pending.first { draft in !line.snapshot.materials.contains(where: { $0.id == draft.materialID }) }
         let next: NoteDraft
         if let recovering { next = recovering } else { next = try await line.store.createNoteDraft() }
-        try install(next, present: present)
+        try install(next, present: present, epoch: epoch)
     }
     func open(_ id: UUID, present: Bool = true) async throws {
+        let epoch = line.privacyEpoch
         guard !opening, !hanging, !dismissing, !line.snapshot.privacyHidden else { throw StoreError.operationInProgress }
         if draft?.materialID == id { show(present); return }
         try beginOpening(); defer { opening = false; refreshEditability() }
         try await flushAutosave()
-        try install(try await line.store.createNoteDraft(for: id), present: present)
+        try install(try await line.store.createNoteDraft(for: id), present: present, epoch: epoch)
     }
     func resume(_ draft: NoteDraft, present: Bool = true) async throws {
+        let epoch = line.privacyEpoch
         try beginOpening(); defer { opening = false; refreshEditability() }
         try await flushAutosave()
         guard let current = try await line.store.pendingNoteDrafts().first(where: { $0.id == draft.id }) else { throw StoreError.invalidEdit }
-        try install(current, present: present)
+        try install(current, present: present, epoch: epoch)
     }
     private func beginOpening() throws {
         guard !opening, !hanging, !dismissing, !line.snapshot.privacyHidden, !textView.hasMarkedText() else { throw StoreError.operationInProgress }
         opening = true; refreshEditability()
     }
-    private func install(_ draft: NoteDraft, present: Bool) throws {
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+    private func install(_ draft: NoteDraft, present: Bool, epoch: Int) throws {
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         textView.undoManager?.removeAllActions()
         self.draft = draft; pendingText = draft.text; textView.string = draft.text; lastSaveError = nil
         if window == nil { buildWindow() }
@@ -113,16 +116,17 @@ import Combine
         } while hasUnsavedInput
     }
     func hang() async throws {
+        let epoch = line.privacyEpoch
         guard let draft, !opening, !hanging, !dismissing, !line.snapshot.privacyHidden else { throw StoreError.invalidEdit }
         guard !textView.hasMarkedText() else { throw StoreError.operationInProgress }
         hanging = true; refreshEditability()
         defer { hanging = false; refreshEditability() }
         try await flushAutosave()
-        guard !line.snapshot.privacyHidden else { throw StoreError.invalidSource }
+        guard line.permitsPresentation(epoch) else { throw StoreError.invalidSource }
         var snapshot = try await line.store.publishNoteDraft(draft.id, visibleCapacity: line.maxItems)
         snapshot.privacyHidden = line.snapshot.privacyHidden
         await line.render(snapshot)
-        self.draft = nil; pendingText = ""; window?.close(); window = nil; onHung()
+        self.draft = nil; pendingText = ""; window?.close(); window = nil; if line.permitsPresentation(epoch) { onHung() }
     }
     private func requestHang() {
         perform { editor in
@@ -146,7 +150,8 @@ import Combine
     func setHidden(_ hidden: Bool) {
         presentationHidden = hidden
         if hidden, draft != nil { pendingText = textView.string; scheduleAutosave() }
-        content?.isHidden = hidden; hiddenLabel?.isHidden = !hidden
+        content?.isHidden = hidden; content?.setAccessibilityHidden(hidden); hiddenLabel?.isHidden = !hidden
+        window?.representedURL = nil
         window?.title = L(hidden ? .contentHidden : .noteTitle)
         titleLabel?.stringValue = L(hidden ? .contentHidden : .noteTitle)
         if hidden { window?.makeFirstResponder(nil) }
@@ -174,19 +179,19 @@ import Combine
         window.isReleasedWhenClosed = false; window.delegate = self
         window.minSize = NSSize(width: 420, height: 320)
         window.titlebarAppearsTransparent = true; window.titleVisibility = .hidden
-        window.backgroundColor = .textBackgroundColor
-        let base = NSView(), body = NSView(), header = NSVisualEffectView(), footer = NSVisualEffectView()
+        PanelAppearance.configure(window)
+        let base = PanelSurface(), body = NSView(), header = NSVisualEffectView(), footer = NSVisualEffectView()
         header.material = .titlebar; header.blendingMode = .withinWindow; header.state = .active
         footer.material = .windowBackground; footer.blendingMode = .withinWindow; footer.state = .active
         let title = NSTextField(labelWithString: L(.noteTitle)); title.font = .systemFont(ofSize: 14, weight: .semibold); titleLabel = title
         let scroll = NSScrollView(); scroll.hasVerticalScroller = true; scroll.autohidesScrollers = true; scroll.borderType = .noBorder
-        scroll.drawsBackground = true; scroll.backgroundColor = .textBackgroundColor
+        scroll.drawsBackground = true; scroll.backgroundColor = PanelAppearance.paper
         textView.isRichText = false; textView.allowsUndo = true
         textView.isVerticallyResizable = true; textView.isHorizontallyResizable = false
         textView.autoresizingMask = [.width]; textView.textContainer?.widthTracksTextView = true
         textView.minSize = .zero; textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         textView.drawsBackground = false; textView.textColor = .labelColor
-        textView.font = .systemFont(ofSize: 17); textView.textContainerInset = NSSize(width: 30, height: 26)
+        PanelAppearance.editor(textView)
         let paragraph = NSMutableParagraphStyle(); paragraph.lineHeightMultiple = 1.7
         textView.defaultParagraphStyle = paragraph
         textView.typingAttributes[.paragraphStyle] = paragraph
@@ -194,7 +199,7 @@ import Combine
         let hint = NSTextField(wrappingLabelWithString: L(.notePlaceholder)); hint.font = .systemFont(ofSize: 17)
         hint.textColor = .placeholderTextColor; hint.setAccessibilityElement(false); placeholder = hint
         let hang = ActionButton(title: L(.noteHang) + "  ⌘↵") { [weak self] in self?.requestHang() }
-        hang.bezelStyle = .rounded; hang.controlSize = .large; hang.bezelColor = .controlAccentColor
+        PanelAppearance.primary(hang)
         hang.keyEquivalent = "\r"; hang.keyEquivalentModifierMask = .command; hangButton = hang
         hang.setAccessibilityLabel(L(.noteHang))
         let hide = ActionButton(title: L(.noteDismiss)) { [weak self] in self?.perform { try await $0.dismiss() } }
@@ -216,7 +221,7 @@ import Combine
             body.topAnchor.constraint(equalTo: header.bottomAnchor), body.leadingAnchor.constraint(equalTo: base.leadingAnchor), body.trailingAnchor.constraint(equalTo: base.trailingAnchor), body.bottomAnchor.constraint(equalTo: base.bottomAnchor),
             footer.bottomAnchor.constraint(equalTo: body.bottomAnchor), footer.leadingAnchor.constraint(equalTo: body.leadingAnchor), footer.trailingAnchor.constraint(equalTo: body.trailingAnchor), footer.heightAnchor.constraint(equalToConstant: 72),
             scroll.topAnchor.constraint(equalTo: body.topAnchor), scroll.leadingAnchor.constraint(equalTo: body.leadingAnchor), scroll.trailingAnchor.constraint(equalTo: body.trailingAnchor), scroll.bottomAnchor.constraint(equalTo: footer.topAnchor),
-            hint.topAnchor.constraint(equalTo: scroll.topAnchor, constant: 28), hint.leadingAnchor.constraint(equalTo: scroll.leadingAnchor, constant: 35), hint.trailingAnchor.constraint(equalTo: scroll.trailingAnchor, constant: -30),
+            hint.topAnchor.constraint(equalTo: scroll.topAnchor, constant: 26), hint.leadingAnchor.constraint(equalTo: scroll.leadingAnchor, constant: 29), hint.trailingAnchor.constraint(equalTo: scroll.trailingAnchor, constant: -30),
             rule.topAnchor.constraint(equalTo: footer.topAnchor), rule.leadingAnchor.constraint(equalTo: footer.leadingAnchor), rule.trailingAnchor.constraint(equalTo: footer.trailingAnchor),
             status.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 24), status.centerYAnchor.constraint(equalTo: footer.centerYAnchor), status.trailingAnchor.constraint(lessThanOrEqualTo: buttons.leadingAnchor, constant: -12),
             statusIcon.widthAnchor.constraint(equalToConstant: 13), statusIcon.heightAnchor.constraint(equalToConstant: 13),

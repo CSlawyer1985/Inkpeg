@@ -43,9 +43,9 @@
 
 "capture.incomplete" = "Image incomplete; pending retry";
 
-"capture.full" = "Shelf full of pinned cards; screenshots pending";
+"capture.full" = "Pinned cards fill the shelf. Take down an unneeded pinned card, then use Retry pending screenshots in the menu.";
 
-"capture.storageLimit" = "Storage limit reached; screenshots pending";
+"capture.storageLimit" = "Storage limit reached; screenshots are pending. Open Storage settings to review safe cleanup, then use Retry pending screenshots in the menu.";
 
 "capture.importFailed" = "Import failed; originals retained, retry available";
 
@@ -74,7 +74,7 @@
 "clipboard.active" = "Automatic clipboard intake enabled";
 "clipboard.paused" = "Clipboard intake paused";
 "clipboard.hidden" = "Privacy hidden: clipboard reads suspended";
-"clipboard.pending" = "Unsaved clipboard materials; intake held, please retry";
+"clipboard.pending" = "Materials are still pending. If the shelf is full, take down an unneeded pinned card; for space or access problems, open settings and check the library. Then use Retry unsaved materials in the menu.";
 "clipboard.unavailable" = "Clipboard settings or workspace unavailable; intake stopped";
 "clipboard.rejected" = "Clipboard not imported: unsupported or over limit";
 "clipboard.pendingQuit" = "Some clipboard materials have not been saved";
@@ -183,10 +183,10 @@
 "library.reveal" = "Show in Finder";
 
 "cleanup.title" = "Clean up copies";
-"cleanup.help" = "Remove unpinned materials taken down from the line and temporary exports older than 24 hours. Hanging materials, pinned items and editing drafts are kept.";
+"cleanup.help" = "Remove unpinned materials taken down from the line, temporary exports older than 24 hours, and completed edit working copies. Hanging materials, pinned items, and pending editing drafts are kept.";
 "cleanup.preview" = "Preview cleanup…";
 "cleanup.previewTitle" = "Confirm cleanup";
-"cleanup.summary" = "Taken-down materials: %d · Temporary exports: %d\nMove %@ out of the library";
+"cleanup.summary" = "Taken-down materials: %d · Temporary exports: %d · Completed edit working copies: %d\nMove %@ out of the library";
 "cleanup.trashHelp" = "Copies move to Trash; originals remain intact. Recover files from Trash and hang them again.\nDisk space is freed only when you empty Trash yourself. The app never empties Trash.";
 "cleanup.confirm" = "Move to Trash";
 "cleanup.working" = "Working…";
@@ -195,3 +195,63 @@
 "cleanup.partial" = "Verified %d items (%@) in Trash; some items failed or could not be verified. Try again.";
 "cleanup.changed" = "Materials changed. Preview cleanup again before confirming.";
 "cleanup.unavailable" = "Cleanup is unavailable. Resolve pending recovery records or preview again later.";
+
+"shelf.previous" = "Previous materials";
+"shelf.next" = "Next materials";
+
+"history.takenDown" = "Taken-down materials";
+"history.help" = "Materials taken down from this line are kept here. Hang them back using their current version.";
+"history.empty" = "No taken-down materials in this group.";
+"history.rehang" = "Hang back";
+"history.undo" = "Undo take down";
+"history.undoFeedback" = "Taken down. Undo is available in the line menu for 8 seconds.";
+"material.pdf" = "PDF";
+"cleanup.completedEdits" = "Completed edit working copies";
+"staging.title" = "Unassigned intake copy";
+"staging.summary" = "Unassigned intake copies selected: %d";
+"staging.help" = "Failed intake copies are kept until you choose what to keep or move to Trash. Export a copy before cleanup if needed. Items requiring inspection or recovery are protected.";
+"staging.referenced" = "Protected recovery copy";
+"staging.inspect" = "Needs inspection — retained";
+"staging.export" = "Export retained copy…";
+"staging.exportDone" = "A retained copy was exported. The staging file remains in the library.";
+"staging.exportFailed" = "Export failed. Choose a new location outside the library and try again.";
+
+"image.pixelLimit" = "This image exceeds the pixel limit. Use a smaller image for preview or editing. The original is retained; you can still open or reveal an unchanged file copy.";
+"image.invalid" = "This image is incomplete or has invalid pixel dimensions. Choose a complete image file. The original is retained.";
+
+"material.saveDetails" = "Save";
+"material.unsavedTitle" = "Save changes to this material?";
+"material.unsavedMessage" = "The title and source have unsaved changes. Save them, discard them, or continue editing.";
+"material.discard" = "Discard";
+"material.continue" = "Continue Editing";
+
+"shelf.keyboardBrowse" = "Browse shelf with keyboard";
+"shelf.keyboardHelp" = "Arrow keys move; Return activates; Shift-F10 opens menu; Escape returns to the previous app.";
+"shelf.position" = "%d of %d";
+
+// Shortcut registration and actionable operation feedback.
+"shortcut.active" = "Control–Option–T is ready. You can also open the shelf from the menu.";
+"shortcut.conflict" = "Control–Option–T is already in use. Open the shelf from the menu; release this shortcut in the other app, then retry.";
+"shortcut.failed" = "Control–Option–T could not be registered. Open the shelf from the menu and retry registration.";
+"shortcut.retry" = "Retry shortcut registration";
+"shortcut.title" = "Global shortcut · Control–Option–T";
+"feedback.capacity" = "Capacity or free space is insufficient. Open Storage settings, review safe cleanup, or take down an unneeded pinned card; then repeat the action.";
+"feedback.sourceChanged" = "The source changed or is no longer available. Your existing copy is kept. Select the current source again with Import Files, then repeat the action.";
+"feedback.permission" = "Access was denied. Open settings and check the library folder in Finder or choose the capture folder again; then repeat the action.";
+"feedback.path" = "The folder or file is unavailable. Open settings to locate the library or choose the capture folder again; then repeat the action.";
+"feedback.busy" = "Another operation is still running. Wait for it to finish, then repeat this action. No second operation was started.";
+"feedback.recovery" = "This action could not finish. Review retained drafts and pending work before retrying; existing materials are kept.";
+
+"privacyHide" = "Hide all content";
+
+"privacyShow" = "Show content";
+
+"privacySaveFailed" = "Content remains hidden. Privacy could not be saved. Retry before quitting.";
+
+"privacyRetry" = "Retry saving privacy";
+
+"privacyExternalBoundary" = "Content already opened in other apps cannot be hidden.";
+
+"note.redRopeEntryHint" = "Click the red rope to write a note";
+
+"material.quitPending" = "Wait for saving to finish, or return to material details to save or discard your changes before quitting. If content is hidden, show it first.";

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f7f7f2"><title>安装与升级 · 文夹 Inkpeg</title><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><link rel="canonical" href="https://inkpeg.chenshi.ai/install.html"></head>
+<body>
+<header class="site-header wrap"><a class="brand" href="index.html"><img src="assets/mark.svg" alt="" width="32" height="32"><span>文夹<span class="brand-en">Inkpeg</span></span></a><a class="text-link" href="index.html#download">返回下载页 ↗</a></header>
+<main class="install-page wrap">
+<p class="eyebrow">把第一份材料，安稳地挂在手边。</p><h1>安装与升级</h1>
+<p>适用 0.2.0 预览包（build 2）。macOS 14 及以上，通用包包含 Apple Silicon（M 系列）和 Intel 架构。请以下载文件名及包内 BUILD-INFO 为准。</p>
+<div class="install-callout"><p>当前包尚无 Developer ID 签名与 Apple 公证。Intel 实机、较旧系统和首次下载的新机仍待验收。先确认包的来源，再决定是否安装。</p></div>
+<nav class="install-nav" aria-label="安装章节"><a href="#first-install">首次安装</a><a href="#security">首次打开</a><a href="#upgrade">升级与回退</a><a href="#limits">本版限制</a></nav>
+<section id="first-install" aria-labelledby="first-title"><h2 id="first-title">首次安装</h2><ol><li>从下载页取得 DMG 和同版 <a href="downloads/SHA256SUMS.txt" download>SHA-256 校验文件</a>。确认来自开发者；校验值只能核对一致性，不能替代来源判断。</li><li>打开 DMG，先阅读包内说明，将 Inkpeg.app 拖到“应用程序”。没有该目录写入权限时，可复制到个人主目录的“应用程序”。</li><li>从“应用程序”打开文夹。不要直接从 DMG 运行，也不要同时启动两个副本。安装完成后可以弹出 DMG。</li><li>文夹位于屏幕上方，默认没有 Dock 图标。鼠标靠近菜单栏，或按 ⌃⌥T 显示、隐藏。点击绳上的小红段记事，⌘Return 挂上去。</li></ol></section>
+<section id="security" aria-labelledby="security-title"><h2 id="security-title">系统阻止首次打开时</h2><p>如果提示“无法验证开发者”或“Apple 无法检查是否包含恶意软件”，确认来源与校验值后，按 <a href="https://support.apple.com/zh-cn/102445" target="_blank" rel="noopener noreferrer">Apple 官方的安全打开 App 说明 ↗</a>操作：</p><ol><li>尝试打开已复制到“应用程序”的 Inkpeg.app，关闭提醒。</li><li>进入“系统设置 → 隐私与安全性”，找到本次被阻止的文夹／Inkpeg，选择“仍要打开”，再自行确认。</li></ol><p>这是对这一个应用的确认，不需要关闭全局安全检查。若提示“已损坏”、检测到恶意软件，或找不到“仍要打开”，先停止并核对来源、同版校验值与系统提示；不要直接认定是签名问题。单位管理的设备请联系管理员。</p></section>
+<section id="upgrade" aria-labelledby="upgrade-title"><h2 id="upgrade-title">从旧版升级</h2><ol><li>等待记事保存完成，处理未保存编辑和待恢复提示，再从文夹菜单退出。不要同时运行新旧版本。</li><li>退出后，完整备份 <code>~/Library/Application Support/Inkpeg/</code>，另存带日期的副本；不要只备份 state.json。可在访达按 ⇧⌘G 输入路径。</li><li>保留旧 App 供回退，将原位置旧 App 移到废纸篓，再把新版拖入“应用程序”。资料库保留在原处。</li><li>启动新版，检查卡片、草稿与接收设置。本版没有自动更新功能。</li></ol><p>需要回退时，先退出新版再换回保留的旧 App。旧版能否读取后续版本资料库以对应版本说明为准。恢复备份前先保护新增材料；同名资料库已存在时，停止，不直接覆盖或合并。</p></section>
+<section id="limits" aria-labelledby="limits-title"><h2 id="limits-title">使用前应知道</h2><ul><li>微信、Codex 等输入框的真实拖入接收仍待验收；不接收时，可用“复制 → 目标应用 ⌘V”。网页交互桌面仅演示操作，不调用本机应用。</li><li>Intel、较旧系统、多屏和首次安装仍需实测，编译支持不等于实机验收。</li><li>完整事项、历史列表和双栏对照尚未实现。自动剪贴板接收和截图目录监听按需开启。</li><li>取下卡片会保留副本；清理先预览再确认，移入系统废纸篓。不要在应用运行时操作资料库，不自动清空废纸篓。</li></ul><p><a href="downloads/本版限制.md" download>下载完整限制</a> · <a href="downloads/安装教程.md" download>下载离线安装说明</a></p></section>
+<a class="text-link" href="index.html#download">返回下载文夹 →</a>
+</main></body></html>

@@ -3,6 +3,9 @@ import InkpegCore
 
 @MainActor
 final class CaptureFolderCoordinator {
+    weak var privacyLine: Line?
+    private(set) var folderPanel: NSOpenPanel?
+    func cancelPrivacyPanel() { folderPanel?.cancel(nil) }
     private let store: MaterialStore
     private let watcher = ScreenshotWatcher()
     private var scopedFolder: URL?
@@ -33,12 +36,17 @@ final class CaptureFolderCoordinator {
         }
     }
     func chooseFolder() {
-        let panel = NSOpenPanel()
+        guard privacyLine?.snapshot.privacyHidden != true else { return }
+        let epoch = privacyLine?.privacyEpoch
+        let panel = NSOpenPanel(); folderPanel = panel
+        defer { folderPanel = nil }
         panel.title = L(.chooseCaptureFolder)
         panel.canChooseFiles = false; panel.canChooseDirectories = true; panel.allowsMultipleSelection = false
         NSApp.activate(ignoringOtherApps: true)
-        guard panel.runModal() == .OK, let folder = panel.url else { return }
+        let response = privacyLine.map { line in line.runModal(panel) { panel.runModal() } } ?? panel.runModal()
+        guard response == .OK, let folder = panel.url, privacyLine?.snapshot.privacyHidden != true, privacyLine?.privacyEpoch == epoch else { return }
         Task {
+            guard self.privacyLine?.snapshot.privacyHidden != true, self.privacyLine?.privacyEpoch == epoch else { return }
             do {
                 let values = try folder.resourceValues(forKeys: [.volumeIsLocalKey, .isDirectoryKey, .isSymbolicLinkKey])
                 guard values.volumeIsLocal == true, values.isDirectory == true, values.isSymbolicLink != true else { throw StoreError.invalidPath }

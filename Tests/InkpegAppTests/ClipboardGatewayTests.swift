@@ -6,6 +6,24 @@ import InkpegCore
 
 final class ClipboardGatewayTests: XCTestCase {
     @MainActor
+    func testOversizeAndTruncatedImagesRejectBothNativeBytesAndFileURLs() throws {
+        let board = NSPasteboard(name: .init("InkpegClipboardBudget-" + UUID().uuidString))
+        let gateway = SystemClipboardGateway(pasteboard: board)
+        for bytes in [try ImageBudgetFixtures.encoded(), Data(try ImageBudgetFixtures.encoded(4096).dropLast(12))] {
+            let item = NSPasteboardItem(); item.setData(bytes, forType: .png)
+            board.clearContents(); XCTAssertTrue(board.writeObjects([item]))
+            XCTAssertThrowsError(try gateway.readSnapshot())
+            let source = URL(fileURLWithPath: "/tmp/inkpeg-clipboard-budget-" + UUID().uuidString + ".bin")
+            try bytes.write(to: source)
+            board.clearContents(); board.setString(source.absoluteString, forType: .fileURL)
+            XCTAssertThrowsError(try gateway.readSnapshot())
+            XCTAssertEqual(try Data(contentsOf: source), bytes)
+        }
+        let item = NSPasteboardItem(); item.setData(try ImageBudgetFixtures.encoded(4096), forType: .png)
+        board.clearContents(); XCTAssertTrue(board.writeObjects([item]))
+        XCTAssertEqual(try gateway.readSnapshot().requests.count, 1)
+    }
+    @MainActor
     func testFilePriorityDoesNotReadOversizedAuxiliaryTextItem() throws {
         let board = NSPasteboard(name: .init("InkpegClipboardPriority-" + UUID().uuidString))
         let source = URL(fileURLWithPath: "/tmp/inkpeg-priority-" + UUID().uuidString + ".txt")

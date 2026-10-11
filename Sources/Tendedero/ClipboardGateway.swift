@@ -1,6 +1,7 @@
 import AppKit
 import ImageIO
 import InkpegCore
+import UniformTypeIdentifiers
 
 @MainActor final class SystemClipboardGateway: ClipboardGateway {
     static let ownType = NSPasteboard.PasteboardType("local.inkpeg.owned-copy")
@@ -36,16 +37,17 @@ import InkpegCore
                       url.host == nil || url.host == "" || url.host == "localhost" else { throw StoreError.invalidPath }
                 let values = try url.resourceValues(forKeys: [.volumeIsLocalKey, .isRegularFileKey, .isSymbolicLinkKey])
                 guard values.volumeIsLocal == true, values.isRegularFile == true, values.isSymbolicLink != true else { throw StoreError.invalidSource }
+                if UTType(filenameExtension: url.pathExtension)?.conforms(to: .image) == true ||
+                    CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary)
+                        .flatMap(CGImageSourceGetType).flatMap({ UTType($0 as String) })?.conforms(to: .image) == true {
+                    try ImageAdmission.validate(contentsOf: url)
+                }
                 files.append(.file(url, .clipboard))
                 continue
             }
             if let type = imageTypes.first(where: { item.types.contains($0) }) {
-                guard let data = item.data(forType: type), data.count <= ClipboardLimits.imageBytes,
-                      let source = CGImageSourceCreateWithData(data as CFData, nil),
-                      let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
-                      let width = (props[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue,
-                      let height = (props[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue,
-                      width > 0, height > 0, width <= ClipboardLimits.imagePixels / height else { throw StoreError.invalidSource }
+                guard let data = item.data(forType: type), data.count <= ClipboardLimits.imageBytes else { throw StoreError.invalidSource }
+                try ImageAdmission.validate(data)
                 guard data.count <= ClipboardLimits.batchBytes - bytes else { throw StoreError.budgetExceeded }
                 bytes += data.count
                 images.append(.imageData(data, SourceRecord(origin: .clipboard)))

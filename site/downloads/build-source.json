@@ -1,0 +1,322 @@
+{
+  "schema": 1,
+  "head": "2c6048f279e24c06a385da374ca8a5bf06883ea0",
+  "dirty": true,
+  "sha256": "4ba6e89b661cd444b12e618a28265c2636ba03a1c7047dea46a782cef213bb98",
+  "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
+  "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.",
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "7a1c1e644e9c6cf19afde4c3ca9e0952cbc9acb5d3a26954c69b6fa76eaa303b"
+    },
+    {
+      "path": "Package.swift",
+      "sha256": "b7edc77bb35ac3c4db580414680cf73e05f3d3225defa83e4b120faa8182d7f9"
+    },
+    {
+      "path": "Sources/InkpegCore/CaptureIntake.swift",
+      "sha256": "ca5bfdf2a57e2576a172807314ae75d6fede6a0731f9058f21d445634cc48963"
+    },
+    {
+      "path": "Sources/InkpegCore/CaptureMonitor.swift",
+      "sha256": "13d7f9319864e1eb3f987b6f55a9b9901e91c8b685e9f512b3f4c5bdbfd8004e"
+    },
+    {
+      "path": "Sources/InkpegCore/ClipboardImport.swift",
+      "sha256": "05821b95893909921d18cd16bad465f8f42df3a269f88061bf9cbf17e2a82c1d"
+    },
+    {
+      "path": "Sources/InkpegCore/ClipboardPreference.swift",
+      "sha256": "b0f28ca0836422d5380651a31b8472c0c7d9ec68c342346ac87a1fca48665e51"
+    },
+    {
+      "path": "Sources/InkpegCore/ContentStore.swift",
+      "sha256": "bf49f7c87425d6bd1ee8b6c1d72f2c8932c8216402b1bbbf424ccc25e6cb7a0e"
+    },
+    {
+      "path": "Sources/InkpegCore/DirectoryObservation.swift",
+      "sha256": "ae8d999746fc26c71850d518b48aa89d7f2df21cb103227b61fc101ef4560d4d"
+    },
+    {
+      "path": "Sources/InkpegCore/EditResultBuffer.swift",
+      "sha256": "cbdbe2b6801a3cd23a4f721fcb7e3422c20ba660497851f354caf0d9da738ae3"
+    },
+    {
+      "path": "Sources/InkpegCore/FileOperations.swift",
+      "sha256": "a124059703580cc010ace6b7ca2acaf223d4e0c98e383bf5d8361994918969ca"
+    },
+    {
+      "path": "Sources/InkpegCore/ImageAdmission.swift",
+      "sha256": "2a2b61311e3bfd31b760a4ded27cc39c808f941e29ddbea3aa67a69852437eb8"
+    },
+    {
+      "path": "Sources/InkpegCore/Localizer.swift",
+      "sha256": "ca2a3d801ff8adac11680ffcbeb765d9e683c238dbef44915d1f42b11be99a70"
+    },
+    {
+      "path": "Sources/InkpegCore/Material.swift",
+      "sha256": "84b962d3f33a3fc8518f953e04a06b81d09d7ad8aa5b3b3ad32f303b8ca80ef8"
+    },
+    {
+      "path": "Sources/InkpegCore/MaterialStore.swift",
+      "sha256": "b3e07d7cf02a11474e2b39587d333e69b28a3f87e7be87a98008dcf51ddf1a50"
+    },
+    {
+      "path": "Sources/InkpegCore/NoteDraft.swift",
+      "sha256": "e43dad5aa65692e73a79a54668d83b86486852e5fb55d9fadcc037680cedc74e"
+    },
+    {
+      "path": "Sources/InkpegCore/ResourceBundleLocator.swift",
+      "sha256": "e60f205693f5629d1f45bf472f0c91b04e6106e49eac59503b3b5b2490b0410e"
+    },
+    {
+      "path": "Sources/InkpegCore/Resources/en.lproj/Localizable.strings",
+      "sha256": "6a8bcc070bc89a867cfdcb21f640652d83e44de5931792d568fb5ce4bdc42373"
+    },
+    {
+      "path": "Sources/InkpegCore/Resources/es.lproj/Localizable.strings",
+      "sha256": "77eb85044b3e1bce75c5c93787ae9e84f012e1a4093617faeb103ca3ab20755d"
+    },
+    {
+      "path": "Sources/InkpegCore/Resources/zh-Hans.lproj/Localizable.strings",
+      "sha256": "fb42ad0b412266925a8b23aecdce99c3e7609c13ce1c5681cb6d152e31b3a6e7"
+    },
+    {
+      "path": "Sources/InkpegCore/ShelfPolicy.swift",
+      "sha256": "d565f6a0856499dfd0ce2d26a42d988be843077b6bfcf2f8942a901cbec9554f"
+    },
+    {
+      "path": "Sources/InkpegCore/SourceFormatter.swift",
+      "sha256": "db0999078b8e9a378361664a24cca73370c5bd3469f3a482562e5c0afe6d29c3"
+    },
+    {
+      "path": "Sources/InkpegCore/StartupOptions.swift",
+      "sha256": "89faa54d6dbeccd69bff9a4aac436c06121bd02ce8c673e7fca46a938d2b4b8e"
+    },
+    {
+      "path": "Sources/InkpegCore/StorageCleanup.swift",
+      "sha256": "389c154d704a15f13b296d5cb3ff5476ee02e8ff4ab7cb77aa2de5544a22880b"
+    },
+    {
+      "path": "Sources/InkpegCore/StoreJournal.swift",
+      "sha256": "25e6cefb60b1f354b70f94c0e0a1d9259d1a65116f1094cf2c144ea00f7ea153"
+    },
+    {
+      "path": "Sources/InkpegCore/WorkspaceSnapshot.swift",
+      "sha256": "5cbfb14d8a09e64216cd9d802b612a236ea24ee441d0ae00ce243e0b1affdd01"
+    },
+    {
+      "path": "Sources/Tendedero/AppDelegate.swift",
+      "sha256": "43b3556df32de4320556e7f3ac59b48a59a644e6a2780e25fb8614e0a93a583a"
+    },
+    {
+      "path": "Sources/Tendedero/AppEnvironment.swift",
+      "sha256": "e1f223375fe42f64af56d31d9f2e42c7cd8844d5136e36487d54b357f9b0b75b"
+    },
+    {
+      "path": "Sources/Tendedero/CaptureFlight.swift",
+      "sha256": "17092e39252b59aff21db2e10581a39e1d5173e546d973a6fe2dcca036b91946"
+    },
+    {
+      "path": "Sources/Tendedero/CaptureFolderCoordinator.swift",
+      "sha256": "981ba41a9a4adff3955ff41a25de39a0c84b11b1d3edfc54880383e91a8a615b"
+    },
+    {
+      "path": "Sources/Tendedero/ClipboardGateway.swift",
+      "sha256": "2bb4e14a3b72946fcf3d6bcab2e50e4507312b29700a728cf765e02bfec057cf"
+    },
+    {
+      "path": "Sources/Tendedero/ClipboardStatus.swift",
+      "sha256": "d7a2350353a886f5bebd5618777243777442dc9a51292d2068d1021c06dff0fb"
+    },
+    {
+      "path": "Sources/Tendedero/CopyOutProvider.swift",
+      "sha256": "a6f4411a88783ef6cde518e1198268d78bd47bed61130eef0eb799f6e5fe2e86"
+    },
+    {
+      "path": "Sources/Tendedero/FullScreen.swift",
+      "sha256": "b0e6245ec567fa45befceb9ad366aadac3856736486c987462b6f16d81772564"
+    },
+    {
+      "path": "Sources/Tendedero/GrabArea.swift",
+      "sha256": "4d9d8f708b292db93fcd7f014c2957f75404537012e9bc1b2bf5c8c41a532b18"
+    },
+    {
+      "path": "Sources/Tendedero/HotKey.swift",
+      "sha256": "764e0adaddcd5415419d2e22299cf17936dba48f25e8a126564d0ab4357a751c"
+    },
+    {
+      "path": "Sources/Tendedero/Inbox.swift",
+      "sha256": "414ed229665a6a39b1fc93a66ee7dba1a38ce298243b7e9654a65d7d3ac82746"
+    },
+    {
+      "path": "Sources/Tendedero/IntakeSettingsController.swift",
+      "sha256": "bf16bc8d77abd541f7776a2d72a5fb076a935448b834930e460698578cf0cacd"
+    },
+    {
+      "path": "Sources/Tendedero/InteractionFeedback.swift",
+      "sha256": "754cc1bb1c762c26513b8b6a7e8ab142b5323e647d26931bca3092da97a89aa9"
+    },
+    {
+      "path": "Sources/Tendedero/Line.swift",
+      "sha256": "57c770941147a0e197256aeaaf216ee17a6148960a00f4a6745aaa2e6cde1be9"
+    },
+    {
+      "path": "Sources/Tendedero/LineHostingView.swift",
+      "sha256": "867db858d4c57c8e8d6534b0bc9922b8dd728a4e9576a68fdef09492b8c14bef"
+    },
+    {
+      "path": "Sources/Tendedero/LineInputView.swift",
+      "sha256": "cbf9f3d037b0018a78b8655c2b00fc30dc229dcefcf312b5b1c3b33da339f604"
+    },
+    {
+      "path": "Sources/Tendedero/LineIntakeController.swift",
+      "sha256": "c1a179f8d6d41aa6bda518f753a060e06742ac3a74d4dd26f72fe92ee457effd"
+    },
+    {
+      "path": "Sources/Tendedero/LinePanel.swift",
+      "sha256": "1fd75ac5a8fa2ddf13aea0cd8bc16f81a42769e484a2f3ab4cbbb67dd4d26431"
+    },
+    {
+      "path": "Sources/Tendedero/LineView.swift",
+      "sha256": "7d95c9a6c2ae675dd75a2052062c5d8c38a253d86bd5d76fb4ed4d12e3fe9b17"
+    },
+    {
+      "path": "Sources/Tendedero/Localization.swift",
+      "sha256": "2fe341dcb2361bba27b81d356aa1b86e082b5141890f50a46c22d7a5a3c872db"
+    },
+    {
+      "path": "Sources/Tendedero/Markup.swift",
+      "sha256": "62866740c3bf7ece16fd223ce6d40317fe029bc7d520cae35dcc74668a0294e6"
+    },
+    {
+      "path": "Sources/Tendedero/MaterialActions.swift",
+      "sha256": "393f47e75d959e4e0d80ebe1a3dcf35f36da1c4237baccfa23827186f2bf0957"
+    },
+    {
+      "path": "Sources/Tendedero/MaterialDetailController.swift",
+      "sha256": "9041340ca2b0906accfdcc626f99f1a98ceaa8dfab72586927771eed26e8e313"
+    },
+    {
+      "path": "Sources/Tendedero/NoteEditorController.swift",
+      "sha256": "6eabe302dd14b270aadb66df2ca6cf32c934c10b3802d88e9335a684c293860d"
+    },
+    {
+      "path": "Sources/Tendedero/PanelAppearance.swift",
+      "sha256": "a0787f9e9481fd27ed2d7ab966310d4096a1a282fbe13607df3fcaaa25df4359"
+    },
+    {
+      "path": "Sources/Tendedero/PeggedView.swift",
+      "sha256": "ed6681fd14e0f075aca5068694a150093e551b9a728f9e4370c209f4be4b4d40"
+    },
+    {
+      "path": "Sources/Tendedero/ScreenshotWatcher.swift",
+      "sha256": "6dc0cefa6871dc9d4e580ba505dd15dd8700ef0fc6b8aef8cd04ccad33da0dac"
+    },
+    {
+      "path": "Sources/Tendedero/TextEditorController.swift",
+      "sha256": "ac8d46a17870279bc54bd9dff19f5dd4be360b5753e5c76f7cda07fce38c27fc"
+    },
+    {
+      "path": "Sources/Tendedero/WorkflowRecoveryController.swift",
+      "sha256": "fbe8d44485ed22eafe75387d157ef923290be2095fa1a26802737606e5e48eb9"
+    },
+    {
+      "path": "Sources/Tendedero/main.swift",
+      "sha256": "ac90b33a20c49ffcf4ce716d674d1cf1f1ea2cbd1b3fad598ac70848f5308647"
+    },
+    {
+      "path": "docs/inkpeg/INSTALL.md",
+      "sha256": "9c5f49c2e9c174ddada94e29efa09bb61f38c07d40b5acc10b906862012cf96b"
+    },
+    {
+      "path": "docs/inkpeg/KNOWN-ISSUES.md",
+      "sha256": "27b0577aca2f746dc1e28362d5077e171cd5c1ee298467723279d30cca9352cc"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.icns",
+      "sha256": "4d70aa62b6e5eb607e6c9d3fdcccd2474b0415feb397673a70e730268974303a"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_128x128.png",
+      "sha256": "362ab8ec4a156fecd1a8ceabffff5bc835d8835b89c7436af92c26560b241b83"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_128x128@2x.png",
+      "sha256": "3438f1d3d2f3f3ffc0b02617745035667eba779375f8f3fa39d873a4601bd2d9"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_16x16.png",
+      "sha256": "a2cb02581fbc9bf7bb2b84fb4594eb5b50b13675267b228f9d60faeb085e1d99"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_16x16@2x.png",
+      "sha256": "8fc53ff44c8fa9d4f192ab53f8ee7ee9d1f1db8db7588c973f07acfde6d4fbb0"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_256x256.png",
+      "sha256": "3438f1d3d2f3f3ffc0b02617745035667eba779375f8f3fa39d873a4601bd2d9"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_256x256@2x.png",
+      "sha256": "33ea42564116366d7c6d9ceceb3e6862d579d9ef7c4eb22c107ab27572ba7443"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_32x32.png",
+      "sha256": "8fc53ff44c8fa9d4f192ab53f8ee7ee9d1f1db8db7588c973f07acfde6d4fbb0"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_32x32@2x.png",
+      "sha256": "5689e89794d13f4b9c38424bdf49a404f5cc7f246c1e705a21523899e0156086"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_512x512.png",
+      "sha256": "33ea42564116366d7c6d9ceceb3e6862d579d9ef7c4eb22c107ab27572ba7443"
+    },
+    {
+      "path": "packaging/brand/Inkpeg.iconset/icon_512x512@2x.png",
+      "sha256": "74f60f8efade0d69fdcbf1f92513cd714928db300c675c2eba76bf2fa9437ff5"
+    },
+    {
+      "path": "packaging/brand/README.md",
+      "sha256": "e906f925cb7c1d7ee198eb70e93d6c99d70e742cd4f13142bfb3754a9faf9e92"
+    },
+    {
+      "path": "packaging/release-version.json",
+      "sha256": "28ca78bf1f90bcebf517d11d30c4928347d5cd2176f16ddb3dcc803f30d922f8"
+    },
+    {
+      "path": "packaging/先读我-安装与使用.txt",
+      "sha256": "687f1dd80db7e44e256479d9fff885064ab832a1e69f9f538da852fae338c565"
+    },
+    {
+      "path": "packaging/来源与致谢.txt",
+      "sha256": "c82e89b689e73381b6862d1c33447c58c53e40f75b585f3a2e86687df10d7dbb"
+    },
+    {
+      "path": "scripts/build-inkpeg.sh",
+      "sha256": "68dca3b02cd7e0c93ab01f353d431c200228279092cbb2a51c5c03e7a718929e"
+    },
+    {
+      "path": "scripts/make-icon.swift",
+      "sha256": "02cf17e0d7149210f2ec97b261ebf468d29dbc9da2c16c21756c28da2ad97e75"
+    },
+    {
+      "path": "scripts/package-inkpeg.sh",
+      "sha256": "cf6a907600beb651e11e499ec0b36c9706b5dd391f8600f4217e3f0d2bfad481"
+    },
+    {
+      "path": "scripts/release-tools.py",
+      "sha256": "d174c424f8afbbebf3cdf21bca9b54df5ba99d3f7ce1521eb729ad5331349b16"
+    },
+    {
+      "path": "scripts/verify-inkpeg.sh",
+      "sha256": "c47f3413cf53ec25fdc02845facb35e2ddf65abe79e107a09d9166d83f16a57b"
+    },
+    {
+      "path": "site/assets/mark.svg",
+      "sha256": "e1cd0a78691519cfd2646a8960d92d117dc3f2255e4da75a97833e80de09c10e"
+    }
+  ]
+}

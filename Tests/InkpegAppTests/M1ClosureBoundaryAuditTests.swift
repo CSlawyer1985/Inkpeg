@@ -18,7 +18,7 @@ final class M1ClosureBoundaryAuditTests: XCTestCase {
         let detail = MaterialDetailController(line: line, actions: MaterialActions(line: line, root: root, pasteboard: board), editor: TextEditorController(line: line))
         return (store, line, detail, ids)
     }
-    @MainActor func testNativeSaveTitleButtonRetainsUnsavedSourceFieldsAndWindow() async throws {
+    @MainActor func testNativeUnifiedSavePersistsTitleAndSourceAndRetainsWindowAndInput() async throws {
         let (store, _, detail, ids) = try await fixture()
         try await detail.open(ids[0], present: false)
         let window = try XCTUnwrap(detail.window)
@@ -30,7 +30,7 @@ final class M1ClosureBoundaryAuditTests: XCTestCase {
         fields[1].stringValue = "未保存来源名称"
         fields[2].stringValue = "https://example.invalid/unsaved"
         fields[4].stringValue = "未保存位置"
-        let button = try XCTUnwrap(views.compactMap { $0 as? NSButton }.first { $0.title == L(.saveTitle) })
+        let button = try XCTUnwrap(views.compactMap { $0 as? NSButton }.first { $0.title == L(.saveDetails) })
         button.performClick(nil)
         var saved = false
         for _ in 0..<80 {
@@ -38,7 +38,13 @@ final class M1ClosureBoundaryAuditTests: XCTestCase {
             if snapshot.materials.first(where: { $0.id == ids[0] })?.title == "保存的标题" { saved = true; break }
             await Task.yield()
         }
-        XCTAssertTrue(saved, "A real native button must invoke the title-save operation")
+        XCTAssertTrue(saved, "A real native button must invoke the unified save operation")
+        // Wait for the second source write, not merely the first title write.
+        for _ in 0..<500 where detail.hasUnsavedChanges { try await Task.sleep(nanoseconds: 1_000_000) }
+        let result = try await store.load()
+        XCTAssertEqual(result.materials.first(where: { $0.id == ids[0] })?.source.manualTitle, "未保存来源名称")
+        XCTAssertEqual(result.materials.first(where: { $0.id == ids[0] })?.source.webURL?.absoluteString, "https://example.invalid/unsaved")
+        XCTAssertFalse(detail.hasUnsavedChanges)
         XCTAssertTrue(detail.window === window)
         XCTAssertEqual(fields[1].stringValue, "未保存来源名称")
         XCTAssertEqual(fields[2].stringValue, "https://example.invalid/unsaved")

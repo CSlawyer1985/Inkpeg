@@ -43,9 +43,9 @@
 
 "capture.incomplete" = "图片尚未写完，已保留待重试";
 
-"capture.full" = "固定卡已占满材料架，新截图待接收";
+"capture.full" = "固定卡片占满了绳子。先取下一张暂不需要的固定卡片，再从菜单重试待处理截图。";
 
-"capture.storageLimit" = "存储预算不足，新截图待接收";
+"capture.storageLimit" = "已达储存上限，截图仍在等待。打开储存设置检查可安全清理的副本，再从菜单重试待处理截图。";
 
 "capture.importFailed" = "导入失败，原件保留，可重试";
 
@@ -74,7 +74,7 @@
 "clipboard.active" = "剪贴板自动接收已开启";
 "clipboard.paused" = "剪贴板自动接收已暂停";
 "clipboard.hidden" = "敏感隐藏中：暂不读取剪贴板";
-"clipboard.pending" = "有未保存的剪贴板材料；接收暂缓，请重试";
+"clipboard.pending" = "材料仍在等待保存。绳子已满时先取下一张暂不需要的固定卡片；空间或访问权限不足时，打开设置检查资料库。处理后从菜单重试未保存材料。";
 "clipboard.unavailable" = "剪贴板设置或工作区不可用；接收已停止";
 "clipboard.rejected" = "当前剪贴板未接收：内容不支持或超出限额";
 "clipboard.pendingQuit" = "仍有尚未保存的剪贴板材料";
@@ -183,10 +183,10 @@
 "library.reveal" = "在 Finder 中显示";
 
 "cleanup.title" = "清理副本";
-"cleanup.help" = "清理已取下且未固定的资料，以及超过 24 小时的临时导出。绳上资料、固定资料和编辑草稿会保留。";
+"cleanup.help" = "清理已取下且未固定的资料、超过 24 小时的临时导出，以及已完成编辑的工作副本。绳上资料、固定资料和待恢复的编辑草稿会保留。";
 "cleanup.preview" = "预览清理…";
 "cleanup.previewTitle" = "确认清理副本";
-"cleanup.summary" = "已取下资料 %d 项 · 临时导出 %d 项\n将从资料库移出 %@";
+"cleanup.summary" = "已取下资料 %d 项 · 临时导出 %d 项 · 已完成编辑的工作副本 %d 项\n将从资料库移出 %@";
 "cleanup.trashHelp" = "这些副本将移入废纸篓，原始文件保留。可以从废纸篓找回文件后重新挂入。\n真正释放磁盘空间需要自行清空废纸篓；应用不会自动清空。";
 "cleanup.confirm" = "移到废纸篓";
 "cleanup.working" = "正在处理…";
@@ -195,3 +195,63 @@
 "cleanup.partial" = "已确认 %d 项（%@）移入废纸篓；部分项目未完成或无法核验，请重试。";
 "cleanup.changed" = "资料已发生变化，请重新预览后再清理。";
 "cleanup.unavailable" = "暂时无法清理。请先处理待恢复记录，或稍后重新预览。";
+
+"shelf.previous" = "向左查看材料";
+"shelf.next" = "向右查看材料";
+
+"history.takenDown" = "已取下";
+"history.help" = "从这条绳子取下的资料仍保存在这里，可按当前版本挂回。";
+"history.empty" = "此分组没有已取下的资料。";
+"history.rehang" = "挂回";
+"history.undo" = "撤销取下";
+"history.undoFeedback" = "已取下，8 秒内可从绳子菜单撤销。";
+"material.pdf" = "PDF";
+"cleanup.completedEdits" = "已完成编辑的工作副本";
+"staging.title" = "未归属接收暂存";
+"staging.summary" = "已选择未归属接收暂存 %d 项";
+"staging.help" = "失败接收的暂存会保留，直到你选择保留或移入废纸篓。需要时可先导出保留副本。需要检查或仍用于恢复的文件受到保护。";
+"staging.referenced" = "恢复所需副本，已保护";
+"staging.inspect" = "需要检查，已保留";
+"staging.export" = "导出保留副本…";
+"staging.exportDone" = "已导出保留副本，暂存仍保留在资料库中。";
+"staging.exportFailed" = "导出失败。请选择资料库外的新位置后重试。";
+
+"image.pixelLimit" = "这张图片超过像素上限。请使用较小的图片进行预览或标注。原件仍保留，可通过打开或在访达中显示导出未改动的文件副本。";
+"image.invalid" = "这张图片不完整或像素尺寸无效。请选择完整的图片文件。原件仍保留。";
+
+"material.saveDetails" = "保存";
+"material.unsavedTitle" = "保存这份材料的修改？";
+"material.unsavedMessage" = "标题或来源有未保存的修改。可保存、放弃修改或继续编辑。";
+"material.discard" = "放弃修改";
+"material.continue" = "继续编辑";
+
+"shelf.keyboardBrowse" = "用键盘浏览文夹";
+"shelf.keyboardHelp" = "方向键移动；回车执行；Shift-F10 打开菜单；Esc 返回先前应用。";
+"shelf.position" = "第 %d 项，共 %d 项";
+
+// Shortcut registration and actionable operation feedback.
+"shortcut.active" = "Control–Option–T 已可用，也可从菜单打开文夹。";
+"shortcut.conflict" = "Control–Option–T 已被占用。可先从菜单打开文夹；在其他应用中释放这个快捷键后，再重试注册。";
+"shortcut.failed" = "Control–Option–T 注册失败。可先从菜单打开文夹，再重试注册快捷键。";
+"shortcut.retry" = "重试注册快捷键";
+"shortcut.title" = "全局快捷键 · Control–Option–T";
+"feedback.capacity" = "容量或可用空间不足。打开储存设置检查可安全清理的副本，或取下一张暂不需要的固定卡片，再执行原操作。";
+"feedback.sourceChanged" = "来源已经变化或无法访问，已有副本仍保留。通过“选择文件”重新选择当前来源，再执行原操作。";
+"feedback.permission" = "访问权限不足。打开设置，在 Finder 中检查资料库文件夹权限，或重新选择截图文件夹，再执行原操作。";
+"feedback.path" = "文件或文件夹无法访问。打开设置定位资料库，或重新选择截图文件夹，再执行原操作。";
+"feedback.busy" = "另一项操作尚未完成。请等待完成后，再执行原操作；本次没有启动第二项操作。";
+"feedback.recovery" = "本次操作未完成，已有材料仍保留。先查看保留的草稿与待处理任务，再决定是否重试。";
+
+"privacyHide" = "一键隐藏内容";
+
+"privacyShow" = "显示内容";
+
+"privacySaveFailed" = "内容仍已遮盖，隐私状态未能保存。请在退出前重试。";
+
+"privacyRetry" = "重试保存隐私状态";
+
+"privacyExternalBoundary" = "已交给其他应用的内容无法隐藏。";
+
+"note.redRopeEntryHint" = "点一下红绳，写下第一条记事";
+
+"material.quitPending" = "请等待保存完成，或返回材料详情保存或放弃修改后再退出。内容已隐藏时，请先恢复显示。";

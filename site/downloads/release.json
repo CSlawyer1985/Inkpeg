@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0",
+  "build": "2",
+  "minimumMacOS": "14.0",
+  "architectures": [
+    "arm64",
+    "x86_64"
+  ],
+  "developerIDSigned": false,
+  "notarized": false,
+  "channel": "preview",
+  "architecture": "universal",
+  "file": "Inkpeg-0.2.0-build2-universal.dmg",
+  "sizeBytes": 2428708,
+  "sha256": "1374936e23c46c876cadfb09e784c7e0c6a4b8578eaed0d48d6e5a6f4573dbc4",
+  "signing": {
+    "binary": "ad-hoc",
+    "bundleInspectionExit": 0,
+    "staplerValidationExit": 65,
+    "note": "No Developer ID identity or notarization supplied. Linker ad-hoc signature is not identity verification."
+  },
+  "intelHardwareVerified": false,
+  "minimumMacOSHardwareVerified": false,
+  "guiInstallationVerified": false,
+  "testRecords": [
+    "verification.json"
+  ],
+  "sourceRecords": "build-source.json",
+  "source": {
+    "head": "2c6048f279e24c06a385da374ca8a5bf06883ea0",
+    "dirty": true,
+    "sha256": "4ba6e89b661cd444b12e618a28265c2636ba03a1c7047dea46a782cef213bb98",
+    "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
+    "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs."
+  }
+}

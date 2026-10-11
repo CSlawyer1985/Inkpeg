@@ -43,9 +43,9 @@
 
 "capture.incomplete" = "Imagen incompleta; pendiente";
 
-"capture.full" = "Estante lleno de tarjetas fijadas; pendiente";
+"capture.full" = "Las tarjetas fijadas llenan la cuerda. Descuelga una que no necesites y reintenta las capturas pendientes desde el menú.";
 
-"capture.storageLimit" = "Límite de almacenamiento; pendiente";
+"capture.storageLimit" = "Límite de almacenamiento alcanzado; capturas pendientes. Abre Almacenamiento para revisar la limpieza segura y reintenta las capturas pendientes desde el menú.";
 
 "capture.importFailed" = "Importación fallida; originales conservados";
 
@@ -74,7 +74,7 @@
 "clipboard.active" = "Recepción automática activada";
 "clipboard.paused" = "Recepción del portapapeles pausada";
 "clipboard.hidden" = "Contenido oculto: lectura del portapapeles suspendida";
-"clipboard.pending" = "Materiales sin guardar; recepción suspendida, reintenta";
+"clipboard.pending" = "Hay materiales pendientes. Si la cuerda está llena, descuelga una tarjeta fijada que no necesites; para problemas de espacio o acceso, abre los ajustes y comprueba la biblioteca. Luego reintenta los materiales sin guardar desde el menú.";
 "clipboard.unavailable" = "Ajustes o espacio no disponible; recepción detenida";
 "clipboard.rejected" = "Portapapeles no importado: formato no admitido o límite excedido";
 "clipboard.pendingQuit" = "Hay materiales del portapapeles sin guardar";
@@ -183,10 +183,10 @@
 "library.reveal" = "Mostrar en Finder";
 
 "cleanup.title" = "Limpiar copias";
-"cleanup.help" = "Limpia materiales retirados sin fijar y exportaciones de más de 24 horas. Conserva materiales colgados, fijados y borradores.";
+"cleanup.help" = "Limpia materiales retirados sin fijar, exportaciones de más de 24 horas y copias de trabajo de ediciones completadas. Conserva materiales colgados, fijados y borradores pendientes de recuperación.";
 "cleanup.preview" = "Revisar limpieza…";
 "cleanup.previewTitle" = "Confirmar limpieza";
-"cleanup.summary" = "Materiales retirados: %d · Exportaciones: %d\nRetirar %@ de la biblioteca";
+"cleanup.summary" = "Materiales retirados: %d · Exportaciones: %d · Copias de trabajo de ediciones completadas: %d\nRetirar %@ de la biblioteca";
 "cleanup.trashHelp" = "Las copias van a la Papelera; se conservan los originales. Recupera los archivos de la Papelera y cuélgalos de nuevo.\nSolo se libera espacio al vaciar la Papelera manualmente. La app nunca la vacía.";
 "cleanup.confirm" = "Mover a la Papelera";
 "cleanup.working" = "Procesando…";
@@ -195,3 +195,63 @@
 "cleanup.partial" = "%d elementos (%@) verificados en la Papelera; algunos fallaron o no se pudieron verificar. Reintenta.";
 "cleanup.changed" = "Los materiales cambiaron. Revisa de nuevo antes de confirmar.";
 "cleanup.unavailable" = "Limpieza no disponible. Resuelve registros de recuperación pendientes o revisa más tarde.";
+
+"shelf.previous" = "Materiales anteriores";
+"shelf.next" = "Materiales siguientes";
+
+"history.takenDown" = "Materiales retirados";
+"history.help" = "Los materiales retirados de esta cuerda se conservan aquí. Vuelve a colgarlos con su versión actual.";
+"history.empty" = "No hay materiales retirados en este grupo.";
+"history.rehang" = "Volver a colgar";
+"history.undo" = "Deshacer retirada";
+"history.undoFeedback" = "Retirado. Puedes deshacerlo en el menú de la cuerda durante 8 segundos.";
+"material.pdf" = "PDF";
+"cleanup.completedEdits" = "Copias de trabajo de ediciones completadas";
+"staging.title" = "Copia de entrada sin asignar";
+"staging.summary" = "Copias de entrada sin asignar seleccionadas: %d";
+"staging.help" = "Las copias de entradas fallidas se conservan hasta que elijas qué guardar o mover a la Papelera. Exporta una copia antes de limpiar si la necesitas. Los archivos que requieren revisión o recuperación están protegidos.";
+"staging.referenced" = "Copia de recuperación protegida";
+"staging.inspect" = "Requiere revisión — conservado";
+"staging.export" = "Exportar copia…";
+"staging.exportDone" = "Se exportó una copia. El archivo temporal permanece en la biblioteca.";
+"staging.exportFailed" = "No se pudo exportar. Elige una ubicación nueva fuera de la biblioteca e inténtalo de nuevo.";
+
+"image.pixelLimit" = "Esta imagen supera el límite de píxeles. Utiliza una imagen más pequeña para la vista previa o la edición. Se conserva el original; puedes abrir o mostrar una copia sin cambios.";
+"image.invalid" = "Esta imagen está incompleta o tiene dimensiones de píxeles no válidas. Elige un archivo de imagen completo. Se conserva el original.";
+
+"material.saveDetails" = "Guardar";
+"material.unsavedTitle" = "¿Guardar los cambios de este material?";
+"material.unsavedMessage" = "El título o la fuente tienen cambios sin guardar. Puedes guardarlos, descartarlos o seguir editando.";
+"material.discard" = "Descartar";
+"material.continue" = "Seguir editando";
+
+"shelf.keyboardBrowse" = "Recorrer el tendedero con el teclado";
+"shelf.keyboardHelp" = "Flechas para mover; Intro para activar; Mayús-F10 abre el menú; Escape vuelve a la app anterior.";
+"shelf.position" = "%d de %d";
+
+// Shortcut registration and actionable operation feedback.
+"shortcut.active" = "Control–Opción–T está disponible. También puedes abrir la cuerda desde el menú.";
+"shortcut.conflict" = "Control–Opción–T ya está en uso. Abre la cuerda desde el menú, libera este atajo en la otra app y vuelve a intentarlo.";
+"shortcut.failed" = "No se pudo registrar Control–Opción–T. Abre la cuerda desde el menú y vuelve a registrar el atajo.";
+"shortcut.retry" = "Reintentar registro del atajo";
+"shortcut.title" = "Atajo global · Control–Opción–T";
+"feedback.capacity" = "No hay suficiente capacidad o espacio libre. Abre Almacenamiento, revisa la limpieza segura o descuelga una tarjeta fijada que no necesites; luego repite la acción.";
+"feedback.sourceChanged" = "La fuente cambió o ya no está disponible. Se conserva tu copia. Selecciona la fuente actual con Importar archivos y repite la acción.";
+"feedback.permission" = "Acceso denegado. Abre los ajustes, comprueba la carpeta de la biblioteca en Finder o selecciona otra vez la carpeta de capturas; luego repite la acción.";
+"feedback.path" = "La carpeta o el archivo no está disponible. Abre los ajustes para localizar la biblioteca o vuelve a elegir la carpeta de capturas; luego repite la acción.";
+"feedback.busy" = "Otra operación sigue en curso. Espera a que termine y repite esta acción. No se inició una segunda operación.";
+"feedback.recovery" = "No se pudo completar la acción. Revisa los borradores conservados y el trabajo pendiente antes de reintentar; los materiales existentes se conservan.";
+
+"privacyHide" = "Ocultar todo el contenido";
+
+"privacyShow" = "Mostrar contenido";
+
+"privacySaveFailed" = "El contenido sigue oculto. No se pudo guardar la privacidad. Reintenta antes de salir.";
+
+"privacyRetry" = "Reintentar guardar privacidad";
+
+"privacyExternalBoundary" = "No se puede ocultar el contenido ya abierto en otras apps.";
+
+"note.redRopeEntryHint" = "Haz clic en la cuerda roja para escribir";
+
+"material.quitPending" = "Espera a que termine el guardado o vuelve a los detalles del material para guardar o descartar los cambios antes de salir. Si el contenido está oculto, muéstralo primero.";

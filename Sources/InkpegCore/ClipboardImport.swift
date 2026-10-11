@@ -216,7 +216,7 @@ public enum ClipboardLimits {
             do {
                 let workspace = try await store.load()
                 guard running, pendingManual || isEnabled, canRead(), !workspace.privacyHidden else { state = isEnabled ? .hidden : .paused; return }
-                let result = try await store.importMaterial(item.request, into: item.matterID, visibleCapacity: capacity(), deduplicateClipboardContent: true, expectedClipboardFile: item.fingerprint)
+                let result = try await store.importMaterial(item.request, into: item.matterID, visibleCapacity: capacity(), deduplicateClipboardContent: true, expectedClipboardFile: item.fingerprint, duplicatePolicy: pendingManual ? .rehangTakenDown : .keepExisting)
                 guard result.disposition != .shelfFull else { state = .pending; return }
                 pending.removeFirst()
                 await onSnapshot(result.snapshot)

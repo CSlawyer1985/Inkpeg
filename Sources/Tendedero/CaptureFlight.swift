@@ -50,6 +50,15 @@ final class CaptureFlight {
     private var completion: () -> Void = {}
 
     private static var current: [CaptureFlight] = []
+    static func cancelAll() {
+        let active = current; current = []
+        for flight in active {
+            flight.timer?.invalidate(); flight.timer = nil
+            flight.photo.contents = nil; flight.container.removeAllAnimations()
+            flight.window.alphaValue = 0; flight.window.orderOut(nil)
+            flight.completion = {}
+        }
+    }
 
     /// - Parameters:
     ///   - from: the captured area, in screen coordinates.
@@ -59,10 +68,7 @@ final class CaptureFlight {
                     completion: @escaping () -> Void) {
         let flight = CaptureFlight(image: image, from: from, to: to, tilt: tilt, screen: screen)
         current.append(flight)
-        flight.completion = { [weak flight] in
-            completion()
-            current.removeAll { $0 === flight }
-        }
+        flight.completion = completion
         flight.run()
     }
 
@@ -74,7 +80,6 @@ final class CaptureFlight {
         flight.falling = true
         flight.duration = 0.55
         current.append(flight)
-        flight.completion = { [weak flight] in current.removeAll { $0 === flight } }
         flight.run()
     }
 
@@ -151,14 +156,15 @@ final class CaptureFlight {
         completion()
         if falling {
             window.orderOut(nil)
+            Self.current.removeAll { $0 === self }
             return
         }
         // The real card fades in underneath; this one fades out over it.
         NSAnimationContext.runAnimationGroup({ ctx in
             ctx.duration = 0.16
             window.animator().alphaValue = 0
-        }, completionHandler: { [window] in
-            MainActor.assumeIsolated { window.orderOut(nil) }
+        }, completionHandler: { [self] in
+            MainActor.assumeIsolated { window.orderOut(nil); Self.current.removeAll { $0 === self } }
         })
     }
 

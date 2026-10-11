@@ -113,7 +113,10 @@ final class IndependentRedRopeAuditTests: XCTestCase {
                 for x in [grab.bounds.minX + 6, grab.bounds.midX, grab.bounds.maxX - 6] {
                     let localY: CGFloat = grab.isFlipped ? 6 : grab.bounds.maxY - 6
                     let point = grab.convert(NSPoint(x: x, y: localY), to: host)
-                    guard host.bounds.contains(point) else { continue }
+                    guard host.bounds.contains(point) else {
+                        XCTAssertNil(hit(host, point), "Cards outside the scrolling viewport must not receive a click")
+                        continue
+                    }
                     let ropeT = (point.x + 20) / (width + 40)
                     let ropeY = Layout.ropeTop + 4 * Layout.sag(width: width) * ropeT * (1 - ropeT)
                     if abs(point.x - rect.midX) <= 17 && rect.contains(point) && abs(point.y - ropeY) <= 3 {
