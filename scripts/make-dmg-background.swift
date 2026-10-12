@@ -1,58 +1,28 @@
-// Draws the background of the Tendedero disk image window.
-// Usage: swift scripts/make-dmg-background.swift out.png [scale]
+// Inkpeg DMG instructions, typeset with the same original product branding.
 import AppKit
-
-let out = CommandLine.arguments.dropFirst().first ?? "background.png"
-let scale = CGFloat(Double(CommandLine.arguments.dropFirst(2).first ?? "1") ?? 1)
-let W: CGFloat = 600, H: CGFloat = 380
-
-func color(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) -> NSColor {
-    NSColor(srgbRed: r / 255, green: g / 255, blue: b / 255, alpha: a)
+let out = CommandLine.arguments[1]
+let scale: CGFloat = 2
+let W: CGFloat = 720, H: CGFloat = 560
+func color(_ hex: UInt32) -> NSColor { NSColor(srgbRed: CGFloat((hex>>16)&255)/255, green: CGFloat((hex>>8)&255)/255, blue: CGFloat(hex&255)/255, alpha: 1) }
+let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(W*scale), pixelsHigh: Int(H*scale), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+rep.size = NSSize(width: W,height: H)
+NSGraphicsContext.saveGraphicsState(); NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+// NSGraphicsContext already uses rep.size to scale the 2x bitmap.
+color(0xf4f1e9).setFill();NSRect(x:0,y:0,width:W,height:H).fill()
+func text(_ value: String,_ x: CGFloat,_ top: CGFloat,_ width: CGFloat,_ size: CGFloat,_ weight: NSFont.Weight = .regular,_ ink: UInt32 = 0x24252a) {
+    let style=NSMutableParagraphStyle();style.lineSpacing=4
+    NSAttributedString(string:value,attributes:[.font:NSFont.systemFont(ofSize:size,weight:weight),.foregroundColor:color(ink),.paragraphStyle:style]).draw(in:NSRect(x:x,y:H-top-64,width:width,height:64))
 }
-
-let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(W * scale), pixelsHigh: Int(H * scale),
-                           bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
-                           colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
-rep.size = NSSize(width: W, height: H)
-NSGraphicsContext.saveGraphicsState()
-NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
-
-// The same soft sky as the icon, kept light so Finder labels stay legible.
-NSGradient(colors: [color(232, 238, 255), color(242, 236, 252), color(255, 238, 236)],
-           atLocations: [0, 0.55, 1], colorSpace: .sRGB)!.draw(in: NSRect(x: 0, y: 0, width: W, height: H), angle: -35)
-
-// A thin line hanging across the top, like the app.
-let line = NSBezierPath()
-line.move(to: NSPoint(x: -10, y: H - 34))
-line.curve(to: NSPoint(x: W + 10, y: H - 34), controlPoint1: NSPoint(x: W * 0.3, y: H - 70), controlPoint2: NSPoint(x: W * 0.7, y: H - 70))
-line.lineWidth = 1.4
-color(130, 134, 150, 0.7).setStroke()
-line.stroke()
-
-// Arrow from the app to Applications.
-let arrow = NSBezierPath()
-arrow.move(to: NSPoint(x: 248, y: 190))
-arrow.line(to: NSPoint(x: 344, y: 190))
-arrow.lineWidth = 2.5
-arrow.lineCapStyle = .round
-color(110, 116, 140, 0.55).setStroke()
-arrow.stroke()
-let head = NSBezierPath()
-head.move(to: NSPoint(x: 334, y: 199))
-head.line(to: NSPoint(x: 346, y: 190))
-head.line(to: NSPoint(x: 334, y: 181))
-head.lineWidth = 2.5
-head.lineCapStyle = .round
-head.lineJoinStyle = .round
-head.stroke()
-
-let style = NSMutableParagraphStyle(); style.alignment = .center
-let text = NSAttributedString(string: "Drag Tendedero to Applications", attributes: [
-    .font: NSFont.systemFont(ofSize: 13, weight: .medium),
-    .foregroundColor: color(80, 84, 100),
-    .paragraphStyle: style,
-])
-text.draw(in: NSRect(x: 0, y: 54, width: W, height: 20))
-
+if let logo=NSImage(contentsOfFile:"packaging/brand/Inkpeg.iconset/icon_128x128@2x.png") { logo.draw(in:NSRect(x:38,y:H-94,width:60,height:60)) }
+text("文夹 Inkpeg",110,32,560,28,.semibold)
+text("安装并开始试用",110,75,560,16,.medium,0x64615a)
+text("双击下方安装助手 · 三步完成首次打开",44,121,640,18,.semibold)
+// Finder icons occupy y=205 and labels below. Do not draw over them.
+let box=NSBezierPath(roundedRect:NSRect(x:34,y:36,width:652,height:232),xRadius:12,yRadius:12);color(0xe9e5db).setFill();box.fill()
+text("①  双击“安装文夹.command”",54,312,620,18,.semibold)
+text("②  若被拦截：系统设置 → 隐私与安全性",54,352,620,18,.medium)
+text("③  点击“仍要打开”，再按系统提示确认“打开”",54,392,620,18,.semibold,0xa34332)
+text("安装完成：鼠标移到屏幕顶部，或按 Control＋Option＋T。",54,449,620,15)
+text("拖入“应用程序”后首次打开，也需要按②③允许。",54,490,620,13,.regular,0x64615a)
 NSGraphicsContext.restoreGraphicsState()
-try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: out))
+try rep.representation(using:.png,properties:[:])!.write(to:URL(fileURLWithPath:out))

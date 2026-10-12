@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "head": "29851e8fc9ab6c10eac60dbfcf79dfe0d23df195",
+  "head": "f0fef25026867d5e64310225faad821f1bfa5b7e",
   "dirty": true,
-  "sha256": "1ef09fe5314902d855ddf1dd6dbf84416d264574098b727f9e99607c2b5f4edd",
+  "sha256": "751ba4812399303612360ddad46baba1c75c2aac3799467dbf8f4224daac95fb",
   "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
-  "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.",
+  "scope": "All Sources files including untracked; packaging/brand, starter-assets and starter-workspace; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.",
   "files": [
     {
       "path": "LICENSE",
@@ -89,6 +89,10 @@
     {
       "path": "Sources/InkpegCore/SourceFormatter.swift",
       "sha256": "db0999078b8e9a378361664a24cca73370c5bd3469f3a482562e5c0afe6d29c3"
+    },
+    {
+      "path": "Sources/InkpegCore/StarterWorkspaceBootstrap.swift",
+      "sha256": "78cce78c1edf64ff5a77a5a825de9a2a3bfd9e630638bb54b07d336971fb86d4"
     },
     {
       "path": "Sources/InkpegCore/StartupOptions.swift",
@@ -224,15 +228,15 @@
     },
     {
       "path": "Sources/Tendedero/main.swift",
-      "sha256": "ac90b33a20c49ffcf4ce716d674d1cf1f1ea2cbd1b3fad598ac70848f5308647"
+      "sha256": "a0428b96079e9b2d637a27065b36bf950d3b90af7ac1e83af5652d6c5a178ddf"
     },
     {
       "path": "docs/inkpeg/INSTALL.md",
-      "sha256": "a0bb23de1850ceb52b263b04688c45d9f0d34263feecfcb33b8e448bfb5addba"
+      "sha256": "ddd77af77bbdecf9b93d2d3ed71d528c00b4c306e571269b9e99d3df863f0f6a"
     },
     {
       "path": "docs/inkpeg/KNOWN-ISSUES.md",
-      "sha256": "dd72b8b826de37a8d888861f90a39401dd20147c7414cd91c31262804d2424de"
+      "sha256": "8a85390fc1a12f2f4f362468c016e5cad6ea25b49ff9940c2e7c686eb3c69ba1"
     },
     {
       "path": "packaging/brand/Inkpeg.icns",
@@ -283,12 +287,48 @@
       "sha256": "fa95915e1cb70659078bc8a5e5f91f0c87b110f96269109f29e4153111d59a3f"
     },
     {
+      "path": "packaging/brand/dmg-background.png",
+      "sha256": "af6f5d3638870123a9fd212f77411f6b88600cc78df5e0c9c13a7e136720959e"
+    },
+    {
       "path": "packaging/release-version.json",
-      "sha256": "3db3fba0dd9b37f8bd3e4a090ae72f0455fd5c1d4d6fb3b587f90cead757b39a"
+      "sha256": "6734e17be9d1f32e92ec129ff538732fab8ec3e5204d5f794f56c4a21c099127"
+    },
+    {
+      "path": "packaging/starter-assets/文夹·产品网页.pdf",
+      "sha256": "bbb587f9bed460886b65b09d3c5b47e787a3acfcd9bc909231a7d0284e9b6403"
+    },
+    {
+      "path": "packaging/starter-assets/文夹·介绍记事.txt",
+      "sha256": "b7c31f71bd965b02c9c01c71b8df963359879e777e8ec58781214dc5efcf0242"
+    },
+    {
+      "path": "packaging/starter-assets/文夹·宣传图.jpg",
+      "sha256": "c96a2d337cbc356a47725a632b2f29978e5b344287ee35a0bc84ca395e36e709"
+    },
+    {
+      "path": "packaging/starter-workspace/Materials/10000000-0000-0000-0000-000000000001/20000000-0000-0000-0000-000000000001.txt",
+      "sha256": "b7c31f71bd965b02c9c01c71b8df963359879e777e8ec58781214dc5efcf0242"
+    },
+    {
+      "path": "packaging/starter-workspace/Materials/10000000-0000-0000-0000-000000000002/20000000-0000-0000-0000-000000000002.jpg",
+      "sha256": "c96a2d337cbc356a47725a632b2f29978e5b344287ee35a0bc84ca395e36e709"
+    },
+    {
+      "path": "packaging/starter-workspace/Materials/10000000-0000-0000-0000-000000000003/20000000-0000-0000-0000-000000000003.pdf",
+      "sha256": "bbb587f9bed460886b65b09d3c5b47e787a3acfcd9bc909231a7d0284e9b6403"
+    },
+    {
+      "path": "packaging/starter-workspace/clipboard-settings.json",
+      "sha256": "a7d82abb5259b5d41384b54aa26aab4f17a89e7a9c6908312bbfcaf0b4e4f083"
+    },
+    {
+      "path": "packaging/starter-workspace/state.json",
+      "sha256": "2b3d376fe9b7847fb22fa6a6a5964654d5a0d470d52e1315bb5805d2e01ba326"
     },
     {
       "path": "packaging/先读我-安装与使用.txt",
-      "sha256": "8a0e0470baf42d85ba411d5d0ddea9fd809a94a9530a1a4cad32fb6f8046fe15"
+      "sha256": "c64bc2ba30e78555967fab10e32ddb531a02f4609f8802568295f028af7d7466"
     },
     {
       "path": "packaging/安装文夹.command",
@@ -300,19 +340,27 @@
     },
     {
       "path": "scripts/build-inkpeg.sh",
-      "sha256": "68dca3b02cd7e0c93ab01f353d431c200228279092cbb2a51c5c03e7a718929e"
+      "sha256": "9386a9559090a26b10afaee45ed64d734d4cd9cf54893b35dd6f9f44a55d02b3"
+    },
+    {
+      "path": "scripts/make-dmg-background.swift",
+      "sha256": "0257c01172ff84ac595012fd57dca4996fd8c67f4f0e80918d9fc6b0e462e5cc"
     },
     {
       "path": "scripts/make-icon.swift",
       "sha256": "fea031602dc334e55c89f10b786ac8a40ba14d9be84b333ac322ab47f7a150b6"
     },
     {
+      "path": "scripts/make-starter-workspace.py",
+      "sha256": "f45c7294243d44d992ff3ea8b04c152081ba76918a91242a7ecba52e68541c50"
+    },
+    {
       "path": "scripts/package-inkpeg.sh",
-      "sha256": "99bde87b5d8097593849702361ca77b33038262e6c3df4776417115e7752dd01"
+      "sha256": "bfb9cca4eb4d06c6a48c372e9c157938af5597aace2c2ef717b01753c11d30ae"
     },
     {
       "path": "scripts/release-tools.py",
-      "sha256": "2c536c42377b867048d86e5900391ef219a3454212ff506af44d64315504a9f4"
+      "sha256": "616108477558ecea1206ad73afc6b6eb3b37058e7c727b00b1ae47ffcded4bcf"
     },
     {
       "path": "scripts/verify-inkpeg.sh",

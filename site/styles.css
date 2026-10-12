@@ -301,3 +301,7 @@ html.reduce-motion .film-teaser{display:none}
 .install-command-box button{margin-top:0}
 
 .steps .install-command-box{grid-column:2;min-width:0}
+
+.terminal-alternative{margin-top:18px;font-size:14px;line-height:1.75}
+.terminal-alternative summary{cursor:pointer}
+.terminal-alternative .install-command-box{min-width:0}

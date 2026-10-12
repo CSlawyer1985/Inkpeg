@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "generation": 0,
+  "materials": [
+    {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "kind": "text",
+      "matterID": "00000000-0000-0000-0000-000000000001",
+      "status": "hanging",
+      "pinned": false,
+      "order": 0,
+      "title": "文夹 · 让眼前的资料，一直在手边",
+      "createdAt": 813463200.0,
+      "source": {
+        "origin": "note",
+        "manualTitle": "文夹产品示例",
+        "webURL": "https://inkpeg.chenshi.ai/",
+        "isManuallyRegistered": false
+      },
+      "versions": [
+        {
+          "id": "20000000-0000-0000-0000-000000000001",
+          "relativePath": "Materials/10000000-0000-0000-0000-000000000001/20000000-0000-0000-0000-000000000001.txt",
+          "sha256": "b7c31f71bd965b02c9c01c71b8df963359879e777e8ec58781214dc5efcf0242",
+          "byteCount": 436,
+          "kind": "original",
+          "createdAt": 813463200.0
+        }
+      ],
+      "originalVersionID": "20000000-0000-0000-0000-000000000001",
+      "activeVersionID": "20000000-0000-0000-0000-000000000001"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "kind": "image",
+      "matterID": "00000000-0000-0000-0000-000000000001",
+      "status": "hanging",
+      "pinned": false,
+      "order": 1,
+      "title": "文夹 · 产品宣传图",
+      "createdAt": 813463200.0,
+      "source": {
+        "origin": "fileSelection",
+        "manualTitle": "文夹产品示例",
+        "webURL": "https://inkpeg.chenshi.ai/",
+        "isManuallyRegistered": false
+      },
+      "versions": [
+        {
+          "id": "20000000-0000-0000-0000-000000000002",
+          "relativePath": "Materials/10000000-0000-0000-0000-000000000002/20000000-0000-0000-0000-000000000002.jpg",
+          "sha256": "c96a2d337cbc356a47725a632b2f29978e5b344287ee35a0bc84ca395e36e709",
+          "byteCount": 76384,
+          "kind": "original",
+          "createdAt": 813463200.0
+        }
+      ],
+      "originalVersionID": "20000000-0000-0000-0000-000000000002",
+      "activeVersionID": "20000000-0000-0000-0000-000000000002"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000003",
+      "kind": "pdf",
+      "matterID": "00000000-0000-0000-0000-000000000001",
+      "status": "hanging",
+      "pinned": false,
+      "order": 2,
+      "title": "文夹 · 产品网页 PDF",
+      "createdAt": 813463200.0,
+      "source": {
+        "origin": "fileSelection",
+        "manualTitle": "文夹产品示例",
+        "webURL": "https://inkpeg.chenshi.ai/",
+        "isManuallyRegistered": false
+      },
+      "versions": [
+        {
+          "id": "20000000-0000-0000-0000-000000000003",
+          "relativePath": "Materials/10000000-0000-0000-0000-000000000003/20000000-0000-0000-0000-000000000003.pdf",
+          "sha256": "bbb587f9bed460886b65b09d3c5b47e787a3acfcd9bc909231a7d0284e9b6403",
+          "byteCount": 4849780,
+          "kind": "original",
+          "createdAt": 813463200.0
+        }
+      ],
+      "originalVersionID": "20000000-0000-0000-0000-000000000003",
+      "activeVersionID": "20000000-0000-0000-0000-000000000003"
+    }
+  ],
+  "matters": [
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "name": "未分组",
+      "order": 0
+    }
+  ],
+  "selectedMatterID": "00000000-0000-0000-0000-000000000001",
+  "privacyHidden": false
+}

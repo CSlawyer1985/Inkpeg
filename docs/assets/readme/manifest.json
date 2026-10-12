@@ -142,5 +142,14 @@
     "width": 1920,
     "height": 1080,
     "frames": 1
+  },
+  "installer.png": {
+    "source": "Final 2.0.0 build 5 DMG opened read-only in Finder on release host",
+    "type": "native-Finder-installer-screenshot",
+    "nativeAppScreenshot": false,
+    "sha256": "906dd175202def91652c40c689dc3d9d182dfd3a2352cfb806cfa10cdd783057",
+    "width": 1440,
+    "height": 1168,
+    "frames": 1
   }
 }

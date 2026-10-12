@@ -1,39 +1,43 @@
-# 2.0.0／build 4 验证
+# 2.0.0／build 5 验证
 
-2026-10-12，针对当前最新源码重新执行完整测试、arm64／x86_64 Release 构建与打包。官网、包内版本与仓库的版本来源统一为 `packaging/release-version.json`。
+2026-10-12，版本来源为 `packaging/release-version.json`。本版加入纯产品示例和实际 Finder 安装背景，并同步官网“仍要打开”步骤。
 
 ## COMMAND + OUTPUT + RESULT
 
 | 命令／操作 | 输出 | 结果 |
 | --- | --- | --- |
-| `scripts/verify-inkpeg.sh <新目录>` | Core 181＋App 210，391 tests、0 failures；两架构构建 exit 0；DMG verify VALID | PASS |
+| `swift test --scratch-path <独立目录>` | Core 190＋App 210，400 tests、0 failures | PASS |
 | `python3 scripts/test-release.py` | 4 tests，OK | PASS |
-| `python3 scripts/test-installer.py` | 11 tests，OK；安装、取消、旧 App 保留、错误 payload／id／链接拒绝、仅目标副本隔离属性处理 | PASS |
-| `scripts/release-tools.py site --app <实际App> --dmg <实际DMG>` | 2.0.0／build 4；2,482,270 bytes；版本、ICNS、资源、源输入 SHA、两个二进制 slice 与最低系统一致 | PASS |
-| 只读挂载实际 DMG；逐文件 SHA 校验；运行包内助手至隔离目录 | 所有文件 OK；安装完成；`Inkpeg resources OK: en, es, zh-Hans` | PASS |
-| `python3 scripts/check-site.py --url <Range服务器> --out <记录>` | 28 checks passed，包括实际拖动／取消、记事、清理、14 视口、触屏、视频音频／章节、完整下载、无 JS 回退 | PASS |
-| `python3 scripts/check-release-site.py --url <Range服务器> --out <记录>` | 5 checks passed；发行元数据、静态下载、简明安装流程、桌面／手机安装区、Pages 文件限制 | PASS |
+| `python3 scripts/test-installer.py` | 11 tests，OK；默认安装、确认／取消、旧 App 保留、错误 payload／id／链接拒绝、仅目标副本隔离属性处理 | PASS |
+| `scripts/build-inkpeg.sh --configuration release --architectures universal --no-sign` | 两架构独立 Release 构建 exit 0；资源和输入 SHA 一致 | PASS |
+| `scripts/package-inkpeg.sh --app <实际App> --output <新目录>` | 最终 DMG verify VALID；5,159,783 bytes | PASS |
+| `scripts/release-tools.py site --app <实际App> --dmg <实际DMG>` | 2.0.0／build 5；ICNS、三份示例、两个二进制 slice、macOS 14 最低系统和源指纹一致 | PASS |
+| 最终 DMG 只读挂载；逐文件 SHA 校验；运行助手至隔离目录 | 3 个可见入口；全部 20 个 App 文件校验通过；安装与资源检查 exit 0 | PASS |
+| 在 Finder 打开最终 DMG 并截图 | 实际显示 Logo、3 个图标、隐私与安全性／仍要打开／打开；背景和文字无遮挡 | PASS |
+| 实际 App 使用独立开发资料根首次启动、再启动 | 每次持续运行 7 秒；均只有记事／图片／PDF 三份示例，自动接收及读取已有剪贴板均关闭 | PASS |
+| `python3 scripts/check-site.py --url <Range服务器> --out <记录>` | 28 checks，包括实际拖动／取消、记事、清理、14 视口、触屏、视频音频／章节、完整下载及无 JS 回退 | PASS |
+| `python3 scripts/check-release-site.py --url <Range服务器> --out <记录>` | 5 checks：版本、真实下载、系统允许步骤、可选命令、桌面／手机及 Pages 文件限制 | PASS |
 
-安装包 SHA-256：`9ba8387f3551e64fb167bfb477b77a0701165b2d85a586230d336c5bc6211f45`。
+安装包 SHA-256：`11ba28d7f45804838c4fd7b2ac811363c418ec209589187f9f567c66a6c8a34f`。
 
-[发行元数据](../../site/downloads/release.json)、[逐文件构建输入](../../site/downloads/build-source.json)和[公开验证摘要](../../site/downloads/verification.json)记录可追溯证据。原始日志留在本机发布备份目录，不推送私密路径或历史工作记录。
+[发行元数据](../../site/downloads/release.json)、[逐文件构建输入](../../site/downloads/build-source.json)和[公开验证摘要](../../site/downloads/verification.json)提供追溯。原始日志与失败候选包保留在本机记录目录，未发布。
+
+## 首次示例与隐私回归
+
+9 项 Starter 专项覆盖新根三种材料、旧目录保护、取下后不重挂、损坏 payload、链接、私密来源路径和模板缺失。新增接收偏好联动用例先复现失败，再修复通过。
+
+初始候选预放 `state.json` 后，旧库迁移规则会开启自动接收。实际启动和独立审查发现此问题；最终模板额外携带经校验的关闭设置，不改变旧库迁移行为。独立 Reviewer 重跑 9 项，并额外验证开启任一接收开关的模板会在新根创建前被拒绝，无未关闭 Findings。
+
+只在根目录不存在时原子发布完整示例。任何已有目录（包括空目录）均保留；移除或取下示例后不重加。样本只来自产品介绍、自己的宣传图及官网下载网页，不含用户历史业务材料、本地来源路径或书签。
 
 ## 验证边界
 
-安装助手由用户显式运行并确认，未修改全局安全设置，也未接触真实应用程序目录或用户资料库。隔离测试不等于全新机器 Gatekeeper 界面验收。尚无 Developer ID 签名或 Apple 公证；linker ad-hoc 签名不是开发者身份认证。
+Finder 背景截图是真实安装包窗口；README 的其他交互图来自网站组件和宣传片，非原生应用功能截图。隔离安装和本机启动不等于全新机器 Gatekeeper 界面验收。没有 Developer ID 签名／Apple 公证；linker ad-hoc 签名不是开发者身份认证。
 
-未完成 Intel 实机、macOS 14 实机、多屏／Spaces、完整输入法与撤销、VoiceOver、微信／Codex 实际接收、Safari／Firefox 或实体手机键盘验收。网站与 README 的画面来自真实浏览器组件渲染、项目宣传片片段，非原生 App 截图。旧完整网页图片保留为历史资产，README 不再引用。
+Intel 实机、macOS 14 实机、多屏／Spaces、完整输入法与撤销、VoiceOver、微信／Codex 实际接收、Safari／Firefox、实体手机及完整 GUI 升级仍为 NOT VERIFIED。未修改全局系统安全设置。
 
-## 追溯与历史
+## 构建追溯
 
-构建记录的 HEAD 是打包前基线，dirty 输入 SHA 覆盖 Sources、品牌、版本、构建及包内说明；提交后 HEAD 可变化，输入 SHA 应保持一致。原生 Sources 与 Tests 沿用最新 GitHub 基线，本次修改集中于发行、图标、安装助手、网站和文档。旧 0.2.0／build 2 验证摘要与站点文件在本机备份中保留，旧原生功能验收结论不扩大到实体兼容矩阵。
+完整验证入口先运行原生测试和构建；Finder 背景关联对象写法在实际打包时失败，参照 MemoBall 显式视图选项修正后重建。随后实际首启暴露接收设置问题，补回归、重新全量测试、重建两种架构并重新打包；只有最终产物发布。
 
-网站是已经发布设计的整合，原网站菜单交互契约改为当前“单击复制／右键”，测试相应更新；完整新网站真实行为重新验证，保留取消拖动、下载等待、草稿与缩放回归。许可证原文和原作者版权未变。
-
-## build 4 未签名安装体验修正
-
-用户实际截图表明 Finder 在.command执行前拦截，脚本不能自己先运行解除拦截。官网推荐在已打开DMG后复制一条本地bash命令，终端回车直接安装并打开；可双击助手保留，但不承诺现代macOS零提示。若系统要求确认可靠来源的粘贴，遵循系统提示；检测到已知恶意软件时停止。
-
-实际新DMG只读挂载，确认三个可见入口、应用程序链接、helper执行权限、内部LICENSE／来源／SHA清单。所有App文件校验通过；默认空stdin安装至隔离目录、资源检查通过。真实原生可执行程序使用独立/tmp/inkpeg-dev资料目录启动，5秒持续运行并初始化隔离库后结束自己启动的进程，不代表用户资料库的首次完整GUI验收。
-
-新增第11项证明本机带下载隔离标记的helper可以显式/bin/bash执行；Finder双击及全新Mac Gatekeeper UI仍未验证。完整入口开始时运行10项installer检查，最终新增项以独立11项命令重新跑全量通过，原生391／build／package真实exit0。
+记录的 HEAD 是提交前基线；输入 SHA 覆盖全部 Sources、品牌、产品示例、版本、构建与包内说明，提交后 HEAD 可变，输入 SHA 必须保持一致。许可证、原作者版权、资料库 schema 和旧客户库迁移行为未变。

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "build": "4",
+  "build": "5",
   "minimumMacOS": "14.0",
   "architectures": [
     "arm64",
@@ -8,13 +8,13 @@
   ],
   "developerIDSigned": false,
   "notarized": false,
-  "diskImageVolume": "文夹 Inkpeg 2.0.0 build 4",
-  "installCommand": "/bin/bash \"/Volumes/文夹 Inkpeg 2.0.0 build 4/安装文夹.command\"",
+  "diskImageVolume": "文夹 Inkpeg 2.0.0 build 5",
+  "installCommand": "/bin/bash \"/Volumes/文夹 Inkpeg 2.0.0 build 5/安装文夹.command\"",
   "channel": "preview",
   "architecture": "universal",
-  "file": "Inkpeg-2.0.0-build4-universal.dmg",
-  "sizeBytes": 2482270,
-  "sha256": "9ba8387f3551e64fb167bfb477b77a0701165b2d85a586230d336c5bc6211f45",
+  "file": "Inkpeg-2.0.0-build5-universal.dmg",
+  "sizeBytes": 5159783,
+  "sha256": "11ba28d7f45804838c4fd7b2ac811363c418ec209589187f9f567c66a6c8a34f",
   "signing": {
     "binary": "ad-hoc",
     "bundleInspectionExit": 0,
@@ -29,15 +29,22 @@
   ],
   "sourceRecords": "build-source.json",
   "source": {
-    "head": "29851e8fc9ab6c10eac60dbfcf79dfe0d23df195",
+    "head": "f0fef25026867d5e64310225faad821f1bfa5b7e",
     "dirty": true,
-    "sha256": "1ef09fe5314902d855ddf1dd6dbf84416d264574098b727f9e99607c2b5f4edd",
+    "sha256": "751ba4812399303612360ddad46baba1c75c2aac3799467dbf8f4224daac95fb",
     "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
-    "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs."
+    "scope": "All Sources files including untracked; packaging/brand, starter-assets and starter-workspace; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs."
   },
   "releaseDate": "2026-10-12",
-  "testCount": 391,
+  "testCount": 400,
   "testFailures": 0,
+  "finderBackgroundVerified": true,
+  "starterSamples": [
+    "note",
+    "image",
+    "pdf"
+  ],
+  "newLibraryManualIntake": true,
   "installer": "安装文夹.command",
   "installerRootEntries": [
     "Inkpeg.app",

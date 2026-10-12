@@ -147,19 +147,23 @@ PDF、视频及普通文件按文件副本托管，不意味着文夹可以预�
 
 ## 下载与安装
 
-当前版本为 **2.0.0／build 4**，官网与本仓库的版本来源一致。[直接下载 Mac 通用版](https://inkpeg.chenshi.ai/downloads/Inkpeg-2.0.0-build4-universal.dmg)（约 2.5 MB），不需要 GitHub 登录。源码仓库目前私有，阅读仓库需要访问权限。
+当前版本为 **2.0.0／build 5**，官网与本仓库的版本来源一致。[直接下载 Mac 通用版](https://inkpeg.chenshi.ai/downloads/Inkpeg-2.0.0-build5-universal.dmg)（大小见官网下载区），不需要 GitHub 登录。源码仓库目前私有，阅读仓库需要访问权限。
 
 1. **打开安装包。** 下载后双击 DMG。
-2. **复制命令，回车安装。** 在官网点“复制安装命令”，按 `⌘空格` 搜索“终端”，打开后粘贴并按回车。文夹会自动安装并打开。
-3. **开始使用。** 鼠标移到屏幕顶部展开绳子，或按 `⌃⌥T`，拖入第一份材料。
+2. **双击安装助手。** 双击“安装文夹.command”；也可以把 App 拖入“应用程序”，再打开。
+3. **被拦截时允许打开。** 先尝试打开一次，再进“系统设置 → 隐私与安全性”，向下找到 **“仍要打开”**，点击后按系统提示确认“打开”。拖入“应用程序”后的首次打开也按这一步操作。
 
-保持安装包窗口打开。官网提供的命令为：
+安装完成后，鼠标移到屏幕顶部展开绳子，或按 `⌃⌥T`。新用户会看到三个产品示例：一份可编辑的介绍记事、一张官网宣传图、一份官网网页 PDF。它们可以取下，不会在重启后重新挂回；升级会保留原资料库。
+
+<p align="center"><img src="docs/assets/readme/installer.png" width="800" alt="实际 DMG 窗口：App、安装助手、应用程序三个入口与仍要打开说明"></p>
+
+安装包背景也印有上面的步骤。若希望用终端安装，可保持 DMG 打开，在官网展开“另一种安装方式”，复制命令到“终端”后回车：
 
 ```sh
-/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 4/安装文夹.command"
+/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 5/安装文夹.command"
 ```
 
-这条命令只运行已经打开的 DMG 内的本地助手。现代 macOS 可能要求确认粘贴，见 [Apple 官方说明](https://support.apple.com/zh-cn/127377)；包内助手也可以双击，但未签名时仍可能被系统拦截，因此推荐上面的终端方法。不能保证所有系统零提示。
+命令只运行包内本地助手。现代 macOS 可能要求确认粘贴，见 [Apple 官方说明](https://support.apple.com/zh-cn/127377)。未签名版本需要遵循系统确认提示。
 
 DMG 仅三个入口：`Inkpeg.app`、“应用程序”快捷方式、`安装文夹.command`。版权、来源、说明和自动校验文件保留在 App 内部。助手先核对随包 App 的 SHA-256，只处理新安装的文夹 App；不关闭系统安全检查、不要求管理员密码。已有 App 会保留为带日期的旧版副本，资料库不改动。升级前正常退出旧版并备份完整资料库。详细说明见[安装与升级](docs/inkpeg/INSTALL.md)，[校验文件](https://inkpeg.chenshi.ai/downloads/SHA256SUMS.txt)可选核对。
 
@@ -169,7 +173,7 @@ DMG 仅三个入口：`Inkpeg.app`、“应用程序”快捷方式、`安装文
 
 | 范围 | 验证记录 | 边界 |
 | --- | --- | --- |
-| 原生应用 | **391／391**（Core 181＋App 210），零失败；[验证摘要](docs/inkpeg/VERIFICATION.md) | 自动测试不替代实体机器和跨应用操作。 |
+| 原生应用 | **400／400**（Core 190＋App 210），零失败；[验证摘要](docs/inkpeg/VERIFICATION.md) | 自动测试不替代实体机器和跨应用操作。 |
 | 安装助手 | **11 项**隔离回归；实际 DMG 安装、校验与资源检查 | 全新 Mac 的 Gatekeeper 提示仍待人工验收。 |
 | 网站 | 实际浏览器交互、版本信息、DMG 下载 SHA 和视频章节检查 | 手机视口是浏览器模拟。 |
 | README 图片与动图 | 官网组件的实际 Chromium 渲染和项目宣传片片段 | 网页画面，非原生 App 截图。 |
@@ -195,7 +199,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer scripts/build-inkpeg.sh
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer scripts/package-inkpeg.sh --app /path/to/Inkpeg.app --output /path/to/new-directory
 ```
 
-构建输入记录包括 pre-commit HEAD 和实际内容指纹，覆盖全部 Sources（包括未跟踪源文件）、版本、品牌及明确的构建／包内说明输入；排除生成文件和系统元数据。发布后的提交 ID 可以变化，输入内容 SHA 应仍一致，详见[验证与追溯说明](docs/inkpeg/VERIFICATION.md)。
+构建输入记录包括 pre-commit HEAD 和实际内容指纹，覆盖全部 Sources（包括未跟踪源文件）、版本、品牌、三份产品示例及明确的构建／包内说明输入；排除生成文件和系统元数据。发布后的提交 ID 可以变化，输入内容 SHA 应仍一致，详见[验证与追溯说明](docs/inkpeg/VERIFICATION.md)。
 
 | 目录 | 职责 |
 | --- | --- |
@@ -203,7 +207,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer scripts/package-inkpeg.
 | `Sources/Tendedero/` | 原生界面与系统适配；保留上游源码目录名。 |
 | `Tests/` | 使用合成材料的核心与原生回归测试。 |
 | `scripts/` | 构建、打包、资源与发行检查。 |
-| `packaging/` | 版本来源、原创品牌、随包说明和来源声明。 |
+| `packaging/` | 版本来源、原创品牌、纯模拟的首次使用示例、随包说明和来源声明。 |
 | `site/` | 产品网站、宣传片与当前发行元数据；生产包按白名单单独部署。 |
 | `docs/assets/readme/` | 本文按功能组织的局部图片、动图片段与来源清单。 |
 | `docs/inkpeg/` | 使用、限制、验证与历史工作记录。 |

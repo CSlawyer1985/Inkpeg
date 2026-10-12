@@ -2,9 +2,9 @@
 
 [项目介绍](README.md) · [官网与下载](https://inkpeg.chenshi.ai/#download) · [本版安装说明](docs/inkpeg/INSTALL.md) · [已知限制](docs/inkpeg/KNOWN-ISSUES.md)
 
-本指南解释常用操作、资料保护和遇到问题时的处理方法。图示取自官网网页交互的**局部画面与单动作动图**，不包含整页网站截图，也不冒充原生 App 截图。
+本指南解释常用操作、资料保护和遇到问题时的处理方法。功能图示取自官网网页交互的**局部画面与单动作动图**，不包含整页网站截图。安装章节另附最终 DMG 的实际 Finder 窗口截图。
 
-> **当前版本 2.0.0／build 4。** 官网安装包与仓库版本一致。按下面三步安装，再挂入第一份材料。
+> **当前版本 2.0.0／build 5。** 官网安装包与仓库版本一致。按下面三步安装，再挂入第一份材料。
 
 ## 按你的任务找操作
 
@@ -25,16 +25,22 @@
 ### 第一次安装
 
 1. 在[官网](https://inkpeg.chenshi.ai/#download)下载，双击打开 DMG。
-2. 在官网点“复制安装命令”，按 `⌘空格` 搜索“终端”，打开后粘贴并按回车，文夹会自动安装并打开。
-3. 鼠标靠近屏幕顶部展开文夹，或按 `⌃⌥T`，把材料拖到绳子附近。
+2. 双击“安装文夹.command”；也可以把 App 拖入“应用程序”，再打开。
+3. 若系统阻止打开，先尝试一次，再进“系统设置 → 隐私与安全性”，向下找到 **“仍要打开”**，点击并确认“打开”。手动拖入应用程序后的首次打开也按这一步操作。
 
-保持 DMG 打开。命令只运行包内的本地助手：
+安装完成后，鼠标靠近屏幕顶部展开文夹，或按 `⌃⌥T`。首次使用会有介绍记事、官网宣传图、官网网页 PDF 三份产品示例，均为本项目制作，不使用历史业务材料。记事可以单击编辑；三个示例都可以取下，重启不会自动挂回。已有资料库升级不添加或覆盖示例。
+
+DMG 只显示 App、“应用程序”快捷方式和安装助手。安装步骤直接显示在背景图里；许可、来源和自动校验文件在 App 内部。
+
+<p align="center"><img src="docs/assets/readme/installer.png" width="800" alt="实际 DMG 窗口：App、安装助手、应用程序三个入口与仍要打开说明"></p>
+
+可选终端安装：保持 DMG 打开，在官网下载区展开“另一种安装方式”，复制命令到终端后回车。
 
 ```sh
-/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 4/安装文夹.command"
+/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 5/安装文夹.command"
 ```
 
-DMG 只显示 App、“应用程序”快捷方式和安装助手。许可、来源和自动校验文件在 App 内部，不需要打开。现代 macOS 可能要求确认粘贴，按 [Apple 官方说明](https://support.apple.com/zh-cn/127377)核对；若检测到已知恶意软件，应停止。
+现代 macOS 可能要求确认粘贴，按 [Apple 官方说明](https://support.apple.com/zh-cn/127377)核对。
 
 更多说明见[安装与升级](docs/inkpeg/INSTALL.md)。
 
@@ -176,7 +182,7 @@ PDF、视频等作为普通文件托管。能够接收不代表能预览、识�
 
 ## 版本、证据与来源
 
-本次发布重新运行了 **391／391** 原生测试（Core 181＋App 210）、11 项安装助手回归与网站交互检查。详细范围见[验证摘要](docs/inkpeg/VERIFICATION.md)、[发行元数据](site/downloads/release.json)、[实际构建输入](site/downloads/build-source.json)和[公开验证摘要](site/downloads/verification.json)。自动验证不能替代尚未完成的实体机器与跨应用测试。
+本次发布重新运行了 **400／400** 原生测试（Core 190＋App 210）、11 项安装助手回归与网站交互检查。详细范围见[验证摘要](docs/inkpeg/VERIFICATION.md)、[发行元数据](site/downloads/release.json)、[实际构建输入](site/downloads/build-source.json)和[公开验证摘要](site/downloads/verification.json)。自动验证不能替代尚未完成的实体机器与跨应用测试。
 
 官网 2.0 的安装方法、限制与校验文件均在其[下载区](https://inkpeg.chenshi.ai/#download)。跨应用接收、Intel／macOS 14 实机、多屏／全屏、睡眠／重启、完整中文输入法、VoiceOver、实体触控板、Safari／Firefox、实体手机、Finder／应用切换器、Gatekeeper 与完整 GUI 升级都有明确未验收边界。
 

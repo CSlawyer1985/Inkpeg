@@ -77,7 +77,41 @@ stage=pathlib.Path(sys.argv[1]);app=stage/'Inkpeg.app'
 CHECKSUMS
 build="$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$plist")"
 dmg="$output/Inkpeg-$version-build$build-$architecture.dmg"
-hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version build $build" -format UDZO -imagekey zlib-level=9 "$dmg"
+# Save Finder's background and three-icon layout in a writable image first.
+rw="$work/installer-writable.dmg"
+hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version build $build" -format UDRW "$rw"
+mountpoint="$work/mounted"
+mkdir "$mountpoint"
+hdiutil attach -readwrite -nobrowse -mountpoint "$mountpoint" "$rw"
+# This only configures the newly mounted installer window. Failure stops release.
+osascript - "$mountpoint" <<'FINDER'
+on run argv
+    set rootPath to item 1 of argv
+    tell application "Finder"
+        set installerFolder to item ((POSIX file rootPath) as alias)
+        open installerFolder
+        tell installerFolder
+            set current view of container window to icon view
+            set toolbar visible of container window to false
+            set statusbar visible of container window to false
+            set bounds of container window to {220, 100, 940, 684}
+            set viewOptions to icon view options of container window
+            set icon size of viewOptions to 80
+            set arrangement of viewOptions to not arranged
+            set background picture of viewOptions to file "Inkpeg.app:Contents:Resources:dmg-background.png"
+        end tell
+        set position of item "Inkpeg.app" of installerFolder to {140, 214}
+        set position of item "安装文夹.command" of installerFolder to {360, 214}
+        set position of item "应用程序" of installerFolder to {580, 214}
+        update installerFolder without registering applications
+        delay 2
+        close container window of installerFolder
+    end tell
+end run
+FINDER
+sync
+hdiutil detach "$mountpoint"
+hdiutil convert "$rw" -format UDZO -imagekey zlib-level=9 -o "$dmg"
 hdiutil verify "$dmg"
 cp "$resources/先读我-安装与使用.txt" "$output/先读我-安装与使用.txt"
 cp "$resources/安装教程.md" "$output/安装教程.md"

@@ -3,7 +3,7 @@
 import argparse, hashlib, json, pathlib, plistlib, re, shutil, subprocess
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 INPUT_FILES = ['Package.swift', 'LICENSE', 'scripts/build-inkpeg.sh', 'scripts/package-inkpeg.sh',
- 'scripts/make-icon.swift', 'scripts/release-tools.py', 'scripts/verify-inkpeg.sh',
+ 'scripts/make-icon.swift', 'scripts/make-dmg-background.swift', 'scripts/make-starter-workspace.py', 'scripts/release-tools.py', 'scripts/verify-inkpeg.sh',
  'packaging/release-version.json', 'packaging/安装文夹.command', 'packaging/先读我-安装与使用.txt', 'packaging/来源与致谢.txt',
  'docs/inkpeg/INSTALL.md', 'docs/inkpeg/KNOWN-ISSUES.md', 'site/assets/mark.svg']
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -14,7 +14,7 @@ def version(root):
     return value
 def inputs(root):
     paths=[root/f for f in INPUT_FILES if (root/f).is_file()]
-    for folder in ['Sources','packaging/brand']:
+    for folder in ['Sources','packaging/brand','packaging/starter-assets','packaging/starter-workspace']:
         paths.extend(p for p in (root/folder).rglob('*') if p.is_file() and p.name!='.DS_Store' and '__pycache__' not in p.parts)
     return [{'path':p.relative_to(root).as_posix(),'sha256':sha(p)} for p in sorted(set(paths))]
 def fingerprint(files):
@@ -24,7 +24,7 @@ def source():
     return {'schema':1,'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
       'dirty':bool(subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],cwd=ROOT,text=True)),
       'sha256':fingerprint(files),'algorithm':'SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF',
-      'scope':'All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.', 'files':files}
+      'scope':'All Sources files including untracked; packaging/brand, starter-assets and starter-workspace; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.', 'files':files}
 def check_metadata(info, minimums, expected):
     actual={k:info[v] for k,v in [('version','CFBundleShortVersionString'),('build','CFBundleVersion'),('minimumMacOS','LSMinimumSystemVersion')]}
     if actual!=expected or not minimums or any(x!=expected['minimumMacOS'] for x in minimums): raise ValueError('Bundle/binary/version mismatch')
@@ -43,6 +43,9 @@ def inspect(app):
     resources=subprocess.check_output([str(binary),'--check-resources'],text=True).strip()
     if resources!='Inkpeg resources OK: en, es, zh-Hans': raise ValueError('Resource validation failed')
     if sha(app/'Contents/Resources/Inkpeg.icns')!=sha(ROOT/'packaging/brand/Inkpeg.icns'): raise ValueError('Icon mismatch')
+    if sha(app/'Contents/Resources/dmg-background.png')!=sha(ROOT/'packaging/brand/dmg-background.png'): raise ValueError('Installer background mismatch')
+    for file in (ROOT/'packaging/starter-workspace').rglob('*'):
+        if file.is_file() and file.name!='.DS_Store' and sha(file)!=sha(app/'Contents/Resources/StarterWorkspace'/file.relative_to(ROOT/'packaging/starter-workspace')): raise ValueError('Starter resources mismatch')
     provenance=json.loads((app/'Contents/Resources/build-source.json').read_text())
     if provenance['sha256']!=source()['sha256']: raise ValueError('Build inputs changed after build')
     code=subprocess.run(['codesign','-dvv',str(binary)],text=True,capture_output=True)

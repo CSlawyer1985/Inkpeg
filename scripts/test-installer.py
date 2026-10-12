@@ -12,7 +12,7 @@ class InstallerTests(unittest.TestCase):
         self.assertTrue(source.exists(),'The package must include the runnable installation helper')
         shutil.copy2(source,self.helper)
         app=self.package/'Inkpeg.app';(app/'Contents/MacOS').mkdir(parents=True); (app/'Contents/Resources').mkdir()
-        (app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'local.inkpeg.Inkpeg','CFBundleExecutable':'Inkpeg','CFBundleShortVersionString':'2.0.0','CFBundleVersion':'4'}))
+        (app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'local.inkpeg.Inkpeg','CFBundleExecutable':'Inkpeg','CFBundleShortVersionString':'2.0.0','CFBundleVersion':'5'}))
         binary=app/'Contents/MacOS/Inkpeg';binary.write_text('#!/bin/sh\nexit 0\n');binary.chmod(0o755)
         self.source=app;self.manifest()
     def manifest(self):

@@ -208,7 +208,7 @@ with sync_playwright() as p:
         download.save_as(file)
         digest = hashlib.sha256(file.read_bytes()).hexdigest()
         assert digest == release['sha256'] and file.stat().st_size == release['sizeBytes']
-        assert download.suggested_filename == 'Inkpeg-2.0.0-build4-universal.dmg'
+        assert download.suggested_filename == 'Inkpeg-2.0.0-build5-universal.dmg'
         expect(page.locator('#sha-value')).to_have_text(digest)
         expect(page.locator('#download-size')).to_contain_text(f"{release['sizeBytes']/1e6:.1f} MB")
         assert release['architectures'] == ['arm64', 'x86_64'] and release['minimumMacOS'] == '14.0'
@@ -273,7 +273,7 @@ with sync_playwright() as p:
         nj.goto(base + '/')
         with nj.expect_download() as pending:
             nj.locator('#download-btn').click()
-        assert pending.value.suggested_filename == 'Inkpeg-2.0.0-build4-universal.dmg'
+        assert pending.value.suggested_filename == 'Inkpeg-2.0.0-build5-universal.dmg'
         nojs.close()
         record('Published fallback download also works without JavaScript')
         assert not errors, errors

@@ -1,10 +1,10 @@
 {
   "version": "2.0.0",
-  "build": "4",
+  "build": "5",
   "date": "2026-10-12",
   "native": {
-    "count": 391,
-    "core": 181,
+    "count": 400,
+    "core": 190,
     "app": 210,
     "failures": 0,
     "exit": 0
@@ -23,7 +23,16 @@
     "visibleRootEntries": 3,
     "internalChecksumVerified": true,
     "actualCommandMatchesMountedVolume": true,
-    "isolatedStartupProcessAliveSeconds": 5
+    "isolatedStartupProcessAliveSeconds": 7,
+    "finderBackgroundVisible": true,
+    "starterMaterials": 3,
+    "starterTypes": [
+      "note",
+      "image",
+      "pdf"
+    ],
+    "clipboardIntakeDisabled": true,
+    "restartPreservesSamples": true
   },
   "notVerified": [
     "Intel physical hardware",
@@ -42,5 +51,10 @@
   "readme": {
     "media": "component renders and promo excerpts",
     "nativeAppScreenshots": false
+  },
+  "starterBootstrap": {
+    "count": 9,
+    "failures": 0,
+    "scope": "Fresh-only samples; existing roots preserved; corrupt or linked templates rejected; manual intake persists; take-down does not rehang"
   }
 }

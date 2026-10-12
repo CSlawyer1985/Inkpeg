@@ -46,6 +46,8 @@ else
 fi
 python3 scripts/release-tools.py plist --out "$app/Contents/Info.plist"
 cp packaging/brand/Inkpeg.icns "$app/Contents/Resources/Inkpeg.icns"
+ditto --norsrc --noextattr packaging/starter-workspace "$app/Contents/Resources/StarterWorkspace"
+cp packaging/brand/dmg-background.png "$app/Contents/Resources/dmg-background.png"
 python3 scripts/release-tools.py source --out "$package_root/build-source-after.json"
 python3 - "$package_root/build-source.json" "$package_root/build-source-after.json" <<'PYCHECK'
 import json, sys

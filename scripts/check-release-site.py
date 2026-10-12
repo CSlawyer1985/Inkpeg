@@ -21,10 +21,12 @@ with sync_playwright() as pw:
     checks.append('Version/build, static download and requested caption removal match current release')
     for name in manifest['testRecords']+[manifest['sourceRecords']]:
         response=page.request.get(base+'/downloads/'+name); assert response.status==200; response.json()
-    expect(page.locator('.steps')).to_contain_text('复制安装命令')
-    expect(page.locator('.steps')).to_contain_text('回车')
+    expect(page.locator('.steps')).to_contain_text('安装文夹.command')
+    expect(page.locator('.steps')).to_contain_text('仍要打开')
+    expect(page.locator('.steps')).to_contain_text('隐私与安全性')
     expect(page.locator('#install-command')).to_have_text(manifest['installCommand'])
     page.context.grant_permissions(['clipboard-read','clipboard-write'])
+    page.locator('.terminal-alternative > summary').click()
     page.locator('.install-command-box summary').click()
     page.locator('#install-command-copy').click()
     assert page.evaluate('navigator.clipboard.readText()')==manifest['installCommand']
@@ -44,6 +46,7 @@ with sync_playwright() as pw:
     phone=mobile.new_page();phone.goto(base+'/?noreveal&motion=reduce');phone.wait_for_load_state('networkidle')
     assert phone.evaluate('document.documentElement.scrollWidth<=innerWidth')
     expect(phone.locator('.dl-meta')).to_contain_text(version['version'])
+    phone.locator('.terminal-alternative > summary').click()
     phone.locator('.install-command-box summary').click()
     expect(phone.locator('#install-command')).to_have_text(manifest['installCommand'])
     assert phone.evaluate('document.documentElement.scrollWidth<=innerWidth')

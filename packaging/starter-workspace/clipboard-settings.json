@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "enabled": false,
+  "images": true,
+  "text": true,
+  "files": true,
+  "includeExisting": false
+}
