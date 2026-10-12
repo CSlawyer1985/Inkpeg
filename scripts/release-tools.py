@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Bounded release provenance and actual bundle inspection. No signing/install changes."""
-import argparse, hashlib, json, pathlib, plistlib, re, shutil, subprocess
+import argparse, hashlib, json, pathlib, plistlib, re, shutil, stat, subprocess
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 INPUT_FILES = ['Package.swift', 'LICENSE', 'scripts/build-inkpeg.sh', 'scripts/package-inkpeg.sh',
  'scripts/make-icon.swift', 'scripts/make-dmg-background.swift', 'scripts/make-starter-workspace.py', 'scripts/release-tools.py', 'scripts/verify-inkpeg.sh',
@@ -46,6 +46,8 @@ def inspect(app):
     if sha(app/'Contents/Resources/dmg-background.png')!=sha(ROOT/'packaging/brand/dmg-background.png'): raise ValueError('Installer background mismatch')
     for file in (ROOT/'packaging/starter-workspace').rglob('*'):
         if file.is_file() and file.name!='.DS_Store' and sha(file)!=sha(app/'Contents/Resources/StarterWorkspace'/file.relative_to(ROOT/'packaging/starter-workspace')): raise ValueError('Starter resources mismatch')
+    for file in (app/'Contents/Resources/StarterWorkspace').rglob('*'):
+        if file.stat().st_flags & stat.UF_HIDDEN: raise ValueError('Starter resources must not carry hidden flags')
     provenance=json.loads((app/'Contents/Resources/build-source.json').read_text())
     if provenance['sha256']!=source()['sha256']: raise ValueError('Build inputs changed after build')
     code=subprocess.run(['codesign','-dvv',str(binary)],text=True,capture_output=True)

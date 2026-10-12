@@ -543,6 +543,11 @@ public actor MaterialStore {
         try checkBudget(bytes: info.byteCount)
         try Task.checkCancellation()
         try files.copy(source, to: target) // Foundation refuses an existing destination.
+        // Copying preserves source flags. An explicitly exported copy must be
+        // visible in Finder, even if the managed payload was hidden.
+        var exportedURL = target
+        var visibility = URLResourceValues(); visibility.isHidden = false
+        try exportedURL.setResourceValues(visibility)
         let copied = try files.inspect(target)
         guard copied.isRegularFile, !copied.isSymbolicLink, copied.byteCount == info.byteCount,
               ContentStore.digest(try files.read(target)) == ContentStore.digest(try files.read(source)) else { throw StoreError.sourceChanged }

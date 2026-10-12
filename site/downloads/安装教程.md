@@ -1,6 +1,6 @@
 # 文夹 Inkpeg · 安装与升级
 
-适用：2.0.0 公开预览版（build 5），macOS 14+，Apple Silicon＋Intel 通用包。
+适用：2.0.0 公开预览版（build 6），macOS 14+，Apple Silicon＋Intel 通用包。
 
 ## 首次安装：三步
 
@@ -13,7 +13,7 @@
 也可以保持 DMG 打开，从官网复制以下本地命令到终端并按回车，自动安装并打开：
 
 ```sh
-/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 5/安装文夹.command"
+/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 6/安装文夹.command"
 ```
 
 终端首次粘贴可能要求确认；若系统检测到已知恶意软件，停止操作。

@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "head": "f0fef25026867d5e64310225faad821f1bfa5b7e",
+  "head": "c4867fea5df70f61f283bf5cfb9a39a664d3b887",
   "dirty": true,
-  "sha256": "751ba4812399303612360ddad46baba1c75c2aac3799467dbf8f4224daac95fb",
+  "sha256": "d713590a4d0f1bd54e22088ac140cfd951a07931cb55513b043bf9517f7407c9",
   "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
   "scope": "All Sources files including untracked; packaging/brand, starter-assets and starter-workspace; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.",
   "files": [
@@ -60,7 +60,7 @@
     },
     {
       "path": "Sources/InkpegCore/MaterialStore.swift",
-      "sha256": "b3e07d7cf02a11474e2b39587d333e69b28a3f87e7be87a98008dcf51ddf1a50"
+      "sha256": "839d288a8e000af3fda49a657e9d7d30937a2d4af40a503dfd34b6ca9c7f4d92"
     },
     {
       "path": "Sources/InkpegCore/NoteDraft.swift",
@@ -232,11 +232,11 @@
     },
     {
       "path": "docs/inkpeg/INSTALL.md",
-      "sha256": "ddd77af77bbdecf9b93d2d3ed71d528c00b4c306e571269b9e99d3df863f0f6a"
+      "sha256": "5e65151497f10edc1e948f39ee92cc51556e4823b10c002f50080d6f430a0b43"
     },
     {
       "path": "docs/inkpeg/KNOWN-ISSUES.md",
-      "sha256": "8a85390fc1a12f2f4f362468c016e5cad6ea25b49ff9940c2e7c686eb3c69ba1"
+      "sha256": "fe1b571a536578656e2a2b14426e2252bb972ffd1c388a8f3328d9f123eaef35"
     },
     {
       "path": "packaging/brand/Inkpeg.icns",
@@ -292,7 +292,7 @@
     },
     {
       "path": "packaging/release-version.json",
-      "sha256": "6734e17be9d1f32e92ec129ff538732fab8ec3e5204d5f794f56c4a21c099127"
+      "sha256": "dd4d234f1109e0592353fd0e24e37277eceb72f568dc7575b4f75dc8907be549"
     },
     {
       "path": "packaging/starter-assets/文夹·产品网页.pdf",
@@ -328,7 +328,7 @@
     },
     {
       "path": "packaging/先读我-安装与使用.txt",
-      "sha256": "c64bc2ba30e78555967fab10e32ddb531a02f4609f8802568295f028af7d7466"
+      "sha256": "5ecd214c88365e3ccd265be897be40b38b1688c8d4afefe74589123dbecff5db"
     },
     {
       "path": "packaging/安装文夹.command",
@@ -340,7 +340,7 @@
     },
     {
       "path": "scripts/build-inkpeg.sh",
-      "sha256": "9386a9559090a26b10afaee45ed64d734d4cd9cf54893b35dd6f9f44a55d02b3"
+      "sha256": "ecf1ba54c9a9f18ff41ab223d3f6925f764e5af543ce20891cb504646bf0c4b5"
     },
     {
       "path": "scripts/make-dmg-background.swift",
@@ -360,7 +360,7 @@
     },
     {
       "path": "scripts/release-tools.py",
-      "sha256": "616108477558ecea1206ad73afc6b6eb3b37058e7c727b00b1ae47ffcded4bcf"
+      "sha256": "906bd769a83866e0d0e34474ffef7d915267bc193e5de6a455d93b1094afd26a"
     },
     {
       "path": "scripts/verify-inkpeg.sh",

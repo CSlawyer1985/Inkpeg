@@ -30,6 +30,25 @@ final class ExportSafetyTests: XCTestCase {
     }
 }
 extension ExportSafetyTests {
+    func testHiddenSourceExportsVisibleCopiesWithoutChangingSourceOrLibrary() async throws {
+        let f = try StoreFixture(), store = f.makeStore()
+        var source = f.source
+        var hidden = URLResourceValues(); hidden.isHidden = true
+        try source.setResourceValues(hidden)
+        let before = try await store.importMaterial(.file(source, .fileSelection), into: MatterGroup.ungroupedID, visibleCapacity: 3).snapshot
+        let id = try XCTUnwrap(before.materials.first?.id), managed = try await store.payloadURL(of: id)
+        XCTAssertEqual(try managed.resourceValues(forKeys: [.isHiddenKey]).isHidden, true)
+        for destination in [f.root.appendingPathComponent("Exports/ready/source.txt"),
+                            source.deletingLastPathComponent().appendingPathComponent("finder-copy.txt")] {
+            let exported = try await store.exportCopy(of: id, to: destination)
+            XCTAssertEqual(try exported.resourceValues(forKeys: [.isHiddenKey]).isHidden, false,
+                           "An exported file must appear normally in Finder, even when its managed source is hidden")
+            XCTAssertEqual(try Data(contentsOf: exported), f.bytes)
+        }
+        XCTAssertEqual(try source.resourceValues(forKeys: [.isHiddenKey]).isHidden, true)
+        XCTAssertEqual(try managed.resourceValues(forKeys: [.isHiddenKey]).isHidden, true)
+        let after = try await store.load(); XCTAssertEqual(after, before)
+    }
     func testExportBindsToSelectedVersionAcrossLaterEdit() async throws {
         let f = try StoreFixture(), store = f.makeStore()
         let imported = try await store.importMaterial(.file(f.source, .fileSelection), into: MatterGroup.ungroupedID, visibleCapacity: 3)

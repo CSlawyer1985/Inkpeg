@@ -1,10 +1,10 @@
 {
   "version": "2.0.0",
-  "build": "5",
+  "build": "6",
   "date": "2026-10-12",
   "native": {
-    "count": 400,
-    "core": 190,
+    "count": 401,
+    "core": 191,
     "app": 210,
     "failures": 0,
     "exit": 0
@@ -32,7 +32,8 @@
       "pdf"
     ],
     "clipboardIntakeDisabled": true,
-    "restartPreservesSamples": true
+    "restartPreservesSamples": true,
+    "starterHiddenFlags": false
   },
   "notVerified": [
     "Intel physical hardware",
@@ -49,12 +50,19 @@
     "scope": "Chromium local Range server and production; real DMG and local installation command"
   },
   "readme": {
-    "media": "component renders and promo excerpts",
+    "media": "component renders, promo excerpts and actual Finder installer window",
     "nativeAppScreenshots": false
   },
   "starterBootstrap": {
     "count": 9,
     "failures": 0,
     "scope": "Fresh-only samples; existing roots preserved; corrupt or linked templates rejected; manual intake persists; take-down does not rehang"
+  },
+  "exportVisibility": {
+    "regressionCount": 4,
+    "failures": 0,
+    "sourceAndLibraryUnchanged": true,
+    "hiddenSourceExportsVisible": true,
+    "scope": "Real filesystem attributes on ready and receiver copies; existing collision and selected-version protections retained"
   }
 }

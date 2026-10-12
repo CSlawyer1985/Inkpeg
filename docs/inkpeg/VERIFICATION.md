@@ -1,24 +1,24 @@
-# 2.0.0／build 5 验证
+# 2.0.0／build 6 验证
 
-2026-10-12，版本来源为 `packaging/release-version.json`。本版加入纯产品示例和实际 Finder 安装背景，并同步官网“仍要打开”步骤。
+2026-10-12，版本来源为 `packaging/release-version.json`。本版修正导出副本继承隐藏属性，保留产品示例和 Finder 安装步骤。
 
 ## COMMAND + OUTPUT + RESULT
 
 | 命令／操作 | 输出 | 结果 |
 | --- | --- | --- |
-| `swift test --scratch-path <独立目录>` | Core 190＋App 210，400 tests、0 failures | PASS |
+| `swift test --scratch-path <独立目录>` | Core 191＋App 210，401 tests、0 failures | PASS |
 | `python3 scripts/test-release.py` | 4 tests，OK | PASS |
 | `python3 scripts/test-installer.py` | 11 tests，OK；默认安装、确认／取消、旧 App 保留、错误 payload／id／链接拒绝、仅目标副本隔离属性处理 | PASS |
 | `scripts/build-inkpeg.sh --configuration release --architectures universal --no-sign` | 两架构独立 Release 构建 exit 0；资源和输入 SHA 一致 | PASS |
-| `scripts/package-inkpeg.sh --app <实际App> --output <新目录>` | 最终 DMG verify VALID；5,159,783 bytes | PASS |
-| `scripts/release-tools.py site --app <实际App> --dmg <实际DMG>` | 2.0.0／build 5；ICNS、三份示例、两个二进制 slice、macOS 14 最低系统和源指纹一致 | PASS |
+| `scripts/package-inkpeg.sh --app <实际App> --output <新目录>` | 最终 DMG verify VALID；5,152,148 bytes | PASS |
+| `scripts/release-tools.py site --app <实际App> --dmg <实际DMG>` | 2.0.0／build 6；ICNS、三份示例、两个二进制 slice、macOS 14 最低系统和源指纹一致 | PASS |
 | 最终 DMG 只读挂载；逐文件 SHA 校验；运行助手至隔离目录 | 3 个可见入口；全部 20 个 App 文件校验通过；安装与资源检查 exit 0 | PASS |
 | 在 Finder 打开最终 DMG 并截图 | 实际显示 Logo、3 个图标、隐私与安全性／仍要打开／打开；背景和文字无遮挡 | PASS |
 | 实际 App 使用独立开发资料根首次启动、再启动 | 每次持续运行 7 秒；均只有记事／图片／PDF 三份示例，自动接收及读取已有剪贴板均关闭 | PASS |
 | `python3 scripts/check-site.py --url <Range服务器> --out <记录>` | 28 checks，包括实际拖动／取消、记事、清理、14 视口、触屏、视频音频／章节、完整下载及无 JS 回退 | PASS |
 | `python3 scripts/check-release-site.py --url <Range服务器> --out <记录>` | 5 checks：版本、真实下载、系统允许步骤、可选命令、桌面／手机及 Pages 文件限制 | PASS |
 
-安装包 SHA-256：`11ba28d7f45804838c4fd7b2ac811363c418ec209589187f9f567c66a6c8a34f`。
+安装包 SHA-256：`650ccd25c130caa6c10cb1e67dc4d5908d5be71098ed736df0821f9b6bb3642e`。
 
 [发行元数据](../../site/downloads/release.json)、[逐文件构建输入](../../site/downloads/build-source.json)和[公开验证摘要](../../site/downloads/verification.json)提供追溯。原始日志与失败候选包保留在本机记录目录，未发布。
 
@@ -38,6 +38,14 @@ Intel 实机、macOS 14 实机、多屏／Spaces、完整输入法与撤销、Vo
 
 ## 构建追溯
 
-完整验证入口先运行原生测试和构建；Finder 背景关联对象写法在实际打包时失败，参照 MemoBall 显式视图选项修正后重建。随后实际首启暴露接收设置问题，补回归、重新全量测试、重建两种架构并重新打包；只有最终产物发布。
+此前 build 5 的完整验证入口先运行原生测试和构建；Finder 背景关联对象写法在实际打包时失败，参照 MemoBall 显式视图选项修正后重建。随后实际首启暴露接收设置问题，补回归、重新全量测试、重建两种架构并重新打包；只有最终产物发布。
 
 记录的 HEAD 是提交前基线；输入 SHA 覆盖全部 Sources、品牌、产品示例、版本、构建与包内说明，提交后 HEAD 可变，输入 SHA 必须保持一致。许可证、原作者版权、资料库 schema 和旧客户库迁移行为未变。
+
+## Build 6 导出可见性回归
+
+用户实测图片/PDF已经写入桌面但名称灰色或看不到。只读属性诊断确认示例payload与复制出的文件带UF_HIDDEN。Foundation复制继承隐藏标志；微信接收内容不以Finder可见属性决定呈现。
+
+新增实际文件测试先失败两次（应用导出目录与外部接收目录），修复后ExportSafety 4项全部通过：仅将新导出副本设为可见，原source、托管payload仍保持原隐藏设置，文件字节和完整资料状态不变。完整验证入口401项原生测试、两架构构建与DMG打包exit0。新App/真实DMG的5个样本配置与payload以及父目录均无UF_HIDDEN，发行检查拒绝携带该标志的样本。独立导出安全/拖放兼容/原生文件承诺16项全通过。
+
+偶发拖动停顿尚未稳定复现，未认定隐藏属性是停顿原因，未改文件承诺架构或图像转换线程。
