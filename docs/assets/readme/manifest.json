@@ -1,0 +1,146 @@
+{
+  "menu-light.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=light&state=menu",
+    "selector": ".pg-screen",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "811f9cfab14294fb14b2dda372f9b7139c30e3dca92661b135671f50c0cdf9b0",
+    "width": 1784,
+    "height": 1222,
+    "frames": 1
+  },
+  "intake-light.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=light&state=intake",
+    "selector": ".pg-screen .ik-panel.settings",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "15d40ff1a77e3636ba0fbfff3805938e0eec528f32e9fba4b5347113f46b4cc3",
+    "width": 880,
+    "height": 1134,
+    "frames": 1
+  },
+  "cleanup-light.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=light&state=cleanup",
+    "selector": ".pg-screen .ik-panel.settings",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "b1062ef27b3cc7a5e9355224a3d83128f9e2ed839ea19f6e2e73c7e3eeb86b85",
+    "width": 880,
+    "height": 1068,
+    "frames": 1
+  },
+  "overflow-light.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=light&state=overflow",
+    "selector": ".pg-screen",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "c1821fca9150ae4e0fa8e37310fe40434f84f756dcb9a14bde6eb4a64f0240b9",
+    "width": 1784,
+    "height": 1222,
+    "frames": 1
+  },
+  "menu-dark.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=dark&state=menu",
+    "selector": ".pg-screen",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "09c6ca8bfa4139461c0479424abf145e025179b196a94d0104f3c0125715945a",
+    "width": 1784,
+    "height": 1222,
+    "frames": 1
+  },
+  "intake-dark.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=dark&state=intake",
+    "selector": ".pg-screen .ik-panel.settings",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "567d160503cd107e9732f7398d1c2241f6755427c42002e821ec357f36def8a7",
+    "width": 880,
+    "height": 1134,
+    "frames": 1
+  },
+  "cleanup-dark.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=dark&state=cleanup",
+    "selector": ".pg-screen .ik-panel.settings",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "742c2ba7a387690ea06c5454603b87c6678d48a7fd77141f15a551bf4f925450",
+    "width": 880,
+    "height": 1068,
+    "frames": 1
+  },
+  "overflow-dark.png": {
+    "url": "https://inkpeg.chenshi.ai/?noreveal&motion=reduce&theme=dark&state=overflow",
+    "selector": ".pg-screen",
+    "type": "website-component-render",
+    "nativeAppScreenshot": false,
+    "sha256": "c13c22885fb8f570e1b5c757ab945f5e197322e9d3d0982164852c669da9e712",
+    "width": 1784,
+    "height": 1222,
+    "frames": 1
+  },
+  "overview-dark.png": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "66796b0c2686cbc2cda1318ee90eaa12412ba91d272f271fa86954982c926fd0",
+    "width": 1140,
+    "height": 836,
+    "frames": 1
+  },
+  "scroll.gif": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "7d6830b3c1a371d0f4ad3dc42ef71e41d9ceebe2c33ebf29a8525ad8d13a02e0",
+    "width": 880,
+    "height": 495,
+    "frames": 59
+  },
+  "dragout.gif": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "a14d4629304682801ea103011210ac77b78a96a30cf2eb6245319338c669e421",
+    "width": 880,
+    "height": 495,
+    "frames": 59
+  },
+  "copy.gif": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "794fd0bae829b1bb3bd5a2b7533127143d5a913ca85d2e49f0772f3ceb8422c0",
+    "width": 880,
+    "height": 495,
+    "frames": 75
+  },
+  "dragin.gif": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "86a12e71adb187179f592006fff2f3fa970b94f87752a2c37798af9468f323c9",
+    "width": 880,
+    "height": 495,
+    "frames": 99
+  },
+  "overview-light.png": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "47b7231e0943c00b6a3f733611913fb08476842357d09db35ba9ec38962cdf1e",
+    "width": 1140,
+    "height": 836,
+    "frames": 1
+  },
+  "note.gif": {
+    "source": "supplied project promotional segment",
+    "nativeAppScreenshot": false,
+    "sha256": "471118cf647ff238ca7461534abdb3fb6a72585ec63b8c5918f43f15db720068",
+    "width": 880,
+    "height": 495,
+    "frames": 84
+  },
+  "film-poster.jpg": {
+    "source": "project promotional still",
+    "nativeAppScreenshot": false,
+    "sha256": "b88101610a6a3e2eca7ff33f19dda888477245e6048c82c6f5c0e70d07629207",
+    "width": 1920,
+    "height": 1080,
+    "frames": 1
+  }
+}

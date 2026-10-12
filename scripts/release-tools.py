@@ -4,7 +4,7 @@ import argparse, hashlib, json, pathlib, plistlib, re, shutil, subprocess
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 INPUT_FILES = ['Package.swift', 'LICENSE', 'scripts/build-inkpeg.sh', 'scripts/package-inkpeg.sh',
  'scripts/make-icon.swift', 'scripts/release-tools.py', 'scripts/verify-inkpeg.sh',
- 'packaging/release-version.json', 'packaging/先读我-安装与使用.txt', 'packaging/来源与致谢.txt',
+ 'packaging/release-version.json', 'packaging/安装文夹.command', 'packaging/先读我-安装与使用.txt', 'packaging/来源与致谢.txt',
  'docs/inkpeg/INSTALL.md', 'docs/inkpeg/KNOWN-ISSUES.md', 'site/assets/mark.svg']
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def write(path, value): path.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n')

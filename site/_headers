@@ -1,0 +1,34 @@
+# Cloudflare Pages / Netlify 响应头（其他静态服务器见 DEPLOY.md 中的 nginx 配置）
+
+/downloads/*.dmg
+  Content-Type: application/x-apple-diskimage
+  Content-Disposition: attachment
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+
+/downloads/release.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=60, must-revalidate
+
+/downloads/SHA256SUMS.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=60, must-revalidate
+
+/downloads/*.md
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=300
+
+/media/*.vtt
+  Content-Type: text/vtt; charset=utf-8
+
+/media/*.webm
+  Content-Type: video/webm
+  Cache-Control: public, max-age=604800
+
+/media/*.mp4
+  Content-Type: video/mp4
+  Cache-Control: public, max-age=604800
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

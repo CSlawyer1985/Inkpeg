@@ -1,83 +1,246 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f7f2">
-  <meta name="description" content="文夹 Inkpeg，把截图、文字、图片和文件挂在 Mac 屏幕上方。随手查看、继续记事、拖出副本。一根绳，让眼前的资料一直在手边。">
-  <meta property="og:title" content="文夹 Inkpeg · 让眼前的资料，一直在手边">
-  <meta property="og:description" content="截图、文字和文件，挂起来就找得到。试着在这张桌面上，挂入你的第一份材料。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://inkpeg.chenshi.ai/">
-  <link rel="canonical" href="https://inkpeg.chenshi.ai/">
-  <title>文夹 Inkpeg · 让眼前的资料，一直在手边</title>
-  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="vendor/gsap.min.js"></script>
-  <script defer src="vendor/ScrollTrigger.min.js"></script>
-  <script defer src="demo-state.js"></script>
-  <script defer src="app.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f4f1e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1013" media="(prefers-color-scheme: dark)">
+<meta name="description" content="文夹 Inkpeg：在 Mac 屏幕上方拉一根绳，把截图、文字、图片、PDF 和文件挂起来。单击复制，点小红段随手记事，资料只存在本机。文夹 2.0.0。">
+<link rel="canonical" href="https://inkpeg.chenshi.ai/">
+<meta property="og:url" content="https://inkpeg.chenshi.ai/">
+<meta property="og:image" content="https://inkpeg.chenshi.ai/media/poster-promo.jpg">
+<meta property="og:title" content="文夹 Inkpeg · 让眼前的资料，一直在手边">
+<meta property="og:description" content="截图、文字和文件，挂在屏幕上方的一根绳上。试着在网页桌面上挂入第一份材料。">
+<meta property="og:type" content="website">
+<title>文夹 Inkpeg · 让眼前的资料，一直在手边</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<script>(function(){var q=new URLSearchParams(location.search),t=q.get('theme');try{t=t||localStorage.getItem('inkpeg-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;if(q.get('motion')==='reduce')document.documentElement.classList.add('reduce-motion');})();</script>
+<link rel="stylesheet" href="inkdesk.css">
+<link rel="stylesheet" href="styles.css">
+<script defer src="vendor/gsap.min.js"></script>
+<script defer src="vendor/ScrollTrigger.min.js"></script>
+<script defer src="inkdesk.js"></script>
+<script defer src="app.js"></script>
+<script defer src="film.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#playground">跳到交互桌面</a>
-<header class="site-header wrap">
-  <a class="brand" href="#top" aria-label="文夹 Inkpeg 首页"><img src="assets/mark.svg" alt="" width="32" height="32"><span>文夹<span class="brand-en">Inkpeg</span></span></a>
-  <nav aria-label="主导航"><a href="#playground">试一试</a><a href="#features">能做什么</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a class="nav-download" href="#download">下载文夹 <span aria-hidden="true">↓</span></a></nav>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="文夹 Inkpeg 首页"><img src="assets/mark.svg" alt="" width="30" height="30"><span class="brand-zh">文夹</span><span class="brand-en">Inkpeg</span></a>
+    <nav aria-label="主导航"><a href="#film">宣传片</a><a href="#playground">试一试</a><a href="#features">能做什么</a><a href="#privacy">本机存储</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer" title="私有仓库，需授权访问">GitHub<small class="nav-note">需授权</small><span aria-hidden="true"> ↗</span></a></nav>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换浅色／深色"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
+      <a class="btn btn-ink btn-sm" href="#download">下载<span aria-hidden="true"> ↓</span></a>
+    </div>
+  </div>
 </header>
+
 <main id="top">
-  <section class="hero wrap" aria-labelledby="hero-title">
-    <div class="hero-intro">
-      <div><p class="eyebrow">一根绳，留住手边的灵感。</p><h1 id="hero-title"><span>让眼前的资料，</span><span>一直在手边。</span></h1></div>
-      <div class="hero-aside"><p>截图刚截完，又找不到？<br class="natural-break">复制了一段话，下一次就被覆盖？</p><p>把它们挂在屏幕上方。<br class="natural-break">需要时，伸手拿回来。</p><div class="hero-actions"><button id="hero-play" class="button">看 15 秒演示 <span aria-hidden="true">▶</span></button><button id="hero-try" class="button button-secondary">自己试试 <span aria-hidden="true">↗</span></button></div></div>
-    </div>
-    <p class="demo-label">交互演示 <span>同一份摘记，从产生到复用 · 随时点击接管</span></p>
-    <div id="playground" class="playground" tabindex="-1" aria-label="文夹交互桌面">
-      <div class="desktop" id="desktop">
-        <div class="menubar"><div class="menu-left"><span class="menu-symbol" aria-hidden="true">✦</span><strong>文夹</strong><span>文件</span><span>编辑</span><span>显示</span><span>帮助</span></div><div class="menu-right"><span class="menu-wifi" aria-hidden="true">◔</span><span>周五 14:30</span></div></div>
-        <div class="rope-area" id="rope-area" aria-label="挂入材料的绳子">
-          <svg class="rope" viewBox="0 0 1200 82" preserveAspectRatio="none" aria-hidden="true"><path d="M-20 15 Q600 89 1220 15"/><path class="red-cue" d="M717 48 Q746 47 775 45"/></svg>
-          <button id="new-note" aria-controls="note-dialog" aria-haspopup="dialog" class="red-rope-hit" aria-label="点击小红段，新建记事" title="点击小红段，新建记事"></button>
-          <div class="shelf" id="shelf" tabindex="0" role="region" aria-label="绳上材料，左右滚动查看"><div class="shelf-track" id="shelf-track"></div></div>
-          <div class="shelf-nav" id="shelf-nav" hidden><button id="shelf-prev" aria-label="向左查看材料">←</button><span id="shelf-count">4</span><button id="shelf-next" aria-label="向右查看材料">→</button></div>
-          <div class="rope-drop-hint" aria-hidden="true">松手，挂在这里</div>
-        </div>
-        <div class="work-window" id="work-window">
-          <div class="window-bar"><span class="traffic-lights" aria-hidden="true"><i></i><i></i><i></i></span><span>今天的工作</span><span class="window-more" aria-hidden="true">···</span></div>
-          <div class="work-content"><p class="small-label">周五 · 整理资料</p><h3>先把思路留住。</h3><p class="work-paragraph">看文章、截个图、找文件。桌面越堆越满，真正要用的那几份材料，却总要重新找一遍。</p><div class="highlight-source"><p id="demo-material-text">让注意力，
-回到事情本身。</p><button class="source-add" data-source="text" aria-label="把这段文字挂到绳上">挂到绳上 <span aria-hidden="true">↑</span></button></div><p class="document-line"></p><p class="document-line short"></p><div class="work-footer"><span class="status-dot"></span>留一处，放眼前正在用的东西。</div></div>
-        </div>
-        <div class="desk-file" id="desk-file" data-source="file" tabindex="0" role="button" aria-label="挂入桌面上的项目资料 PDF"><svg viewBox="0 0 56 68" aria-hidden="true"><path d="M7 1h27l15 15v49H7z" fill="#fff" stroke="#b2bac2"/><path d="M34 1v16h15" fill="#e7eaf0"/><path d="M17 28h23M17 34h23M17 40h17" stroke="#bcc3ca"/><rect x="1" y="45" width="39" height="17" rx="3" fill="#b94f3b"/><text x="8" y="57" fill="white" font-size="11" font-family="system-ui">PDF</text></svg><span>项目资料.pdf</span><span class="file-tip">点击挂入 · 鼠标可拖动</span></div>
-        <div class="receiver" id="receiver" aria-label="接收拖出内容的输入窗口">
-          <div class="window-bar"><span class="traffic-lights" aria-hidden="true"><i></i><i></i><i></i></span><span>下一处，接着用</span><span aria-hidden="true">↗</span></div>
-          <div class="receiver-body"><p>需要的材料，不必再找一遍。</p><div class="receive-zone" id="receive-zone" tabindex="0" role="region" aria-label="将绳上卡片拖到这里"><span class="receive-placeholder">拖动“拖出”手柄到这里，或点“···”选择拖出</span><div id="received-content" hidden></div></div><span class="receiver-note">文字带着换行，文件带着副本。</span></div>
-        </div>
-        <div class="desktop-dock" aria-hidden="true"><span class="dock-finder">◒</span><span class="dock-note">≡</span><span class="dock-browser">⌁</span><span class="dock-inkpeg"><img src="assets/mark.svg" alt=""></span><span class="dock-divider"></span><span class="dock-folder">▱</span></div>
-        <div id="guide-cursor" class="guide-cursor" aria-hidden="true"><svg viewBox="0 0 30 36"><path d="M2 2v27l7-7 6 12 5-3-6-12 10-1z"/></svg><span id="cursor-caption"></span></div>
-        <div class="desktop-toast" id="desktop-toast" role="status" aria-live="polite"></div>
-        <div class="recovery-dialog" id="recovery-dialog" role="dialog" aria-labelledby="recovery-title" hidden><strong id="recovery-title">最近取下的副本</strong><div id="recovery-list"></div><button id="close-recovery">关闭</button></div>
-        <div class="note-dialog" id="note-dialog" role="dialog" aria-modal="false" aria-labelledby="note-title" hidden><div class="window-bar"><span class="traffic-lights" aria-hidden="true"><i></i><i></i><i></i></span><strong id="note-title">随手记一笔</strong><button id="close-note" aria-label="关闭记事">×</button></div><div class="note-body"><label for="draft-select">草稿</label> <select id="draft-select" aria-label="选择要继续的草稿"><option value="new">新建记事</option></select><label class="sr-only" for="note-text">记事内容</label><textarea id="note-text" rows="5" maxlength="600" placeholder="先记下来，等会儿接着想。"></textarea><div class="note-bottom"><span>⌘ / Ctrl＋Enter 挂上去</span><button class="button small" id="hang-note">挂上去 ↑</button></div></div></div>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span>为 macOS 菜单栏而做 · 改造自开源项目 Tendedero</p>
+        <h1 id="hero-title"><span class="line">让眼前的资料，</span><span class="line">一直在<em>手边</em>。</span></h1>
+        <p class="lead">文夹 Inkpeg 在屏幕上方拉一根绳。截图、文字、图片、PDF 和普通文件拖上去就挂住；单击复制，点一下<span class="red-word">小红段</span>随手记事。资料只存在你的 Mac 里。</p>
+        <div class="hero-cta"><a class="btn btn-ink" href="#download"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 16h12"/></svg>下载文夹 2.0.0</a><a class="btn btn-line" href="#playground">在网页里试一试<span aria-hidden="true"> →</span></a></div>
+        <p class="hero-film"><a href="#film"><span aria-hidden="true">▶</span> 先看 52 秒宣传片</a></p>
+        <ul class="status-line" aria-label="版本状态"><li><b>2.0.0</b></li><li>macOS 14+</li><li>Apple Silicon ＋ Intel</li><li>安装助手随包提供</li></ul>
       </div>
-      <div class="guide-bar">
-        <div class="guide-copy"><span id="guide-number">01</span><div><strong id="guide-title">把眼前的材料，挂起来。</strong><p id="guide-description">拖动桌面的 PDF，或点击文章里的“挂到绳上”。</p></div></div>
-        <div class="guide-controls"><button id="recent-taken-down" aria-controls="recovery-dialog" aria-expanded="false" hidden>最近取下</button><button id="undo-take-down" hidden>撤销取下</button><button id="guide-play" class="guide-play" aria-pressed="false"><span id="play-icon" aria-hidden="true">▶</span><span id="play-label">播放引导</span></button><button id="guide-next" class="guide-next" aria-label="查看下一步引导">下一步 →</button><button id="reset-desk" class="reset-desk" aria-label="重播引导，保留我的内容" title="重播引导，保留我的内容">↻</button></div>
-      </div>
-      <div class="step-tabs" role="group" aria-label="选择体验步骤"><button class="active" data-step="0" aria-pressed="true"><span>01</span> 产生</button><button data-step="1" aria-pressed="false"><span>02</span> 挂入</button><button data-step="2" aria-pressed="false"><span>03</span> 找到</button><button data-step="3" aria-pressed="false"><span>04</span> 复用</button></div>
+      <figure class="hero-shot" aria-label="文夹界面示意：屏幕上方的绳子挂着截图、文字和文件卡片">
+        <div class="hero-shot-frame"><div class="hero-shot-scaler" id="hero-shot"></div></div>
+
+      </figure>
     </div>
-    <div class="hero-footnote"><span>为 macOS 而做 · M 系列与 Intel 通用包</span><span>单击记事继续写，单击文字复制；更多操作点“···”。</span></div>
   </section>
-  <section class="story wrap" id="features" aria-labelledby="story-title">
-    <div class="section-heading"><p class="eyebrow">少一点翻找，多一点专注。</p><h2 id="story-title">从“放哪儿了”，<br class="natural-break">到“就在这里”。</h2><a class="text-link" href="#daily">跳到功能介绍 ↓</a></div>
-    <div class="story-stage" aria-hidden="true"><div class="story-rope"><svg viewBox="0 0 700 70" preserveAspectRatio="none"><path d="M0 12 Q350 84 700 12"/></svg></div><div class="story-paper paper-one"><span class="story-pin"></span><span class="paper-text">让注意力，<br>回到事情本身。</span><p>01 · 产生摘记</p></div><div class="story-paper paper-two"><span class="story-pin"></span><span class="paper-text">让注意力，<br>回到事情本身。</span><p>02–03 · 挂入、找到</p></div><div class="story-paper paper-three"><span class="story-pin"></span><span class="paper-text">让注意力，<br>回到事情本身。</span><p>04 · 原样复用</p></div><span class="story-caption before-caption">这份摘记，从文章来到绳上。</span><span class="story-caption after-caption">找到刚才那一句，原样带到下一处。</span></div>
+
+  <section class="film" id="film" aria-labelledby="film-title">
+    <div class="wrap film-grid">
+      <div class="film-copy">
+        <p class="tag"><i></i>先看一遍 · 52 秒</p>
+        <h2 id="film-title">看 52 秒，<br class="br-md">了解文夹。</h2>
+        <p class="section-sub">从“截图又找不到”说起：挂入、复制、记事、满绳浏览、拖出副本，再到资料只留在本机。</p>
+        <ol class="film-chapters" aria-label="宣传片章节，点击从该处播放">
+          <li><button type="button" data-t="0"><time>0:00</time>痛点：散落与覆盖</button></li>
+          <li><button type="button" data-t="10"><time>0:10</time>一根绳亮相</button></li>
+          <li><button type="button" data-t="15.1"><time>0:15</time>拖到绳边就挂上</button></li>
+          <li><button type="button" data-t="21.1"><time>0:21</time>单击复制</button></li>
+          <li><button type="button" data-t="26.1"><time>0:26</time>小红段记事</button></li>
+          <li><button type="button" data-t="32.1"><time>0:32</time>满绳横向浏览<em>预览</em></button></li>
+          <li><button type="button" data-t="37.1"><time>0:37</time>拖出的是副本<em>预览</em></button></li>
+          <li><button type="button" data-t="42.1"><time>0:42</time>资料只在本机</button></li>
+        </ol>
+      </div>
+      <figure class="film-card">
+        <div class="film-frame">
+          <picture class="film-poster">
+            <source srcset="media/poster-promo.webp" type="image/webp">
+            <img src="media/poster-promo.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+          </picture>
+          <video class="film-teaser" id="film-teaser" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-sources='[["media/promo-teaser.webm","video/webm"],["media/promo-teaser.mp4","video/mp4"]]'></video>
+          <button class="film-play" id="film-play" type="button" aria-haspopup="dialog" aria-controls="film-dialog">
+            <span class="film-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>
+            <span class="film-play-text"><b>播放宣传片</b><small>有声 · 0:52 · 中文字幕</small></span>
+          </button>
+          <span class="film-badge" aria-hidden="true">预览片段 · 静音</span>
+        </div>
+
+      </figure>
+    </div>
   </section>
-  <section class="daily wrap" id="daily" aria-labelledby="daily-title">
-    <div class="section-heading"><p class="eyebrow">轻轻挂上，随手接着用。</p><h2 id="daily-title">只为眼前这一段工作。</h2></div>
-    <div class="feature-lines"><article><span class="feature-index">01 / 留住</span><div><h3>截图、文字、文件，都能挂。</h3><p>拖到绳子附近，或从菜单挂入。需要连续整理时，在设置里按需开启剪贴板自动接收、截图目录监听。</p></div></article><article><span class="feature-index">02 / 接续</span><div><h3>一点小红段，想法就有了落点。</h3><p>新建记事、粘贴文字，草稿在本地自动保存。挂上去后，点击记事卡继续写；其他材料单击复制，右键查看来源或打开副本。</p><span class="feature-detail">⌘V 粘贴 · ⌘Return 挂上去</span></div></article><article><span class="feature-index">03 / 在手边</span><div><h3>挂满了，左右看看。</h3><p>触控板左右滚动，或点击翻页箭头。卡片不会因为屏幕变窄或继续挂入而自动取下。用完再取下，副本仍然保留。</p></div></article><article><span class="feature-index">04 / 放心用</span><div><h3>材料留在本机，原件留在原处。</h3><p>不需要账号或云端模型。挂入和拖出都使用副本；存储页先预览、再清理，移入系统废纸篓，保护正在使用的材料和草稿。</p><span class="feature-detail">本地资料库 · 清理前可核对</span></div></article></div>
+
+  <dialog class="film-dialog" id="film-dialog" aria-label="文夹 Inkpeg 宣传片">
+    <div class="film-dialog-inner">
+      <div class="film-dialog-bar"><span>文夹 Inkpeg · 宣传片 <small>0:52</small></span><button type="button" class="film-close" id="film-close" aria-label="关闭视频（Esc）"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"/></svg></button></div>
+      <div class="film-dialog-frame">
+        <video id="film-video" controls playsinline preload="none" width="1920" height="1080" data-poster="media/poster-promo.jpg">
+          <source src="media/promo-720.mp4" type="video/mp4" media="(max-width: 720px)">
+          <source src="media/promo-1080.webm" type="video/webm">
+          <source src="media/promo-1080.mp4" type="video/mp4">
+          <track kind="captions" src="media/promo.zh.vtt" srclang="zh-CN" label="中文字幕">
+          你的浏览器不支持内嵌视频，可以<a href="media/promo-1080.mp4">直接下载 MP4</a>。
+        </video>
+      </div>
+    </div>
+  </dialog>
+
+  <section class="playground-section" id="playground" tabindex="-1" aria-labelledby="pg-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="tag"><i></i>01 · 试一试</p>
+        <h2 id="pg-title">在这张桌面上，<br class="br-md">挂入第一份材料。</h2>
+        <p class="section-sub">试试这些操作：拖到绳子附近松手挂入、单击复制、点小红段记事、右键看更多。</p>
+      </div>
+      <div class="pg-layout">
+        <div class="stage-shell" id="stage-shell">
+          <div class="stage-frame"><div class="stage-scaler" id="stage-scaler"></div></div>
+
+        </div>
+        <aside class="pg-side" aria-label="体验清单">
+          <div class="pg-side-head"><strong>体验清单</strong><span id="task-progress">0 / 8</span></div>
+          <ol class="tasks" id="tasks">
+            <li data-task="hang"><b>拖进来就挂上</b><span>把桌面上的文件或高亮文字拖到绳子附近，松手。键盘：聚焦图标后按回车。</span></li>
+            <li data-task="copy"><b>单击复制</b><span>单击一张材料卡，下方出现“已复制”。</span></li>
+            <li data-task="note"><b>点小红段，随手记</b><span>绳子 61.8% 处的小红段。<kbd>⌘</kbd><kbd>↩</kbd> 挂上去，Esc 收起保留草稿。</span></li>
+            <li data-task="menu"><b>右键看来源与操作</b><span>右键卡片、小红段，或点菜单栏的回形针。</span></li>
+            <li data-task="scroll"><b>挂满了，左右看</b><em class="pv">开发预览</em><span>点“挂满绳子”，再用触控板横滑、Shift＋滚轮或底部箭头。</span></li>
+            <li data-task="dragout"><b>拖出去的是副本</b><em class="pv">开发预览</em><span>把卡片拖进右侧“写作”窗口或“导出”文件夹，卡片仍留在绳上。</span></li>
+            <li data-task="toggle"><b>收起与展开</b><span>按 <kbd>⌃</kbd><kbd>⌥</kbd><kbd>T</kbd> 或从回形针菜单隐藏；鼠标移到屏幕顶部展开。</span></li>
+            <li data-task="clean"><b>先预览，再清理</b><span>取下一张卡，打开“设置 → 存储 → 预览清理…”。</span></li>
+          </ol>
+          <div class="pg-controls">
+            <button class="btn btn-ink btn-sm" id="demo-play" type="button" aria-pressed="false"><span class="ico" aria-hidden="true">▶</span><span class="lbl">自动演示</span></button>
+            <button class="btn btn-line btn-sm" id="demo-fill" type="button">挂满绳子</button>
+            <button class="btn btn-line btn-sm" id="demo-reset" type="button" aria-label="重置桌面">↻ 重置</button>
+          </div>
+        </aside>
+      </div>
+    </div>
   </section>
-  <section class="download-section" id="download" aria-labelledby="download-title"><div class="download-inner wrap"><div><p class="eyebrow">给桌面，添一根绳。</p><h2 id="download-title">下一份材料，<br class="natural-break">就挂在手边。</h2><p class="download-summary">文夹 Inkpeg 0.2.0 · 预览版（build 2）<br class="natural-break">macOS 14 及以上 · M 系列与 Intel 双架构</p><a class="button download-button" href="downloads/Inkpeg-0.2.0-build2-universal.dmg" download="Inkpeg-0.2.0-build2-universal.dmg"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v11m-4-4 4 4 4-4M3 14v4h14v-4"/></svg>下载 Mac 通用版 <span id="download-size"></span></a><div class="download-links"><a href="downloads/SHA256SUMS.txt" download>SHA-256 校验</a><a href="install.html">安装与升级说明</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">源码仓库 ↗</a></div></div><div class="install-notes"><h3>首次安装，或从旧版升级。</h3><ol><li><span>先确认来源和系统要求。</span><p>macOS 14 及以上。核对安装包与同版校验值，再开始首次安装。</p></li><li><span>打开 DMG，拖入“应用程序”。</span><p>从“应用程序”启动。文夹在屏幕上方，鼠标靠近顶部或按 ⌃⌥T 展开。</p></li><li><span>这是预览包。</span><p>尚无 Developer ID 签名和 Apple 公证。首次打开可能需要你核对来源后，在系统设置中确认。</p></li></ol><p class="release-note">Intel 架构已编译并随包提供，Intel 实机验收仍待完成。微信／Codex 的真实拖入接收、旧系统和多屏也待实测。<a href="install.html#limits">阅读安装步骤与本版限制 →</a></p></div></div></section>
-  <section class="faq wrap" aria-labelledby="faq-title"><h2 id="faq-title">再问几句。</h2><div><details><summary>这是文件管理器或永久收藏夹吗？</summary><p>文夹主要放眼前正在使用的材料。完整事项、历史列表和双栏对照尚未实现。取下卡片会保留副本，清理前请逐项核对。</p></details><details><summary>能拖到微信、Codex 等输入框吗？</summary><p>当前提供纯文字、PNG／TIFF 和可读取文件副本，并保留 Finder 文件拖放。具体输入框的实际接收仍待验收；不接收时可用“复制 → 目标应用 ⌘V”。上面的桌面用于体验操作方式，不会调用你电脑里的应用。</p></details><details><summary>为什么访问仓库需要权限？</summary><p>Inkpeg 仓库目前是私有的，只有获授权的 GitHub 账号能访问。页面下载提供的是本次内部测试包，不需要通过 GitHub 下载。</p></details><details><summary>支持哪些电脑和系统？</summary><p>当前包包含 Apple Silicon（M 系列）与 Intel（x86_64），最低 macOS 14。编译支持不等于所有机器都已验收，尤其 Intel、较旧系统和首次安装还需要实际测试。</p></details></div></section>
+
+  <section class="story" id="story" aria-labelledby="story-title">
+    <div class="wrap story-wrap">
+      <div class="story-text">
+        <p class="tag"><i></i>02 · 为什么需要一根绳</p>
+        <h2 id="story-title">从“放哪儿了”，<br>到“就在这里”。</h2>
+        <ol class="story-steps" id="story-steps">
+          <li class="active"><span class="n">痛点 1</span><h3>截图刚截完，就淹没在桌面里。</h3><p>一下午截了十几张，文件名全是时间。要用的那一张，又得一个个点开找。</p></li>
+          <li><span class="n">痛点 2</span><h3>剪贴板只记得最后一次。</h3><p>复制第二段，第一段就没了。只好在几个窗口之间复制、切换、粘贴，再复制。</p></li>
+          <li><span class="n">痛点 3</span><h3>来回翻找，打断的是思路。</h3><p>文件夹、聊天记录、浏览器标签……眼前这一段工作要用的几份材料，散在不同地方。</p></li>
+          <li><span class="n">文夹的做法</span><h3>挂在屏幕上方，伸手就拿。</h3><p>眼前要用的材料挂成一排：单击复制，拖出副本，原件留在原处。用完取下，资料库里的副本仍保留。</p></li>
+        </ol>
+      </div>
+      <div class="story-stage" id="story-stage" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="features" id="features" aria-labelledby="feat-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="tag"><i></i>03 · 能做什么</p>
+        <h2 id="feat-title">一根绳上的几种小动作。</h2>
+        <p class="section-sub">每一项都对应 App 里的真实交互。标注“开发预览”的功能已随 2.0 公开预览包提供；真实跨应用与平台验收边界见本版限制。</p>
+      </div>
+      <div class="bento" id="bento">
+        <article class="tile t-drop"><div class="viz viz-drop" aria-hidden="true"></div><div class="tile-copy"><h3>拖进来，就挂上。</h3><p>图片、文字、PDF、本地普通文件，拖到绳子附近松手；或右键小红段选“粘贴挂入”“挂入文件…”。保存独立副本，原件留在原处。</p><p class="fine">上限：文字 1 MiB · 图片 16 MiB／3200 万像素 · 普通文件 64 MiB · 每批 32 项／64 MiB。超限会拒绝并提示。</p></div></article>
+        <article class="tile t-copy"><div class="viz viz-copy" aria-hidden="true"></div><div class="tile-copy"><h3>单击，就复制。</h3><p>普通材料单击即复制，到目标应用 <kbd>⌘</kbd><kbd>V</kbd>。记事卡单击则继续编辑。</p></div></article>
+        <article class="tile t-note"><div class="viz viz-note" aria-hidden="true"></div><div class="tile-copy"><h3>一点小红段，想法有了落点。</h3><p>新建或恢复记事，支持 <kbd>⌘</kbd><kbd>V</kbd> 粘贴；边写边存本地草稿，首行作卡片标题，<kbd>⌘</kbd><kbd>↩</kbd> 挂上去。Esc、关闭或失焦收起并保留草稿。</p></div></article>
+        <article class="tile t-menu"><div class="viz viz-menu" aria-hidden="true"></div><div class="tile-copy"><h3>右键，看来源与副本。</h3><p>查看来源和详情、复制并附来源、打开或标注副本、在 Finder 中显示、取下卡片。来源可补录，不会凭空生成出处。</p></div></article>
+        <article class="tile t-scroll"><div class="viz viz-scroll" aria-hidden="true"></div><div class="tile-copy"><h3>挂满了，左右看看。<em class="pv">开发预览</em></h3><p>满绳后保留全部卡片：触控板左右滚动、Shift＋滚轮或底部左右箭头；新卡片会进入可见范围，不会因屏幕变窄被自动取下。</p></div></article>
+        <article class="tile t-out"><div class="viz viz-out" aria-hidden="true"></div><div class="tile-copy"><h3>拖出去的，是副本。<em class="pv">开发预览</em></h3><p>文字带着换行，图片提供 PNG／TIFF 与独立副本，文件提供可读取副本，并保留 Finder 文件拖放。微信／Codex 的实际接收尚待验收，可用“复制 → ⌘V”。</p></div></article>
+        <article class="tile t-auto"><div class="viz viz-auto" aria-hidden="true"></div><div class="tile-copy"><h3>需要时，才自动接收。</h3><p>新工作区默认手动挂入。可在设置中选择剪贴板自动接收的类型，或监听截图目录；自己复制出去的和重复内容不会再建卡。</p></div></article>
+        <article class="tile t-key"><div class="viz viz-key" aria-hidden="true"><kbd>⌃</kbd><kbd>⌥</kbd><kbd>T</kbd></div><div class="tile-copy"><h3>不用时，藏在菜单栏后面。</h3><p>鼠标靠近屏幕顶部展开，<kbd>⌃</kbd><kbd>⌥</kbd><kbd>T</kbd> 显示或隐藏。默认没有 Dock 图标，入口是菜单栏的回形针。</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="privacy" id="privacy" aria-labelledby="privacy-title">
+    <div class="wrap privacy-grid">
+      <div class="privacy-copy">
+        <p class="tag"><i></i>04 · 资料留在本机</p>
+        <h2 id="privacy-title">不需要账号，<br>也不上云。</h2>
+        <ul class="promises">
+          <li><b>本机资料库</b><span>默认位于 <code>~/Library/Application Support/Inkpeg/</code>：材料与版本、导出临时副本、草稿、恢复事务、清理记录和设置状态。</span></li>
+          <li><b>原件不动</b><span>挂入和拖出都使用副本。升级只更换应用，保留资料库。</span></li>
+          <li><b>剪贴板默认不读</b><span>剪贴板自动接收默认关闭；开启后只接收你选择的类型，可随时暂停。</span></li>
+          <li><b>清理先预览</b><span>只清理已取下且未固定的材料和超过 24 小时的临时导出，移入系统废纸篓；应用不会自动清空废纸篓。</span></li>
+        </ul>
+        <p class="honest">如实说明：工程没有应用联网功能，但完整的运行时网络观察尚未完成，源码检查不等于完整隐私认证。一键隐私开关、自定义资料库位置尚未实现。</p>
+      </div>
+      <div class="privacy-demo">
+        <div class="lib-tree" aria-label="资料库结构">
+          <p class="lib-path"><span class="folder" aria-hidden="true"></span>~/Library/Application Support/<b>Inkpeg</b>/</p>
+          <ul><li><code>Materials/</code><span>材料及版本</span></li><li><code>Exports/</code><span>复制文件、外部打开生成的临时导出</span></li><li><code>Drafts/</code> <code>Transactions/</code><span>草稿及编辑恢复记录</span></li><li><code>CleanupRecords/</code><span>清理前清单、状态和废纸篓结果</span></li><li><code>state.json</code> <code>state.previous.json</code><span>当前与备用状态及设置</span></li></ul>
+        </div>
+        <div class="panel-preview"><div class="panel-scaler" id="panel-scaler"></div><p class="stage-caption">点“预览清理…”查看清理项目</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="download" id="download" aria-labelledby="download-title">
+    <div class="wrap download-grid">
+      <div class="dl-card">
+        <div class="dl-rope" aria-hidden="true"></div>
+        <p class="tag"><i></i>05 · 下载</p>
+        <h2 id="download-title">给桌面，<br>添一根绳。</h2>
+        <p class="dl-meta">文夹 Inkpeg 2.0.0 · build 3<br>macOS 14 及以上 · Apple Silicon（M 系列）与 Intel 双架构</p>
+        <a class="btn btn-ink btn-lg" id="download-btn" href="downloads/Inkpeg-2.0.0-build3-universal.dmg" download="Inkpeg-2.0.0-build3-universal.dmg"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 16h12"/></svg>下载 Mac 通用版 <span id="download-size" class="size" data-pending="size">（2.5 MB）</span></a>
+        <details class="checksum-details"><summary>核对下载文件（可选）</summary><div class="sha"><span>SHA-256</span><code id="sha-value" data-pending="sha256">001b58cfd41afc2b415ad73cc3cdd26ca5e64cc31ae165ed2d50c97e84fe0d2f</code><button type="button" id="sha-copy" class="mini">复制</button></div></details>
+        <div class="dl-links"><a href="downloads/SHA256SUMS.txt" download>SHA256SUMS.txt</a><a href="downloads/安装教程.md" download>安装与升级说明</a><a href="downloads/本版限制.md" download>本版限制</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">源码仓库（需授权）↗</a></div>
+      </div>
+      <div class="install">
+        <h3>安装三步</h3>
+        <ol class="steps"><li><b>下载并打开安装包。</b><span>点左侧“下载 Mac 通用版”，下载完成后双击 DMG，打开安装窗口。</span></li><li><b>双击“安装文夹.command”。</b><span>终端打开后按回车确认，等待“安装完成”。它会安装并启动文夹。</span></li><li><b>鼠标移到屏幕顶部。</b><span>绳子展开后，拖入一份图片、文字或文件就能开始使用。也可按 <kbd>⌃</kbd><kbd>⌥</kbd><kbd>T</kbd> 显示文夹。</span></li></ol>
+        <details class="install-help"><summary>安装助手被系统拦截怎么办？</summary><p>先尝试打开一次，再到“系统设置 → 隐私与安全性”点击“仍要打开”，然后重新运行“安装文夹.command”。按系统提示自行确认即可。</p></details>
+        <p class="release-note">升级前先从文夹菜单退出旧版。安装助手保留旧 App，资料库保持不变。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <h2 id="faq-title">再问几句。</h2>
+      <div class="faq-list">
+        <details><summary>这是文件管理器或永久收藏夹吗？</summary><p>不是。文夹主要放眼前正在用的材料。事项／历史列表和双栏对照尚未实现。取下卡片会保留副本，清理前请逐项核对名称。</p></details>
+        <details><summary>能拖到微信、Codex 等输入框吗？</summary><p>开发预览提供纯文字、PNG／TIFF 和可读取文件副本，并保留 Finder 文件拖放。具体输入框的实际接收仍待验收；不接收时可用“复制 → 目标应用 ⌘V”。网页上的桌面只用于体验操作方式，不会调用你电脑里的应用。</p></details>
+        <details><summary>PDF、视频能预览吗？</summary><p>PDF、视频等按普通文件托管，接收的是独立副本，并不代表支持预览或理解所有格式。</p></details>
+        <details><summary>为什么访问仓库需要权限？</summary><p>Inkpeg 仓库目前是私有的，只有获授权的 GitHub 账号能访问。安装包直接由本站提供，不需要通过 GitHub 下载。</p></details>
+        <details><summary>支持哪些电脑和系统？</summary><p>安装包按 Apple Silicon（M 系列）与 Intel（x86_64）通用版构建，最低 macOS 14。编译支持不等于所有机器都已验收：2.0.0 本机验收环境为 Apple Silicon／macOS 26.6.2；Intel 实机、较旧系统和新机首次安装仍待测试。</p></details>
+        <details><summary>清理之后，空间为什么没变小？</summary><p>清理是移入系统废纸篓，应用不会自动清空。真正释放空间需要你自行清空废纸篓；清理记录本身会保留，清理很小的文件后总占用可能短暂增加。</p></details>
+      </div>
+    </div>
+  </section>
 </main>
-<footer class="site-footer wrap"><a class="brand" href="#top"><img src="assets/mark.svg" width="24" height="24" alt=""><span>文夹<span class="brand-en">Inkpeg</span></span></a><p>把眼前的资料，留在手边。</p><div><a href="https://chenshi.ai" target="_blank" rel="noopener noreferrer">陈石 · chenshi.ai ↗</a><span>基于 <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener noreferrer">Tendedero</a> 改造 · <a href="LICENSE.txt">MIT 许可</a></span></div></footer>
-<div class="card-popover" id="card-popover" role="dialog" aria-label="卡片操作" hidden><strong id="popover-title"></strong><button id="card-copy">复制文字</button><button id="card-send">拖出到输入窗口 ↗</button><button id="card-edit" hidden>继续记事</button><button id="card-take-down">取下卡片</button><button id="popover-close">关闭</button></div>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="#top"><img src="assets/mark.svg" width="26" height="26" alt=""><span class="brand-zh">文夹</span><span class="brand-en">Inkpeg</span></a>
+    <p class="credit">基于 Alejandro Buján 的开源项目 <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener noreferrer">Tendedero</a> 改造，保留原作者版权与 <a href="LICENSE.txt">MIT 许可</a>；采用独立名称，不暗示原作者背书。动效使用本地分发的 GSAP 3.15.0（<a href="vendor/GSAP-LICENSE.txt">许可</a>）。</p>
+    <p class="author"><a href="https://chenshi.ai" target="_blank" rel="noopener noreferrer">陈石 · chenshi.ai ↗</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">GitHub · CSlawyer1985/Inkpeg（需授权）↗</a></p>
+  </div>
+</footer>
+<div class="site-toast" id="site-toast" role="status" aria-live="polite"></div>
 <noscript><p class="noscript-notice">启用 JavaScript 可体验交互桌面；安装包、说明和仓库链接仍可直接使用。</p></noscript>
 </body>
 </html>

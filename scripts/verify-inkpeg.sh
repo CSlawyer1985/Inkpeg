@@ -17,6 +17,7 @@ run() {
   return "$status"
 }
 run release-contract python3 scripts/test-release.py
+run installer-contract python3 scripts/test-installer.py
 run native env -i PATH=/usr/bin:/bin DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer LANG=en_US.UTF-8 /usr/bin/swift test --scratch-path "$work/swift-tests"
 run build env -i PATH=/usr/bin:/bin:/opt/homebrew/bin DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer LANG=en_US.UTF-8 /bin/bash scripts/build-inkpeg.sh --configuration release --architectures universal --no-sign
 app="$(tail -n 1 "$work/build.log")"

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Assemble an internal DMG; never install, sign, or change security settings.
+# Assemble a preview DMG; the included helper runs only on explicit user action.
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
 app_source=""
@@ -50,6 +50,8 @@ output="$(cd "$output" && pwd)"
 stage="$work/stage"
 mkdir "$stage"
 ditto --norsrc --noextattr "$app_source" "$stage/Inkpeg.app"
+cp "$project_root/packaging/安装文夹.command" "$stage/安装文夹.command"
+chmod +x "$stage/安装文夹.command"
 cp "$project_root/LICENSE" "$stage/LICENSE"
 cp "$project_root/packaging/来源与致谢.txt" "$stage/来源与致谢.txt"
 awk -v label="$architecture_label" '/^通用架构：/ { print "本包架构：" label " · 最低 macOS 14"; next } { print }' "$project_root/packaging/先读我-安装与使用.txt" > "$stage/先读我-安装与使用.txt"
@@ -66,10 +68,16 @@ Architecture: $architecture ($arch_list)
 Minimum deployment target: macOS 14
 No Developer ID signature or Apple notarization supplied by this packaging step.
 Linker ad hoc signature is not developer identity verification.
-This is an preview build, not a public 1.0 release.
+This is a public preview. The installation helper only prepares its installed Inkpeg copy on explicit confirmation.
 INFO
 "$stage/Inkpeg.app/Contents/MacOS/Inkpeg" --check-resources
-dmg="$output/文夹-Inkpeg-$version-preview-$stamp-$architecture.dmg"
+python3 - "$stage" <<'CHECKSUMS'
+import hashlib,pathlib,sys
+stage=pathlib.Path(sys.argv[1]);app=stage/'Inkpeg.app'
+(stage/'安装校验.sha256').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(stage))+'\n' for p in sorted(app.rglob('*')) if p.is_file()))
+CHECKSUMS
+build="$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$plist")"
+dmg="$output/Inkpeg-$version-build$build-$architecture.dmg"
 hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version 预览版" -format UDZO -imagekey zlib-level=9 "$dmg"
 hdiutil verify "$dmg"
 cp "$stage/先读我-安装与使用.txt" "$output/先读我-安装与使用.txt"

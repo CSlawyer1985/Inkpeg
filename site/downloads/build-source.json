@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "head": "2c6048f279e24c06a385da374ca8a5bf06883ea0",
+  "head": "5342da90411b1e0142ca9535ed580ec1438e6f55",
   "dirty": true,
-  "sha256": "4ba6e89b661cd444b12e618a28265c2636ba03a1c7047dea46a782cef213bb98",
+  "sha256": "ab1d79e48a1752e8031e3a10af924a7e57130ae77ae8f2587dd1b54c92ff2a40",
   "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
   "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.",
   "files": [
@@ -228,71 +228,75 @@
     },
     {
       "path": "docs/inkpeg/INSTALL.md",
-      "sha256": "9c5f49c2e9c174ddada94e29efa09bb61f38c07d40b5acc10b906862012cf96b"
+      "sha256": "2fbd9c9f405804d5b788e4b39e876701afa3b6470b87bc78bd9dbd860f889300"
     },
     {
       "path": "docs/inkpeg/KNOWN-ISSUES.md",
-      "sha256": "27b0577aca2f746dc1e28362d5077e171cd5c1ee298467723279d30cca9352cc"
+      "sha256": "1d5d84e5c12479f6edd241b6a5ea75287bd30850e6c9f58841761580753acbeb"
     },
     {
       "path": "packaging/brand/Inkpeg.icns",
-      "sha256": "4d70aa62b6e5eb607e6c9d3fdcccd2474b0415feb397673a70e730268974303a"
+      "sha256": "6f70a0d0954b24838f9bf143d8e51997117a9ab5102b3c185f4f014e7b8f9d1d"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_128x128.png",
-      "sha256": "362ab8ec4a156fecd1a8ceabffff5bc835d8835b89c7436af92c26560b241b83"
+      "sha256": "9ff77546fa0cb40ce1ad01b7bb4325a23ceb518e5399943385b290d8db3f4429"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_128x128@2x.png",
-      "sha256": "3438f1d3d2f3f3ffc0b02617745035667eba779375f8f3fa39d873a4601bd2d9"
+      "sha256": "101a5bcc2ba4cc44867eadcdd4fcc37cb690c150621d4a801860d020946364f3"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_16x16.png",
-      "sha256": "a2cb02581fbc9bf7bb2b84fb4594eb5b50b13675267b228f9d60faeb085e1d99"
+      "sha256": "123677ce40c1684238521b379b90a6e04eccfca7bb1d53d513ecca9855fdfb21"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_16x16@2x.png",
-      "sha256": "8fc53ff44c8fa9d4f192ab53f8ee7ee9d1f1db8db7588c973f07acfde6d4fbb0"
+      "sha256": "8be2f8a16f1f3d6ebf05e3b95a8aeabf200aa2313a9b006f9ba598830a9aeaac"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_256x256.png",
-      "sha256": "3438f1d3d2f3f3ffc0b02617745035667eba779375f8f3fa39d873a4601bd2d9"
+      "sha256": "101a5bcc2ba4cc44867eadcdd4fcc37cb690c150621d4a801860d020946364f3"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_256x256@2x.png",
-      "sha256": "33ea42564116366d7c6d9ceceb3e6862d579d9ef7c4eb22c107ab27572ba7443"
+      "sha256": "9bb39825d3e2fd1057bccad60f3ceb2995a68fb1f75bf2d622f798b4e1073bb9"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_32x32.png",
-      "sha256": "8fc53ff44c8fa9d4f192ab53f8ee7ee9d1f1db8db7588c973f07acfde6d4fbb0"
+      "sha256": "8be2f8a16f1f3d6ebf05e3b95a8aeabf200aa2313a9b006f9ba598830a9aeaac"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_32x32@2x.png",
-      "sha256": "5689e89794d13f4b9c38424bdf49a404f5cc7f246c1e705a21523899e0156086"
+      "sha256": "b7026f07e6172ce52fdd89f2d20bdcb8d82229d428e30c9300e7035c2063605d"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_512x512.png",
-      "sha256": "33ea42564116366d7c6d9ceceb3e6862d579d9ef7c4eb22c107ab27572ba7443"
+      "sha256": "9bb39825d3e2fd1057bccad60f3ceb2995a68fb1f75bf2d622f798b4e1073bb9"
     },
     {
       "path": "packaging/brand/Inkpeg.iconset/icon_512x512@2x.png",
-      "sha256": "74f60f8efade0d69fdcbf1f92513cd714928db300c675c2eba76bf2fa9437ff5"
+      "sha256": "095d9eb0b7df7418d54e32577a130406721565ed52a85f1b65eb72557f6da480"
     },
     {
       "path": "packaging/brand/README.md",
-      "sha256": "e906f925cb7c1d7ee198eb70e93d6c99d70e742cd4f13142bfb3754a9faf9e92"
+      "sha256": "fa95915e1cb70659078bc8a5e5f91f0c87b110f96269109f29e4153111d59a3f"
     },
     {
       "path": "packaging/release-version.json",
-      "sha256": "28ca78bf1f90bcebf517d11d30c4928347d5cd2176f16ddb3dcc803f30d922f8"
+      "sha256": "282ba553a2b126e0348b8a2fd43baa78068d705af21bbb718103f0011849fdbc"
     },
     {
       "path": "packaging/先读我-安装与使用.txt",
-      "sha256": "687f1dd80db7e44e256479d9fff885064ab832a1e69f9f538da852fae338c565"
+      "sha256": "697e10bfa07b24a35d6c80ad76f58830898ecda223d07348cb693a36a5f9416a"
+    },
+    {
+      "path": "packaging/安装文夹.command",
+      "sha256": "625b7af06c9e06af240b7c187626ca30b856f9e58abb959bc52a1e82558e4d5b"
     },
     {
       "path": "packaging/来源与致谢.txt",
-      "sha256": "c82e89b689e73381b6862d1c33447c58c53e40f75b585f3a2e86687df10d7dbb"
+      "sha256": "f10d05b3dc646653b02db0c759b06c5c9888d3e120bb00937540b404b31c8ccc"
     },
     {
       "path": "scripts/build-inkpeg.sh",
@@ -300,23 +304,23 @@
     },
     {
       "path": "scripts/make-icon.swift",
-      "sha256": "02cf17e0d7149210f2ec97b261ebf468d29dbc9da2c16c21756c28da2ad97e75"
+      "sha256": "fea031602dc334e55c89f10b786ac8a40ba14d9be84b333ac322ab47f7a150b6"
     },
     {
       "path": "scripts/package-inkpeg.sh",
-      "sha256": "cf6a907600beb651e11e499ec0b36c9706b5dd391f8600f4217e3f0d2bfad481"
+      "sha256": "97dec4e2c9376a61e70bc98492d5006a37fc1fd567160332961293590c66511e"
     },
     {
       "path": "scripts/release-tools.py",
-      "sha256": "d174c424f8afbbebf3cdf21bca9b54df5ba99d3f7ce1521eb729ad5331349b16"
+      "sha256": "5b03916e7085fa3cc7e3ae2b2f61e377472f7cfef9cc2c7696e0a311ed3e7aaf"
     },
     {
       "path": "scripts/verify-inkpeg.sh",
-      "sha256": "c47f3413cf53ec25fdc02845facb35e2ddf65abe79e107a09d9166d83f16a57b"
+      "sha256": "f37cb0e8e7956cbdc0bc6748d7f3b81afefdc19c99706043bf17293f47e8a45a"
     },
     {
       "path": "site/assets/mark.svg",
-      "sha256": "e1cd0a78691519cfd2646a8960d92d117dc3f2255e4da75a97833e80de09c10e"
+      "sha256": "74fba34208bdaf874e4584928cd3c66ab773826283afea4ff79ecc9c5e0bad24"
     }
   ]
 }

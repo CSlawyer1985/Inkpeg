@@ -1,6 +1,6 @@
 {
-  "version": "0.2.0",
-  "build": "2",
+  "version": "2.0.0",
+  "build": "3",
   "minimumMacOS": "14.0",
   "architectures": [
     "arm64",
@@ -10,9 +10,9 @@
   "notarized": false,
   "channel": "preview",
   "architecture": "universal",
-  "file": "Inkpeg-0.2.0-build2-universal.dmg",
-  "sizeBytes": 2428708,
-  "sha256": "1374936e23c46c876cadfb09e784c7e0c6a4b8578eaed0d48d6e5a6f4573dbc4",
+  "file": "Inkpeg-2.0.0-build3-universal.dmg",
+  "sizeBytes": 2482800,
+  "sha256": "001b58cfd41afc2b415ad73cc3cdd26ca5e64cc31ae165ed2d50c97e84fe0d2f",
   "signing": {
     "binary": "ad-hoc",
     "bundleInspectionExit": 0,
@@ -27,10 +27,14 @@
   ],
   "sourceRecords": "build-source.json",
   "source": {
-    "head": "2c6048f279e24c06a385da374ca8a5bf06883ea0",
+    "head": "5342da90411b1e0142ca9535ed580ec1438e6f55",
     "dirty": true,
-    "sha256": "4ba6e89b661cd444b12e618a28265c2636ba03a1c7047dea46a782cef213bb98",
+    "sha256": "ab1d79e48a1752e8031e3a10af924a7e57130ae77ae8f2587dd1b54c92ff2a40",
     "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
     "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs."
-  }
+  },
+  "releaseDate": "2026-10-12",
+  "testCount": 391,
+  "testFailures": 0,
+  "installer": "安装文夹.command"
 }

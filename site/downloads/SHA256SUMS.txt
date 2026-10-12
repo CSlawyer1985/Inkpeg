@@ -1,1 +1,1 @@
-1374936e23c46c876cadfb09e784c7e0c6a4b8578eaed0d48d6e5a6f4573dbc4  Inkpeg-0.2.0-build2-universal.dmg
+001b58cfd41afc2b415ad73cc3cdd26ca5e64cc31ae165ed2d50c97e84fe0d2f  Inkpeg-2.0.0-build3-universal.dmg
