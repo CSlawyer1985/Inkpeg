@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "build": "3",
+  "build": "4",
   "minimumMacOS": "14.0",
   "architectures": [
     "arm64",
@@ -8,11 +8,13 @@
   ],
   "developerIDSigned": false,
   "notarized": false,
+  "diskImageVolume": "文夹 Inkpeg 2.0.0 build 4",
+  "installCommand": "/bin/bash \"/Volumes/文夹 Inkpeg 2.0.0 build 4/安装文夹.command\"",
   "channel": "preview",
   "architecture": "universal",
-  "file": "Inkpeg-2.0.0-build3-universal.dmg",
-  "sizeBytes": 2482800,
-  "sha256": "001b58cfd41afc2b415ad73cc3cdd26ca5e64cc31ae165ed2d50c97e84fe0d2f",
+  "file": "Inkpeg-2.0.0-build4-universal.dmg",
+  "sizeBytes": 2482270,
+  "sha256": "9ba8387f3551e64fb167bfb477b77a0701165b2d85a586230d336c5bc6211f45",
   "signing": {
     "binary": "ad-hoc",
     "bundleInspectionExit": 0,
@@ -27,14 +29,21 @@
   ],
   "sourceRecords": "build-source.json",
   "source": {
-    "head": "5342da90411b1e0142ca9535ed580ec1438e6f55",
+    "head": "29851e8fc9ab6c10eac60dbfcf79dfe0d23df195",
     "dirty": true,
-    "sha256": "ab1d79e48a1752e8031e3a10af924a7e57130ae77ae8f2587dd1b54c92ff2a40",
+    "sha256": "1ef09fe5314902d855ddf1dd6dbf84416d264574098b727f9e99607c2b5f4edd",
     "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
     "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs."
   },
   "releaseDate": "2026-10-12",
   "testCount": 391,
   "testFailures": 0,
-  "installer": "安装文夹.command"
+  "installer": "安装文夹.command",
+  "installerRootEntries": [
+    "Inkpeg.app",
+    "应用程序",
+    "安装文夹.command"
+  ],
+  "explicitLocalInstallerVerified": true,
+  "isolatedNativeStartupVerified": true
 }

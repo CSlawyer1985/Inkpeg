@@ -21,9 +21,19 @@ with sync_playwright() as pw:
     checks.append('Version/build, static download and requested caption removal match current release')
     for name in manifest['testRecords']+[manifest['sourceRecords']]:
         response=page.request.get(base+'/downloads/'+name); assert response.status==200; response.json()
-    expect(page.locator('.steps')).to_contain_text('安装文夹.command')
+    expect(page.locator('.steps')).to_contain_text('复制安装命令')
     expect(page.locator('.steps')).to_contain_text('回车')
-    checks.append('Three installation steps name the packaged helper; public provenance records load')
+    expect(page.locator('#install-command')).to_have_text(manifest['installCommand'])
+    page.context.grant_permissions(['clipboard-read','clipboard-write'])
+    page.locator('.install-command-box summary').click()
+    page.locator('#install-command-copy').click()
+    assert page.evaluate('navigator.clipboard.readText()')==manifest['installCommand']
+    page.evaluate("() => { navigator.clipboard.writeText = () => Promise.reject(new Error('Permission denied')); }")
+    page.locator('.install-command-box summary').click()  # Code starts folded, as for a first-time visitor.
+    page.locator('#install-command-copy').click()
+    expect(page.locator('#site-toast')).to_have_text('请复制已选中的安装命令')
+    assert page.evaluate('getSelection().toString()')==manifest['installCommand']
+    checks.append('Three installation steps, exact local command, clipboard copy and manual fallback match metadata')
     with page.expect_download() as pending: page.locator('#download-btn').click()
     download=pending.value; downloaded=out/download.suggested_filename; download.save_as(downloaded)
     assert downloaded.name==manifest['file'] and downloaded.stat().st_size==manifest['sizeBytes']
@@ -34,6 +44,11 @@ with sync_playwright() as pw:
     phone=mobile.new_page();phone.goto(base+'/?noreveal&motion=reduce');phone.wait_for_load_state('networkidle')
     assert phone.evaluate('document.documentElement.scrollWidth<=innerWidth')
     expect(phone.locator('.dl-meta')).to_contain_text(version['version'])
+    phone.locator('.install-command-box summary').click()
+    expect(phone.locator('#install-command')).to_have_text(manifest['installCommand'])
+    assert phone.evaluate('document.documentElement.scrollWidth<=innerWidth')
+    command_box=phone.locator('.install-command-box').bounding_box(); button=phone.locator('#install-command-copy').bounding_box()
+    assert command_box['width']>180 and button['width']>80 and button['height']<60, (command_box,button)
     phone.locator('#download').screenshot(path=str(out/'installation-mobile.png'))
     checks.append('Desktop and 390px mobile installation sections render without horizontal overflow')
     mobile.close(); browser.close()

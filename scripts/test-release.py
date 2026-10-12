@@ -8,7 +8,7 @@ release = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(release)
 class ReleaseContract(unittest.TestCase):
     def test_single_version(self):
-        self.assertEqual(release.version(ROOT), {'version':'2.0.0','build':'3','minimumMacOS':'14.0'})
+        self.assertEqual(release.version(ROOT), {'version':'2.0.0','build':'4','minimumMacOS':'14.0'})
     def test_dirty_fingerprint_includes_untracked_sources_excludes_metadata_and_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp); (root/'Sources/New').mkdir(parents=True)
@@ -22,7 +22,7 @@ class ReleaseContract(unittest.TestCase):
             source.write_text('changed source')
             self.assertNotEqual(release.fingerprint(before),release.fingerprint(release.inputs(root)))
     def test_plist_and_binary_minimum_must_match(self):
-        metadata = {'CFBundleShortVersionString':'2.0.0','CFBundleVersion':'3','LSMinimumSystemVersion':'14.0','CFBundleIconFile':'Inkpeg.icns'}
+        metadata = {'CFBundleShortVersionString':'2.0.0','CFBundleVersion':'4','LSMinimumSystemVersion':'14.0','CFBundleIconFile':'Inkpeg.icns'}
         release.check_metadata(metadata, ['14.0','14.0'], release.version(ROOT))
         with self.assertRaises(ValueError): release.check_metadata(metadata,['13.0','14.0'],release.version(ROOT))
         metadata['CFBundleVersion']='1'

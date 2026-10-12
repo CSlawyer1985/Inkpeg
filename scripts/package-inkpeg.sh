@@ -52,16 +52,15 @@ mkdir "$stage"
 ditto --norsrc --noextattr "$app_source" "$stage/Inkpeg.app"
 cp "$project_root/packaging/安装文夹.command" "$stage/安装文夹.command"
 chmod +x "$stage/安装文夹.command"
-cp "$project_root/LICENSE" "$stage/LICENSE"
-cp "$project_root/packaging/来源与致谢.txt" "$stage/来源与致谢.txt"
-awk -v label="$architecture_label" '/^通用架构：/ { print "本包架构：" label " · 最低 macOS 14"; next } { print }' "$project_root/packaging/先读我-安装与使用.txt" > "$stage/先读我-安装与使用.txt"
-cp "$project_root/docs/inkpeg/INSTALL.md" "$stage/安装教程.md"
-cp "$project_root/docs/inkpeg/KNOWN-ISSUES.md" "$stage/本版限制.md"
-# Keep attribution with the app even when it is copied out of the disk image.
-cp "$project_root/LICENSE" "$stage/Inkpeg.app/Contents/Resources/LICENSE"
-cp "$project_root/packaging/来源与致谢.txt" "$stage/Inkpeg.app/Contents/Resources/来源与致谢.txt"
+# Only the App, Applications shortcut and helper are visible in the DMG.
+resources="$stage/Inkpeg.app/Contents/Resources"
+cp "$project_root/LICENSE" "$resources/LICENSE"
+cp "$project_root/packaging/来源与致谢.txt" "$resources/来源与致谢.txt"
+awk -v label="$architecture_label" '/^通用架构：/ { print "本包架构：" label " · 最低 macOS 14"; next } { print }' "$project_root/packaging/先读我-安装与使用.txt" > "$resources/先读我-安装与使用.txt"
+cp "$project_root/docs/inkpeg/INSTALL.md" "$resources/安装教程.md"
+cp "$project_root/docs/inkpeg/KNOWN-ISSUES.md" "$resources/本版限制.md"
 ln -s /Applications "$stage/应用程序"
-cat > "$stage/BUILD-INFO.txt" <<INFO
+cat > "$resources/BUILD-INFO.txt" <<INFO
 Inkpeg $version preview
 Packaged at: $stamp (Asia/Shanghai)
 Architecture: $architecture ($arch_list)
@@ -74,16 +73,16 @@ INFO
 python3 - "$stage" <<'CHECKSUMS'
 import hashlib,pathlib,sys
 stage=pathlib.Path(sys.argv[1]);app=stage/'Inkpeg.app'
-(stage/'安装校验.sha256').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(stage))+'\n' for p in sorted(app.rglob('*')) if p.is_file()))
+(app/'Contents/Resources/安装校验.sha256').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(stage))+'\n' for p in sorted(app.rglob('*')) if p.is_file() and p.name!='安装校验.sha256'))
 CHECKSUMS
 build="$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$plist")"
 dmg="$output/Inkpeg-$version-build$build-$architecture.dmg"
-hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version 预览版" -format UDZO -imagekey zlib-level=9 "$dmg"
+hdiutil create -srcfolder "$stage" -volname "文夹 Inkpeg $version build $build" -format UDZO -imagekey zlib-level=9 "$dmg"
 hdiutil verify "$dmg"
-cp "$stage/先读我-安装与使用.txt" "$output/先读我-安装与使用.txt"
-cp "$stage/安装教程.md" "$output/安装教程.md"
-cp "$stage/本版限制.md" "$output/本版限制.md"
-cp "$stage/BUILD-INFO.txt" "$output/BUILD-INFO.txt"
+cp "$resources/先读我-安装与使用.txt" "$output/先读我-安装与使用.txt"
+cp "$resources/安装教程.md" "$output/安装教程.md"
+cp "$resources/本版限制.md" "$output/本版限制.md"
+cp "$resources/BUILD-INFO.txt" "$output/BUILD-INFO.txt"
 cp "$work/bundle-inspection.json" "$output/bundle-inspection.json"
 cp "$app_source/Contents/Resources/build-source.json" "$output/build-source.json"
 (cd "$output" && shasum -a 256 "$(basename "$dmg")" > SHA256SUMS.txt)

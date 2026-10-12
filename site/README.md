@@ -41,8 +41,10 @@ python3 scripts/check-site.py --url http://127.0.0.1:8767 --out /tmp/inkpeg-site
 
 1. 用 `scripts/build-inkpeg.sh --configuration release --no-sign` 构建；默认 universal。
 2. 用 `scripts/package-inkpeg.sh --app <已验证App> --output <新的输出目录>` 生成新包。
-3. 核验 DMG 架构／最低系统／资源／内容／SHA，复制成 `downloads/Inkpeg-2.0.0-build3-universal.dmg`。
+3. 核验 DMG 架构／最低系统／资源／内容／SHA，复制成 `downloads/Inkpeg-2.0.0-build4-universal.dmg`。
 4. 同步 `release.json` 的大小／SHA／版本／实测状态和 `SHA256SUMS.txt`，删除 `release.json` 中的 `pending`，同步两份说明。占位期间页面下载按钮自动停用。
 5. 重新执行网页下载测试，确保按钮实际返回这一包。升级版本时一起修改页面显示、文件名和链接，不能只改文案。
 
-当前发行 2.0.0／build 3，391 项原生回归与 7 项安装助手回归通过。DMG 内含实际 App 图标、`安装文夹.command` 和简明说明。网站仅显示必要操作提示；制作过程说明保留在此文件和媒体来源清单。
+当前发行 2.0.0／build 4，391 项原生回归与 11 项安装助手回归通过。DMG 内含实际 App 图标、`安装文夹.command` 和简明说明。网站仅显示必要操作提示；制作过程说明保留在此文件和媒体来源清单。
+
+安装助手默认自动运行，不要求另按回车；可选 `--confirm` 用于明确确认／取消测试。DMG 仅 App、应用程序快捷方式和助手3个可见入口。网站复制安装命令从 release.json 读取，必须与真实DMG卷名一致。

@@ -204,15 +204,15 @@
         <div class="dl-rope" aria-hidden="true"></div>
         <p class="tag"><i></i>05 · 下载</p>
         <h2 id="download-title">给桌面，<br>添一根绳。</h2>
-        <p class="dl-meta">文夹 Inkpeg 2.0.0 · build 3<br>macOS 14 及以上 · Apple Silicon（M 系列）与 Intel 双架构</p>
-        <a class="btn btn-ink btn-lg" id="download-btn" href="downloads/Inkpeg-2.0.0-build3-universal.dmg" download="Inkpeg-2.0.0-build3-universal.dmg"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 16h12"/></svg>下载 Mac 通用版 <span id="download-size" class="size" data-pending="size">（2.5 MB）</span></a>
-        <details class="checksum-details"><summary>核对下载文件（可选）</summary><div class="sha"><span>SHA-256</span><code id="sha-value" data-pending="sha256">001b58cfd41afc2b415ad73cc3cdd26ca5e64cc31ae165ed2d50c97e84fe0d2f</code><button type="button" id="sha-copy" class="mini">复制</button></div></details>
+        <p class="dl-meta">文夹 Inkpeg 2.0.0 · build 4<br>macOS 14 及以上 · Apple Silicon（M 系列）与 Intel 双架构</p>
+        <a class="btn btn-ink btn-lg" id="download-btn" href="downloads/Inkpeg-2.0.0-build4-universal.dmg" download="Inkpeg-2.0.0-build4-universal.dmg"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 16h12"/></svg>下载 Mac 通用版 <span id="download-size" class="size" data-pending="size">（2.5 MB）</span></a>
+        <details class="checksum-details"><summary>核对下载文件（可选）</summary><div class="sha"><span>SHA-256</span><code id="sha-value" data-pending="sha256">9ba8387f3551e64fb167bfb477b77a0701165b2d85a586230d336c5bc6211f45</code><button type="button" id="sha-copy" class="mini">复制</button></div></details>
         <div class="dl-links"><a href="downloads/SHA256SUMS.txt" download>SHA256SUMS.txt</a><a href="downloads/安装教程.md" download>安装与升级说明</a><a href="downloads/本版限制.md" download>本版限制</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">源码仓库（需授权）↗</a></div>
       </div>
       <div class="install">
         <h3>安装三步</h3>
-        <ol class="steps"><li><b>下载并打开安装包。</b><span>点左侧“下载 Mac 通用版”，下载完成后双击 DMG，打开安装窗口。</span></li><li><b>双击“安装文夹.command”。</b><span>终端打开后按回车确认，等待“安装完成”。它会安装并启动文夹。</span></li><li><b>鼠标移到屏幕顶部。</b><span>绳子展开后，拖入一份图片、文字或文件就能开始使用。也可按 <kbd>⌃</kbd><kbd>⌥</kbd><kbd>T</kbd> 显示文夹。</span></li></ol>
-        <details class="install-help"><summary>安装助手被系统拦截怎么办？</summary><p>先尝试打开一次，再到“系统设置 → 隐私与安全性”点击“仍要打开”，然后重新运行“安装文夹.command”。按系统提示自行确认即可。</p></details>
+        <ol class="steps"><li><b>下载并打开安装包。</b><span>点左侧“下载 Mac 通用版”，下载完成后双击 DMG，保持安装窗口打开。</span></li><li><b>复制命令，回车安装。</b><span>点下方“复制安装命令”，按 <kbd>⌘</kbd><kbd>空格</kbd> 搜索“终端”，打开后粘贴并按回车。文夹会自动装好并打开。</span><div class="install-command-box"><button type="button" id="install-command-copy" class="mini">复制安装命令</button><details><summary>查看安装命令</summary><code id="install-command">/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 4/安装文夹.command"</code></details></div></li><li><b>鼠标移到屏幕顶部。</b><span>绳子展开后，拖入一份图片、文字或文件就能开始使用。也可按 <kbd>⌃</kbd><kbd>⌥</kbd><kbd>T</kbd> 显示文夹。</span></li></ol>
+        <details class="install-help"><summary>终端首次粘贴出现提醒怎么办？</summary><p>若提示“可能是恶意软件，已阻止粘贴”，先核对“查看安装命令”：它只运行已打开 DMG 里的本地安装助手。确认来源是本站后，点“仍然粘贴”。若提示“检测到恶意软件”或“已阻止恶意脚本”，停止操作。</p></details>
         <p class="release-note">升级前先从文夹菜单退出旧版。安装助手保留旧 App，资料库保持不变。</p>
       </div>
     </div>
@@ -241,6 +241,6 @@
   </div>
 </footer>
 <div class="site-toast" id="site-toast" role="status" aria-live="polite"></div>
-<noscript><p class="noscript-notice">启用 JavaScript 可体验交互桌面；安装包、说明和仓库链接仍可直接使用。</p></noscript>
+<noscript><p class="noscript-notice">启用 JavaScript 可体验交互桌面；安装包仍可直接下载。安装命令请点“查看安装命令”后手动复制。</p></noscript>
 </body>
 </html>

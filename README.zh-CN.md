@@ -4,7 +4,7 @@
 
 本指南解释常用操作、资料保护和遇到问题时的处理方法。图示取自官网网页交互的**局部画面与单动作动图**，不包含整页网站截图，也不冒充原生 App 截图。
 
-> **当前版本 2.0.0／build 3。** 官网安装包与仓库版本一致。按下面三步安装，再挂入第一份材料。
+> **当前版本 2.0.0／build 4。** 官网安装包与仓库版本一致。按下面三步安装，再挂入第一份材料。
 
 ## 按你的任务找操作
 
@@ -25,10 +25,16 @@
 ### 第一次安装
 
 1. 在[官网](https://inkpeg.chenshi.ai/#download)下载，双击打开 DMG。
-2. 双击包里的 `安装文夹.command`，在终端按回车确认，等待“安装完成”。
+2. 在官网点“复制安装命令”，按 `⌘空格` 搜索“终端”，打开后粘贴并按回车，文夹会自动安装并打开。
 3. 鼠标靠近屏幕顶部展开文夹，或按 `⌃⌥T`，把材料拖到绳子附近。
 
-安装助手被系统拦截时：先尝试打开一次，再到“系统设置 → 隐私与安全性”点击“仍要打开”，然后重新运行助手并按提示确认。助手只处理刚安装的文夹 App，不改变全局系统安全设置。
+保持 DMG 打开。命令只运行包内的本地助手：
+
+```sh
+/bin/bash "/Volumes/文夹 Inkpeg 2.0.0 build 4/安装文夹.command"
+```
+
+DMG 只显示 App、“应用程序”快捷方式和安装助手。许可、来源和自动校验文件在 App 内部，不需要打开。现代 macOS 可能要求确认粘贴，按 [Apple 官方说明](https://support.apple.com/zh-cn/127377)核对；若检测到已知恶意软件，应停止。
 
 更多说明见[安装与升级](docs/inkpeg/INSTALL.md)。
 
@@ -170,7 +176,7 @@ PDF、视频等作为普通文件托管。能够接收不代表能预览、识�
 
 ## 版本、证据与来源
 
-本次发布重新运行了 **391／391** 原生测试（Core 181＋App 210）、7 项安装助手回归与网站交互检查。详细范围见[验证摘要](docs/inkpeg/VERIFICATION.md)、[发行元数据](site/downloads/release.json)、[实际构建输入](site/downloads/build-source.json)和[公开验证摘要](site/downloads/verification.json)。自动验证不能替代尚未完成的实体机器与跨应用测试。
+本次发布重新运行了 **391／391** 原生测试（Core 181＋App 210）、11 项安装助手回归与网站交互检查。详细范围见[验证摘要](docs/inkpeg/VERIFICATION.md)、[发行元数据](site/downloads/release.json)、[实际构建输入](site/downloads/build-source.json)和[公开验证摘要](site/downloads/verification.json)。自动验证不能替代尚未完成的实体机器与跨应用测试。
 
 官网 2.0 的安装方法、限制与校验文件均在其[下载区](https://inkpeg.chenshi.ai/#download)。跨应用接收、Intel／macOS 14 实机、多屏／全屏、睡眠／重启、完整中文输入法、VoiceOver、实体触控板、Safari／Firefox、实体手机、Finder／应用切换器、Gatekeeper 与完整 GUI 升级都有明确未验收边界。
 

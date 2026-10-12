@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "head": "5342da90411b1e0142ca9535ed580ec1438e6f55",
+  "head": "29851e8fc9ab6c10eac60dbfcf79dfe0d23df195",
   "dirty": true,
-  "sha256": "ab1d79e48a1752e8031e3a10af924a7e57130ae77ae8f2587dd1b54c92ff2a40",
+  "sha256": "1ef09fe5314902d855ddf1dd6dbf84416d264574098b727f9e99607c2b5f4edd",
   "algorithm": "SHA256 of sorted UTF-8 relative-path + NUL + file-sha256 + LF",
   "scope": "All Sources files including untracked; packaging/brand; explicit build, version and package-document inputs. Excludes .DS_Store, tests, website implementation, generated manifests, DMGs, logs and other outputs.",
   "files": [
@@ -228,11 +228,11 @@
     },
     {
       "path": "docs/inkpeg/INSTALL.md",
-      "sha256": "2fbd9c9f405804d5b788e4b39e876701afa3b6470b87bc78bd9dbd860f889300"
+      "sha256": "a0bb23de1850ceb52b263b04688c45d9f0d34263feecfcb33b8e448bfb5addba"
     },
     {
       "path": "docs/inkpeg/KNOWN-ISSUES.md",
-      "sha256": "1d5d84e5c12479f6edd241b6a5ea75287bd30850e6c9f58841761580753acbeb"
+      "sha256": "dd72b8b826de37a8d888861f90a39401dd20147c7414cd91c31262804d2424de"
     },
     {
       "path": "packaging/brand/Inkpeg.icns",
@@ -284,15 +284,15 @@
     },
     {
       "path": "packaging/release-version.json",
-      "sha256": "282ba553a2b126e0348b8a2fd43baa78068d705af21bbb718103f0011849fdbc"
+      "sha256": "3db3fba0dd9b37f8bd3e4a090ae72f0455fd5c1d4d6fb3b587f90cead757b39a"
     },
     {
       "path": "packaging/先读我-安装与使用.txt",
-      "sha256": "697e10bfa07b24a35d6c80ad76f58830898ecda223d07348cb693a36a5f9416a"
+      "sha256": "8a0e0470baf42d85ba411d5d0ddea9fd809a94a9530a1a4cad32fb6f8046fe15"
     },
     {
       "path": "packaging/安装文夹.command",
-      "sha256": "625b7af06c9e06af240b7c187626ca30b856f9e58abb959bc52a1e82558e4d5b"
+      "sha256": "2bddd1ccb47207023cc2b14c13a466ae4d118c20e17f5878170119f04fd239c2"
     },
     {
       "path": "packaging/来源与致谢.txt",
@@ -308,11 +308,11 @@
     },
     {
       "path": "scripts/package-inkpeg.sh",
-      "sha256": "97dec4e2c9376a61e70bc98492d5006a37fc1fd567160332961293590c66511e"
+      "sha256": "99bde87b5d8097593849702361ca77b33038262e6c3df4776417115e7752dd01"
     },
     {
       "path": "scripts/release-tools.py",
-      "sha256": "5b03916e7085fa3cc7e3ae2b2f61e377472f7cfef9cc2c7696e0a311ed3e7aaf"
+      "sha256": "2c536c42377b867048d86e5900391ef219a3454212ff506af44d64315504a9f4"
     },
     {
       "path": "scripts/verify-inkpeg.sh",

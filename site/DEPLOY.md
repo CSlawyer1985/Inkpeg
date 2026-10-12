@@ -1,19 +1,19 @@
 # 文夹 Inkpeg 产品页 · 部署说明
 
-本目录（`site/`）是完整的静态站点：网页、动效库、宣传片和安装包都在里面，不依赖 CDN、第三方字体或后端。部署时按发布白名单上传，不包含历史下载包或工作记录，安装包 `downloads/Inkpeg-2.0.0-build3-universal.dmg` 与网页放在同一站点下。
+本目录（`site/`）是完整的静态站点：网页、动效库、宣传片和安装包都在里面，不依赖 CDN、第三方字体或后端。部署时按发布白名单上传，不包含历史下载包或工作记录，安装包 `downloads/Inkpeg-2.0.0-build4-universal.dmg` 与网页放在同一站点下。
 
 ## 上线前核对
 
-> **2.0.0／build 3 已准备就绪（2026-10-12）**：公开预览通用包 2,482,800 字节，391 项自动回归通过，未签名／未公证。`release.json`、实际 DMG 和 SHA256SUMS 已一致；Intel 实机等未验收项见下载区限制。
+> **2.0.0／build 4 已准备就绪（2026-10-12）**：公开预览通用包 2,482,270 字节，391 项自动回归通过，未签名／未公证。`release.json`、实际 DMG 和 SHA256SUMS 已一致；Intel 实机等未验收项见下载区限制。
 
 以后更新版本时，先在独立副本打包验证，再同步元数据与页面。交接原文见 `../docs/inkpeg/HANDOFF-2.0.md`。
 
-放入 `downloads/Inkpeg-2.0.0-build3-universal.dmg` 并同步元数据后：
+放入 `downloads/Inkpeg-2.0.0-build4-universal.dmg` 并同步元数据后：
 
 ```sh
 cd site
-(cd downloads && shasum -a 256 -c SHA256SUMS.txt)          # 期望：Inkpeg-2.0.0-build3-universal.dmg: OK
-stat -f %z downloads/Inkpeg-2.0.0-build3-universal.dmg       # macOS；Linux 用 stat -c %s。应等于 release.json 的 sizeBytes
+(cd downloads && shasum -a 256 -c SHA256SUMS.txt)          # 期望：Inkpeg-2.0.0-build4-universal.dmg: OK
+stat -f %z downloads/Inkpeg-2.0.0-build4-universal.dmg       # macOS；Linux 用 stat -c %s。应等于 release.json 的 sizeBytes
 grep -E '"pending"|"sizeBytes"|"sha256"' downloads/release.json   # pending 一行应已删除
 ```
 
@@ -39,7 +39,7 @@ wrangler pages project create inkpeg --production-branch main   # 首次
 wrangler pages deploy <发布目录> --project-name inkpeg --branch main
 ```
 
-**单文件上限：** Cloudflare Pages 每个文件最大 **25 MiB**。2.0.0 安装包约 2.4 MiB（2,482,800 字节），最大的视频 `media/promo-1080.mp4` 约 6 MiB，远低于上限。以后安装包若超过 25 MiB，需改放 R2 等对象存储，并同步修改下载链接和 `release.json`。
+**单文件上限：** Cloudflare Pages 每个文件最大 **25 MiB**。2.0.0 安装包约 2.4 MiB（2,482,270 字节），最大的视频 `media/promo-1080.mp4` 约 6 MiB，远低于上限。以后安装包若超过 25 MiB，需改放 R2 等对象存储，并同步修改下载链接和 `release.json`。
 
 ## 路线二：Netlify Drop
 
@@ -91,7 +91,7 @@ server {
 B=https://你的域名
 
 # 1. 响应头：200、MIME、附件下载、大小
-curl -sI "$B/downloads/Inkpeg-2.0.0-build3-universal.dmg" | grep -iE '^HTTP|content-type|content-disposition|content-length'
+curl -sI "$B/downloads/Inkpeg-2.0.0-build4-universal.dmg" | grep -iE '^HTTP|content-type|content-disposition|content-length'
 #    期望：HTTP/2 200 · content-type: application/x-apple-diskimage · content-disposition: attachment · content-length 等于 release.json 的 sizeBytes
 
 # 2. 校验文件、说明文档、宣传片
@@ -100,10 +100,10 @@ for p in downloads/SHA256SUMS.txt downloads/release.json "downloads/%E5%AE%89%E8
 #    期望：全部 200（两个中文文件名分别是“安装教程.md”和“本版限制.md”）
 
 # 3. 下载后校验 SHA-256（macOS）
-curl -sSLo /tmp/Inkpeg.dmg "$B/downloads/Inkpeg-2.0.0-build3-universal.dmg"
+curl -sSLo /tmp/Inkpeg.dmg "$B/downloads/Inkpeg-2.0.0-build4-universal.dmg"
 shasum -a 256 /tmp/Inkpeg.dmg
 #    期望：与 SHA256SUMS.txt／release.json 中的 sha256 一致
-#    或者：curl -sSL "$B/downloads/SHA256SUMS.txt" | sed 's#Inkpeg-2.0.0-build3-universal.dmg#/tmp/Inkpeg.dmg#' | shasum -a 256 -c
+#    或者：curl -sSL "$B/downloads/SHA256SUMS.txt" | sed 's#Inkpeg-2.0.0-build4-universal.dmg#/tmp/Inkpeg.dmg#' | shasum -a 256 -c
 ```
 
 最后在浏览器里打开首页，点“下载 Mac 通用版”，确认按钮已启用、显示的大小与 release.json 一致，下载得到的文件 SHA-256 与页面上显示的一致。

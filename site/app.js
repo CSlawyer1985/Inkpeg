@@ -500,10 +500,19 @@
       if (!ok) return pending();
       btn.href = 'downloads/' + encodeURIComponent(j.file); btn.setAttribute('download', j.file);
       sizeEl.textContent = `（${(j.sizeBytes / 1e6).toFixed(1)} MB）`; shaEl.textContent = j.sha256;
+      if (j.installCommand) $('#install-command').textContent = j.installCommand;
       btn.classList.remove('is-pending'); btn.removeAttribute('aria-disabled');
     }).catch(pending);
   })();
   $('#sha-copy').addEventListener('click', () => { const v = $('#sha-value').textContent; (navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => toast('已复制 SHA-256'), () => toast('请手动选择并复制校验值')); });
+
+  $('#install-command-copy').addEventListener('click', () => {
+    const value = $('#install-command').textContent;
+    (navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(value) : Promise.reject()).then(
+      () => toast('已复制，打开终端粘贴并按回车'),
+      () => { $('.install-command-box details').open = true; const selection = getSelection(), range = document.createRange(); range.selectNodeContents($('#install-command')); selection.removeAllRanges(); selection.addRange(range); toast('请复制已选中的安装命令'); }
+    );
+  });
 
   /* ---------- 首屏入场 ---------- */
   if (window.gsap && !reduced()) { gsap.from('.hero h1 .line', { yPercent: 40, opacity: 0, duration: .9, stagger: .12, ease: 'power3.out' }); gsap.from('.lead,.hero-cta,.status-line', { y: 18, opacity: 0, duration: .8, delay: .25, stagger: .08, ease: 'power3.out' }); }

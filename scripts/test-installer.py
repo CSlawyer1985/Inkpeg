@@ -11,15 +11,29 @@ class InstallerTests(unittest.TestCase):
         source=ROOT/'packaging/安装文夹.command'
         self.assertTrue(source.exists(),'The package must include the runnable installation helper')
         shutil.copy2(source,self.helper)
-        app=self.package/'Inkpeg.app';(app/'Contents/MacOS').mkdir(parents=True)
-        (app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'local.inkpeg.Inkpeg','CFBundleExecutable':'Inkpeg','CFBundleShortVersionString':'2.0.0','CFBundleVersion':'3'}))
+        app=self.package/'Inkpeg.app';(app/'Contents/MacOS').mkdir(parents=True); (app/'Contents/Resources').mkdir()
+        (app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'local.inkpeg.Inkpeg','CFBundleExecutable':'Inkpeg','CFBundleShortVersionString':'2.0.0','CFBundleVersion':'4'}))
         binary=app/'Contents/MacOS/Inkpeg';binary.write_text('#!/bin/sh\nexit 0\n');binary.chmod(0o755)
         self.source=app;self.manifest()
     def manifest(self):
-        files=sorted(p for p in self.source.rglob('*') if p.is_file())
-        (self.package/'安装校验.sha256').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(self.package))+'\n' for p in files))
+        files=sorted(p for p in self.source.rglob('*') if p.is_file() and p.name!='安装校验.sha256')
+        (self.source/'Contents/Resources/安装校验.sha256').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(self.package))+'\n' for p in files))
     def run_helper(self,answer='\n',destination=None):
-        return subprocess.run(['/bin/bash',str(self.helper),'--destination',str(destination or self.destination),'--no-launch'],input=answer,text=True,capture_output=True)
+        return subprocess.run(['/bin/bash',str(self.helper),'--destination',str(destination or self.destination),'--no-launch','--confirm'],input=answer,text=True,capture_output=True)
+    def test_default_installs_without_extra_confirmation(self):
+        r=subprocess.run(['/bin/bash',str(self.helper),'--destination',str(self.destination),'--no-launch'],input='',text=True,capture_output=True)
+        self.assertEqual(r.returncode,0,r.stderr+r.stdout)
+        self.assertTrue((self.destination/'Inkpeg.app/Contents/MacOS/Inkpeg').is_file())
+    def test_quarantined_helper_runs_via_explicit_local_bash(self):
+        subprocess.run(['/usr/bin/xattr','-w','com.apple.quarantine','0083;test;Browser;',str(self.helper)],check=True)
+        r=subprocess.run(['/bin/bash',str(self.helper),'--destination',str(self.destination),'--no-launch'],input='',text=True,capture_output=True)
+        self.assertEqual(r.returncode,0,r.stderr+r.stdout)
+        self.assertTrue((self.destination/'Inkpeg.app/Contents/MacOS/Inkpeg').is_file())
+    def test_empty_internal_manifest_rejected(self):
+        (self.source/'Contents/Resources/安装校验.sha256').write_text('')
+        r=self.run_helper();self.assertNotEqual(r.returncode,0);self.assertFalse((self.destination/'Inkpeg.app').exists())
+    def test_confirm_eof_does_not_install(self):
+        r=self.run_helper('');self.assertNotEqual(r.returncode,0);self.assertFalse((self.destination/'Inkpeg.app').exists())
     def test_install_preserves_bytes_and_launchable_mode(self):
         r=self.run_helper();self.assertEqual(r.returncode,0,r.stderr+r.stdout)
         target=self.destination/'Inkpeg.app';self.assertEqual((target/'Contents/MacOS/Inkpeg').read_bytes(),(self.source/'Contents/MacOS/Inkpeg').read_bytes());self.assertTrue((target/'Contents/MacOS/Inkpeg').stat().st_mode&0o111)

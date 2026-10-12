@@ -69,7 +69,8 @@ def main():
         if dest.exists(): raise ValueError('Release asset already exists; do not overwrite')
         shutil.copyfile(args.dmg,dest)
         data={k:checked[k] for k in ['version','build','minimumMacOS','architectures','developerIDSigned','notarized']}
-        data.update(channel='preview',architecture='universal',file=name,sizeBytes=dest.stat().st_size,sha256=sha(dest),source=checked['source'],signing=checked['signing'],intelHardwareVerified=False,minimumMacOSHardwareVerified=False,guiInstallationVerified=False,testRecords=['verification.json'],sourceRecords='build-source.json')
+        volume=f"文夹 Inkpeg {checked['version']} build {checked['build']}"
+        data.update(diskImageVolume=volume,installCommand=f'/bin/bash "/Volumes/{volume}/安装文夹.command"',channel='preview',architecture='universal',file=name,sizeBytes=dest.stat().st_size,sha256=sha(dest),source=checked['source'],signing=checked['signing'],intelHardwareVerified=False,minimumMacOSHardwareVerified=False,guiInstallationVerified=False,testRecords=['verification.json'],sourceRecords='build-source.json')
         # Keep the manifest small; full input list travels alongside it and inside the app.
         write(ROOT/'site/downloads/build-source.json',data.pop('source'))
         data['source']={k:checked['source'][k] for k in ['head','dirty','sha256','algorithm','scope']}

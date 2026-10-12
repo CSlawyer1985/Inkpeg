@@ -291,3 +291,13 @@ html.reduce-motion .film-teaser{display:none}
 .install-help summary,.checksum-details summary{cursor:pointer}
 .install-help p{margin-top:10px}
 .checksum-details .sha{margin-top:12px}
+
+.install-command-box{margin:12px 0;padding:12px;border:1px solid var(--hair);border-radius:8px;background:var(--paper)}
+.install-command-box code{display:block;overflow-wrap:anywhere;word-break:break-word;line-height:1.65;font-size:12px;user-select:all}
+
+.install-command-box details{margin-top:10px;font-size:12px}
+.install-command-box details summary{cursor:pointer}
+.install-command-box code{margin-top:8px}
+.install-command-box button{margin-top:0}
+
+.steps .install-command-box{grid-column:2;min-width:0}
