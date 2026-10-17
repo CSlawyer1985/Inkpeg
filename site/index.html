@@ -6,12 +6,12 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f4f1e9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f1013" media="(prefers-color-scheme: dark)">
-<meta name="description" content="文夹 Inkpeg：在 Mac 屏幕上方拉一根绳，把截图、文字、图片、PDF 和文件挂起来。单击复制，点小红段随手记事，资料只存在本机。文夹 2.0.0。">
+<meta name="description" content="文夹 Inkpeg：MIT 开源的 macOS 本地材料架。在 Mac 屏幕上方拉一根绳，把截图、文字、图片、PDF 和文件挂起来。单击复制，点小红段随手记事，资料只存在本机。文夹 2.0.0。">
 <link rel="canonical" href="https://inkpeg.chenshi.ai/">
 <meta property="og:url" content="https://inkpeg.chenshi.ai/">
 <meta property="og:image" content="https://inkpeg.chenshi.ai/media/poster-promo.jpg">
 <meta property="og:title" content="文夹 Inkpeg · 让眼前的资料，一直在手边">
-<meta property="og:description" content="截图、文字和文件，挂在屏幕上方的一根绳上。试着在网页桌面上挂入第一份材料。">
+<meta property="og:description" content="MIT 开源的 macOS 本地材料架。截图、文字和文件，挂在屏幕上方的一根绳上。试着在网页桌面上挂入第一份材料。">
 <meta property="og:type" content="website">
 <title>文夹 Inkpeg · 让眼前的资料，一直在手边</title>
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
@@ -29,7 +29,7 @@
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="#top" aria-label="文夹 Inkpeg 首页"><img src="assets/mark.svg" alt="" width="30" height="30"><span class="brand-zh">文夹</span><span class="brand-en">Inkpeg</span></a>
-    <nav aria-label="主导航"><a href="#film">宣传片</a><a href="#playground">试一试</a><a href="#features">能做什么</a><a href="#privacy">本机存储</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer" title="私有仓库，需授权访问">GitHub<small class="nav-note">需授权</small><span aria-hidden="true"> ↗</span></a></nav>
+    <nav aria-label="主导航"><a href="#film">宣传片</a><a href="#playground">试一试</a><a href="#features">能做什么</a><a href="#privacy">本机存储</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer" title="MIT 开源，公开访问源码">GitHub<small class="nav-note">开源</small><span aria-hidden="true"> ↗</span></a></nav>
     <div class="header-actions">
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换浅色／深色"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
       <a class="btn btn-ink btn-sm" href="#download">下载<span aria-hidden="true"> ↓</span></a>
@@ -41,12 +41,12 @@
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="dot"></span>为 macOS 菜单栏而做 · 改造自开源项目 Tendedero</p>
+        <p class="eyebrow"><span class="dot"></span>为 macOS 菜单栏而做 · MIT 开源</p>
         <h1 id="hero-title"><span class="line">让眼前的资料，</span><span class="line">一直在<em>手边</em>。</span></h1>
         <p class="lead">文夹 Inkpeg 在屏幕上方拉一根绳。截图、文字、图片、PDF 和普通文件拖上去就挂住；单击复制，点一下<span class="red-word">小红段</span>随手记事。资料只存在你的 Mac 里。</p>
         <div class="hero-cta"><a class="btn btn-ink" href="#download"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 16h12"/></svg>下载文夹 2.0.0</a><a class="btn btn-line" href="#playground">在网页里试一试<span aria-hidden="true"> →</span></a></div>
         <p class="hero-film"><a href="#film"><span aria-hidden="true">▶</span> 先看 52 秒宣传片</a></p>
-        <ul class="status-line" aria-label="版本状态"><li><b>2.0.0</b></li><li>macOS 14+</li><li>Apple Silicon ＋ Intel</li><li>安装助手随包提供</li></ul>
+        <ul class="status-line" aria-label="版本状态"><li><b>2.0.0</b></li><li>macOS 14+</li><li>Apple Silicon ＋ Intel</li><li>安装助手随包提供</li><li><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">MIT 开源 ↗</a></li></ul>
       </div>
       <figure class="hero-shot" aria-label="文夹界面示意：屏幕上方的绳子挂着截图、文字和文件卡片">
         <div class="hero-shot-frame"><div class="hero-shot-scaler" id="hero-shot"></div></div>
@@ -207,7 +207,7 @@
         <p class="dl-meta">文夹 Inkpeg 2.0.0 · build 6<br>macOS 14 及以上 · Apple Silicon（M 系列）与 Intel 双架构</p>
         <a class="btn btn-ink btn-lg" id="download-btn" href="downloads/Inkpeg-2.0.0-build6-universal.dmg" download="Inkpeg-2.0.0-build6-universal.dmg"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 16h12"/></svg>下载 Mac 通用版 <span id="download-size" class="size" data-pending="size">（5.2 MB）</span></a>
         <details class="checksum-details"><summary>核对下载文件（可选）</summary><div class="sha"><span>SHA-256</span><code id="sha-value" data-pending="sha256">650ccd25c130caa6c10cb1e67dc4d5908d5be71098ed736df0821f9b6bb3642e</code><button type="button" id="sha-copy" class="mini">复制</button></div></details>
-        <div class="dl-links"><a href="downloads/SHA256SUMS.txt" download>SHA256SUMS.txt</a><a href="downloads/安装教程.md" download>安装与升级说明</a><a href="downloads/本版限制.md" download>本版限制</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">源码仓库（需授权）↗</a></div>
+        <div class="dl-links"><a href="downloads/SHA256SUMS.txt" download>SHA256SUMS.txt</a><a href="downloads/安装教程.md" download>安装与升级说明</a><a href="downloads/本版限制.md" download>本版限制</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">公开源码 · MIT ↗</a></div>
       </div>
       <div class="install">
         <h3>安装三步</h3>
@@ -225,7 +225,7 @@
         <details><summary>这是文件管理器或永久收藏夹吗？</summary><p>不是。文夹主要放眼前正在用的材料。事项／历史列表和双栏对照尚未实现。取下卡片会保留副本，清理前请逐项核对名称。</p></details>
         <details><summary>能拖到微信、Codex 等输入框吗？</summary><p>开发预览提供纯文字、PNG／TIFF 和可读取文件副本，并保留 Finder 文件拖放。具体输入框的实际接收仍待验收；不接收时可用“复制 → 目标应用 ⌘V”。网页上的桌面只用于体验操作方式，不会调用你电脑里的应用。</p></details>
         <details><summary>PDF、视频能预览吗？</summary><p>PDF、视频等按普通文件托管，接收的是独立副本，并不代表支持预览或理解所有格式。</p></details>
-        <details><summary>为什么访问仓库需要权限？</summary><p>Inkpeg 仓库目前是私有的，只有获授权的 GitHub 账号能访问。安装包直接由本站提供，不需要通过 GitHub 下载。</p></details>
+        <details><summary>文夹开源吗？可以查看和修改源码吗？</summary><p>文夹 Inkpeg 已按 MIT 许可证开源，<a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">GitHub 源码仓库</a>公开可读，无需登录即可查看和下载源码。你可以按许可证使用、修改和分发代码，分发时保留版权声明及完整许可。上游名称与图标等限制见<a href="NOTICE.txt">来源与权利说明</a>。安装包仍由本站直接提供。</p></details>
         <details><summary>支持哪些电脑和系统？</summary><p>安装包按 Apple Silicon（M 系列）与 Intel（x86_64）通用版构建，最低 macOS 14。编译支持不等于所有机器都已验收：2.0.0 本机验收环境为 Apple Silicon／macOS 26.6.2；Intel 实机、较旧系统和新机首次安装仍待测试。</p></details>
         <details><summary>清理之后，空间为什么没变小？</summary><p>清理是移入系统废纸篓，应用不会自动清空。真正释放空间需要你自行清空废纸篓；清理记录本身会保留，清理很小的文件后总占用可能短暂增加。</p></details>
       </div>
@@ -236,8 +236,8 @@
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <a class="brand" href="#top"><img src="assets/mark.svg" width="26" height="26" alt=""><span class="brand-zh">文夹</span><span class="brand-en">Inkpeg</span></a>
-    <p class="credit">基于 Alejandro Buján 的开源项目 <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener noreferrer">Tendedero</a> 改造，保留原作者版权与 <a href="LICENSE.txt">MIT 许可</a>；采用独立名称，不暗示原作者背书。动效使用本地分发的 GSAP 3.15.0（<a href="vendor/GSAP-LICENSE.txt">许可</a>）。</p>
-    <p class="author"><a href="https://chenshi.ai" target="_blank" rel="noopener noreferrer">陈石 · chenshi.ai ↗</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">GitHub · CSlawyer1985/Inkpeg（需授权）↗</a></p>
+    <p class="credit">基于 Alejandro Buján 的开源项目 <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener noreferrer">Tendedero</a> 改造，文夹源码按 <a href="LICENSE.txt">MIT 许可</a>开源，保留原作者版权及<a href="NOTICE.txt">来源与权利说明</a>；采用独立名称，不暗示原作者背书。动效使用本地分发的 GSAP 3.15.0（<a href="vendor/GSAP-LICENSE.txt">许可</a>）。</p>
+    <p class="author"><a href="https://chenshi.ai" target="_blank" rel="noopener noreferrer">陈石 · chenshi.ai ↗</a><a href="https://github.com/CSlawyer1985/Inkpeg" target="_blank" rel="noopener noreferrer">GitHub · MIT 开源 ↗</a></p>
   </div>
 </footer>
 <div class="site-toast" id="site-toast" role="status" aria-live="polite"></div>

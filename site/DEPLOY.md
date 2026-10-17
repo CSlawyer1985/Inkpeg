@@ -20,7 +20,7 @@ grep -E '"pending"|"sizeBytes"|"sha256"' downloads/release.json   # pending 一�
 三处必须一致：DMG 实际 SHA-256 与大小、`release.json`、`SHA256SUMS.txt`。
 
 注意：
-- 下载按钮只指向本站的 `downloads/` 文件，**不要**改成私有仓库的 GitHub Release 地址（访客没有权限）。页面上的源码仓库链接保留“需授权”标注。
+- 下载按钮继续指向本站的 `downloads/` 文件。源码仓库 `https://github.com/CSlawyer1985/Inkpeg` 已公开，网站导航、下载区和页脚使用“MIT 开源”或“公开源码”标识；不要再标注“需授权”。
 - `site/.gitignore` 忽略了 `downloads/*.dmg`，所以从 Git 仓库自动构建时 DMG **不会**被带上。请用“直接上传目录”的方式部署，或在构建步骤中把 DMG 复制进 `downloads/`。
 - 换新安装包时，按 `site/README.md`“更新安装包”一节同步文件名、`release.json`、`SHA256SUMS.txt` 和页面文字。
 

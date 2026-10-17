@@ -147,7 +147,7 @@ PDF、视频及普通文件按文件副本托管，不意味着文夹可以预�
 
 ## 下载与安装
 
-当前版本为 **2.0.0／build 6**，官网与本仓库的版本来源一致。[直接下载 Mac 通用版](https://inkpeg.chenshi.ai/downloads/Inkpeg-2.0.0-build6-universal.dmg)（大小见官网下载区），不需要 GitHub 登录。源码仓库目前私有，阅读仓库需要访问权限。
+当前版本为 **2.0.0／build 6**，官网与本仓库的版本来源一致。[直接下载 Mac 通用版](https://inkpeg.chenshi.ai/downloads/Inkpeg-2.0.0-build6-universal.dmg)（大小见官网下载区），不需要 GitHub 登录。源码已按 [MIT 许可证](LICENSE)开源，无需登录即可公开阅读和下载，欢迎通过 [Issues](https://github.com/CSlawyer1985/Inkpeg/issues)反馈问题。
 
 1. **打开安装包。** 下载后双击 DMG。
 2. **双击安装助手。** 双击“安装文夹.command”；也可以把 App 拖入“应用程序”，再打开。
@@ -214,8 +214,8 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer scripts/package-inkpeg.
 
 ## 来源、致谢与许可
 
-文夹基于 Alejandro Buján 开源的 [Tendedero](https://github.com/alejandrobujan/tendedero)，固定上游提交 `3c866d94d25ee9d1e008aecd9a78a4e9b2bf06a4`。保留原作者版权与完整 [MIT 许可证](LICENSE)，新增代码沿用 MIT；[上游 README 原文](README.upstream.md)保留作历史说明。
+文夹基于 Alejandro Buján 开源的 [Tendedero](https://github.com/alejandrobujan/tendedero)，固定上游提交 `3c866d94d25ee9d1e008aecd9a78a4e9b2bf06a4`。保留原作者版权与完整 [MIT 许可证](LICENSE)，新增代码沿用 MIT；[上游 README 原文](README.upstream.md)保留作历史说明。上游名称、图标等附加权利说明原文完整保留于 [NOTICE.md](NOTICE.md)。
 
 产品名称、暖纸／弯绳／红夹视觉和本文媒体由本项目独立制作，不使用上游图标或演示图作为文夹发行资产，不暗示原作者背书。配乐为项目代码合成的原创曲目。[来源与致谢](packaging/来源与致谢.txt) · [chenshi.ai](https://chenshi.ai)。
 
-MIT 不强制公开源码，也允许商业使用和仅分发安装包；分发时保留版权声明及完整许可。上游名称、Logo 和文档媒体有独立限制，本项目使用自己的品牌和宣传素材。
+本仓库公开提供源码，按 MIT 许可允许使用、修改、分发和商业使用；分发时保留版权声明及完整许可。上游名称、Logo 和文档媒体有独立限制，本项目使用自己的品牌和宣传素材。
